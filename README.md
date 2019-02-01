@@ -1,43 +1,44 @@
 # Inventarios
 
-Application to be awesome
+Aplicación web, para llevar el control del inventario del departamento de Computación
 
 ## Table of contents
 
-* [Client Details](#client-details)
-* [Environment URLS](#environment-urls)
-* [Da Team](#team)
-* [Management resources](#management-resources)
-* [Setup the project](#setup-the-project)
-* [Running the stack for development](#running-the-stack-for-development)
-* [Stop the project](#stop-the-project)
-* [Restoring the database](#restoring-the-database)
-* [Debugging](#debugging)
-* [Running specs](#running-specs)
-* [Checking code for potential issues](#checking-code-for-potential-issues)
+* [Detalles del cliente](#detalles-del-cliente)
+* [URLS del ambiente](#urls-del-ambiente)
+* [Equipo](#equipo)
+* [Herramientas administrativas](#herramientas-administrativas)
+* [Configurar el proyecto](#configurar-el-proyecto)
+* [Correr el stack para desarrollo](#correr-el-stack-para-desarrollo)
+* [Detener proyecto](#detener-proyecto)
+* [Restaurar base de datos](#restaurar-base-de-datos)
+* [Depuración(Debbuging)](#depuración)
+* [Especificaciones para correr proyecto](#especificaciones-para-correr-proyecto)
+* [Checar código para problemas potenciales](#checar-código-para-problemas-potenciales)
 
 
-### Client Details
+### Detalles del cliente
 
-| Name               | Email             | Role |
-| ------------------ | ----------------- | ---- |
-| Nombre del cliente | prueba@prueba.com | CEO  |
+| Nombre                      | Email             | Role                               |
+| --------------------------- | ----------------- | ---------------------------------- |
+| Armandina Juana Leal Flores | aleal@tec.mx      | Directora del Dpto. de Computación |
 
 
-### Environment URLS
+### URLS del ambiente
 
 * **Production** - [TBD](TBD)
 * **Development** - [TBD](TBD)
 
-### Da team
+### Equipo
 
-| Name           | Email             | Role        |
-| -------------- | ----------------- | ----------- |
-| Nombre miembro | prueba@prueba.com | Development |
-| Nombre miembro | prueba@prueba.com | Development |
-| Nombre miembro | prueba@prueba.com | Development |
+| Nombre            | Email                          | Role        |
+| ----------------- | ------------------------------ | ----------- |
+| Miguel Banda      | miguelangelbandardz@gmail.com  | Development |
+| Abelardo Gonzalez | abelardo_gonzalezg@hotmail.com | Development |
+| Luis Rojo         | luis_alfonso_96@hotmail.com    | Development |
+| Guillermo Mendoza | ams.guillermo@gmail.com        | Development |
 
-### Management tools
+### Herramientas administrativas
 
 You should ask for access to this tools if you don't have it already:
 
@@ -48,7 +49,7 @@ You should ask for access to this tools if you don't have it already:
 
 ## Development
 
-### Setup the project
+### Configurar el proyecto
 
 You'll definitely want to install [`plis`](https://github.com/IcaliaLabs/plis), as in this case will
 let you bring up the containers needed for development. This is done by running the command
@@ -75,7 +76,7 @@ $ plis run web bash
 % rails db:migrate
 ```
 
-### Running the stack for Development
+### Correr el stack para desarrollo
 
 1. Fire up a terminal and run: 
 
@@ -104,7 +105,7 @@ web_1   | Listening on 0.0.0.0:3000, CTRL+C to stop
 
 This means the project is up and running.
 
-### Stop the project
+### Detener proyecto
 
 In order to stop crowdfront as a whole you can run:
 
@@ -120,7 +121,7 @@ This will stop every container, but if you need to stop one in particular, you c
 
 `web` is the service name located on the `docker-compose.yml` file, there you can see the services name and stop each of them if you need to.
 
-### Restoring the database
+### Restaurar base de datos
 
 You probably won't be working with a blank database, so once you are able to run crowdfront you can restore the database, to do it, first stop all services:
 
@@ -156,7 +157,7 @@ Once the script finishes its execution you can just exit the session from the co
 % plis start
 ```
 
-### Debugging
+### Depuración
 
 We know you love to use `debugger`, and who doesn't, and with Docker is a bit tricky, but don't worry, we have you covered.
 
@@ -170,7 +171,7 @@ This will display the logs from the rails app, as well as give you access to sto
 
 **Take note that if you kill this process you will kill the web service, and you will probably need to lift it up again.**
 
-### Running specs
+### Especificaciones para correr proyecto
 
 To run specs, you can do:
 
@@ -184,7 +185,7 @@ Or for a specific file:
 $ plis run test rspec spec/models/user_spec.rb
 ```
 
-### Checking code for potential issues
+### Checar código para problemas potenciales
 
 To run specs, you can do:
 
