@@ -2,7 +2,7 @@
 
 Aplicación web, para llevar el control del inventario del departamento de Computación
 
-## Table of contents
+## Tabla de contenidos
 
 * [Detalles del cliente](#detalles-del-cliente)
 * [URLS del ambiente](#urls-del-ambiente)
@@ -47,7 +47,7 @@ You should ask for access to this tools if you don't have it already:
 * [Heroku](https://crowdfront-staging.herokuapp.com/)
 * [Documentation](https://drive.com)
 
-## Development
+## Desarrollo
 
 ### Configurar el proyecto
 
