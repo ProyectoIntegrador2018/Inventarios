@@ -26,8 +26,8 @@ Aplicación web, para llevar el control del inventario del departamento de Compu
 
 ### URLS del ambiente
 
-* **Production** - [TBD](TBD)
-* **Development** - [TBD](TBD)
+* **Producción** - [Heroku](http://inventariosdecomputacion.herokuapp.com/)
+* **Desarrollo** - [Github](https://github.com/ProyectoIntegrador2018/Inventarios)
 
 ### Equipo
 
@@ -42,10 +42,10 @@ Aplicación web, para llevar el control del inventario del departamento de Compu
 
 You should ask for access to this tools if you don't have it already:
 
-* [Github repo](https://github.com/)
-* [Backlog]()
+* [Github repo](https://github.com/ProyectoIntegrador2018/Inventarios)
+* [Backlog](linktobacklog)
 * [Heroku](https://crowdfront-staging.herokuapp.com/)
-* [Documentation](https://drive.com)
+* [Documentation](linktodocumentation)
 
 ## Desarrollo
 
