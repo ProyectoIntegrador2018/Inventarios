@@ -1,69 +1,208 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# Inventarios
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+Aplicación web para llevar el control del inventario de dispositivos del departamento de Computación
 
-## About Laravel
+## Tabla de contenidos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+* [Detalles del cliente](#detalles-del-cliente)
+* [URLS del ambiente](#urls-del-ambiente)
+* [Equipo](#equipo)
+* [Herramientas administrativas](#herramientas-administrativas)
+* [Configurar el proyecto](#configurar-el-proyecto)
+* [Correr el stack para desarrollo](#correr-el-stack-para-desarrollo)
+* [Detener proyecto](#detener-proyecto)
+* [Restaurar base de datos](#restaurar-base-de-datos)
+* [Depuración(Debbuging)](#depuración)
+* [Especificaciones para correr proyecto](#especificaciones-para-correr-proyecto)
+* [Checar código para problemas potenciales](#checar-código-para-problemas-potenciales)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+### Detalles del cliente
 
-## Learning Laravel
+| Nombre                      | Email             | Role                                      |
+| --------------------------- | ----------------- | ----------------------------------------- |
+| Armandina Juana Leal Flores | aleal@tec.mx      | Directora del Departamento de Computación |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+### URLS del ambiente
 
-## Laravel Sponsors
+* **Producción** - [Heroku](http://inventariosdecomputacion.herokuapp.com/)
+* **Desarrollo** - [Github](https://github.com/ProyectoIntegrador2018/Inventarios)
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
+### Equipo
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
+| Nombre            | Email                          | Role        |
+| ----------------- | ------------------------------ | ----------- |
+| Miguel Banda      | miguelangelbandardz@gmail.com  | Development |
+| Abelardo Gonzalez | abelardo_gonzalezg@hotmail.com | Development |
+| Luis Rojo         | luis_alfonso_96@hotmail.com    | Development |
+| Guillermo Mendoza | ams.guillermo@gmail.com        | Development |
 
-## Contributing
+### Herramientas administrativas
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+You should ask for access to this tools if you don't have it already:
 
-## Security Vulnerabilities
+* [Github repo](https://github.com/ProyectoIntegrador2018/Inventarios)
+* [Backlog](linktobacklog)
+* [Heroku](https://crowdfront-staging.herokuapp.com/)
+* [Documentation](linktodocumentation)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Desarrollo
 
-## License
+### Configurar el proyecto
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Para el desarollo local del proyecto es necesario instalar [`Composer`](https://getcomposer.org/), el cual es un manejador de dependencias de PHP el cual nos servirá para el manejo de la aplicación en cuestión de instalación y actualización de paquetes del proyecto.
+
+1. Clonar este repositorio en tu equipo:
+
+```bash
+$ git clone https://github.com/ProyectoIntegrador2018/Inventarios.git
+```
+
+2. Instalar y/o actualizar dependencias de ser requerido
+
+```bash
+$ composer install
+$ composer update
+```
+
+3. Generar llave del proyecto
+
+```
+$ php artisan key:generate
+```
+
+4. Migrar la base de datos
+
+```
+$ php artisan migrate
+```
+
+### Correr el stack para desarrollo
+
+1. Correr en la terminal
+
+```
+$ php artisan serve
+```
+
+**A partir de aquí se dejará el documento intacto (por el momento) dado que no se ha llegado a la parte de programación del proyecto que nos permite decidir cuales serán los comando y herramientas definitivas para los siguiente puntos requeridos.**
+
+Este comando ejecutará las rutinas necesarias para poder acceder al proyecto en `localhost:8000`
+
+
+It may take a while before you see anything, you can follow the logs of the containers with:
+
+```
+$ docker-compose logs
+```
+
+Once you see an output like this:
+
+```
+web_1   | => Booting Puma
+web_1   | => Rails 5.1.3 application starting in development on http://0.0.0.0:3000
+web_1   | => Run `rails server -h` for more startup options
+web_1   | => Ctrl-C to shutdown server
+web_1   | Listening on 0.0.0.0:3000, CTRL+C to stop
+```
+
+This means the project is up and running.
+
+### Detener proyecto
+
+In order to stop crowdfront as a whole you can run:
+
+```
+% plis stop
+```
+
+This will stop every container, but if you need to stop one in particular, you can specify it like:
+
+```
+% plis stop web
+```
+
+`web` is the service name located on the `docker-compose.yml` file, there you can see the services name and stop each of them if you need to.
+
+### Restaurar base de datos
+
+You probably won't be working with a blank database, so once you are able to run crowdfront you can restore the database, to do it, first stop all services:
+
+```
+% plis stop
+```
+
+Then just lift up the `db` service:
+
+```
+% plis start db
+```
+
+The next step is to login to the database container:
+
+```
+% docker exec -ti crowdfront_db_1 bash
+```
+
+This will open up a bash session in to the database container.
+
+Up to this point we just need to download a database dump and copy under `crowdfront/backups/`, this directory is mounted on the container, so you will be able to restore it with:
+
+```
+root@a3f695b39869:/# bin/restoredb crowdfront_dev db/backups/<databaseDump>
+```
+
+If you want to see how this script works, you can find it under `bin/restoredb`
+
+Once the script finishes its execution you can just exit the session from the container and lift the other services:
+
+```
+% plis start
+```
+
+### Depuración
+
+We know you love to use `debugger`, and who doesn't, and with Docker is a bit tricky, but don't worry, we have you covered.
+
+Just run this line at the terminal and you can start debugging like a pro:
+
+```
+% plis attach web
+```
+
+This will display the logs from the rails app, as well as give you access to stop the execution on the debugging point as you would expect.
+
+**Take note that if you kill this process you will kill the web service, and you will probably need to lift it up again.**
+
+### Especificaciones para correr proyecto
+
+To run specs, you can do:
+
+```
+$ plis run test rspec
+```
+
+Or for a specific file:
+
+```
+$ plis run test rspec spec/models/user_spec.rb
+```
+
+### Checar código para problemas potenciales
+
+To run specs, you can do:
+
+```
+$ plis run web reek
+```
+
+```
+$ plis run web rubocop
+```
+
+```
+$ plis run web scss_lint
+```
+
+Or any other linter you have.
