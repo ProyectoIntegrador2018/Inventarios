@@ -86,6 +86,8 @@ $ php artisan migrate
 $ php artisan serve
 ```
 
+** A partir de aquí se dejará el documento intacto dado que no se ha llegado a la parte de programación del proyecto que nos permite decidir cuales serán los comando y herramientas definitivas para los siguiente puntos requeridos.**
+
 Este comando ejecutará las rutinas necesarias para poder acceder al proyecto en `localhost:8000`
 
 
