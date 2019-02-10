@@ -1,6 +1,6 @@
 # Inventarios
 
-Aplicación web, para llevar el control del inventario del departamento de Computación
+Aplicación web para llevar el control del inventario de dispositivos del departamento de Computación
 
 ## Tabla de contenidos
 
