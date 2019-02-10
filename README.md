@@ -19,9 +19,9 @@ Aplicación web, para llevar el control del inventario del departamento de Compu
 
 ### Detalles del cliente
 
-| Nombre                      | Email             | Role                               |
-| --------------------------- | ----------------- | ---------------------------------- |
-| Armandina Juana Leal Flores | aleal@tec.mx      | Directora del Dpto. de Computación |
+| Nombre                      | Email             | Role                                      |
+| --------------------------- | ----------------- | ----------------------------------------- |
+| Armandina Juana Leal Flores | aleal@tec.mx      | Directora del Departamento de Computación |
 
 
 ### URLS del ambiente
@@ -58,33 +58,42 @@ and sidekiq), along with their dependencies (posgres, redis, etc).
 
 After installing please you can follow this simple steps:
 
-1. Clone this repository into your local machine
+Para el desarollo local del proyecto es necesario instalar [`Composer`](https://getcomposer.org/), el cual es un manejador de dependencias de PHP el cual nos servirá para el manejo de la aplicación en cuestión de instalación y actualización de paquetes del proyecto.
+
+1. Clonar este repositorio en tu equipo:
 
 ```bash
-$ git clone git@github.com:IcaliaLabs/crowdfront.git
+$ git clone https://github.com/ProyectoIntegrador2018/Inventarios.git
 ```
 
-2. Fire up a terminal and run:
+2. Instalar y/o actualizar dependencias de ser requerido
 
 ```bash
-$ plis run web bash
+$ composer install
+$ composer update
 ```
 
-3. Inside the container you need to migrate the database:
+3. Generar llave del proyecto
 
 ```
-% rails db:migrate
+$ php artisan key:generate
+```
+
+4. Migrar la base de datos
+
+```
+$ php artisan migrate
 ```
 
 ### Correr el stack para desarrollo
 
-1. Fire up a terminal and run: 
+1. Correr en la terminal
 
 ```
-plis start
+$ php artisan serve
 ```
 
-That command will lift every service crowdfront needs, such as the `rails server`, `postgres`, and `redis`.
+Este comando ejecutará las rutinas necesarias para poder acceder al proyecto en `localhost:8000`
 
 
 It may take a while before you see anything, you can follow the logs of the containers with:
