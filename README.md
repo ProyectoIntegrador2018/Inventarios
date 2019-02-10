@@ -51,13 +51,6 @@ You should ask for access to this tools if you don't have it already:
 
 ### Configurar el proyecto
 
-You'll definitely want to install [`plis`](https://github.com/IcaliaLabs/plis), as in this case will
-let you bring up the containers needed for development. This is done by running the command
-`plis start`, which will start up the services in the `development` group (i.e. rails
-and sidekiq), along with their dependencies (posgres, redis, etc).
-
-After installing please you can follow this simple steps:
-
 Para el desarollo local del proyecto es necesario instalar [`Composer`](https://getcomposer.org/), el cual es un manejador de dependencias de PHP el cual nos servirá para el manejo de la aplicación en cuestión de instalación y actualización de paquetes del proyecto.
 
 1. Clonar este repositorio en tu equipo:
