@@ -1,4 +1,8 @@
-## Identificador 
+---
+name: Task
+about: Crea una nueva tarea atómica
+
+---
   TASK-T###
   
 < Descripción breve de la tarea >
