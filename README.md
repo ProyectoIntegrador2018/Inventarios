@@ -51,7 +51,7 @@ You should ask for access to this tools if you don't have it already:
 
 ### Configurar el proyecto
 
-Para el desarollo local del proyecto es necesario instalar [`Composer`](https://getcomposer.org/), el cual es un manejador de dependencias de PHP el cual nos servirá para el manejo de la aplicación en cuestión de instalación y actualización de paquetes del proyecto.
+Para el desarollo local del proyecto es necesario instalar [`Composer`](https://getcomposer.org/), el cual es un manejador de dependencias de PHP el cual nos servirá para el manejo de la aplicación en cuestión de instalación y actualización de paquetes del proyecto. Igualmente es necesario tener instalado [`PostgreSQL`](https://www.postgresql.org/) para manejar la base de datos.
 
 1. Clonar este repositorio en tu equipo:
 
