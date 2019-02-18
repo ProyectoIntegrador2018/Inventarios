@@ -59,20 +59,25 @@ Para el desarollo local del proyecto es necesario instalar [`Composer`](https://
 $ git clone https://github.com/ProyectoIntegrador2018/Inventarios.git
 ```
 
-2. Instalar y/o actualizar dependencias de ser requerido
+2. En caso de ser necesario, crear un nuevo archivo .env para realizar pruebas locales específicas
+```
+cp .env.example .env
+```
+
+3. Instalar y/o actualizar dependencias de ser requerido
 
 ```bash
 $ composer install
 $ composer update
 ```
 
-3. Generar llave del proyecto
+4. Generar llave del proyecto
 
 ```
 $ php artisan key:generate
 ```
 
-4. Migrar la base de datos
+5. Migrar la base de datos
 
 ```
 $ php artisan migrate
