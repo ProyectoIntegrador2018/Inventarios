@@ -1,3 +1,8 @@
+---
+name: Historia de Usuario
+about: Crea una historia de usuario atómica
+
+---
 ## Identificador
  HU-###
 ## Conversación
