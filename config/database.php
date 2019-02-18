@@ -3,11 +3,6 @@
 return [
 
     // New lines added to see if PostgreSQL works on Heroku
-    $url = parse_url(getenv("DATABASE_URL"));
-    $host = $url["host"];
-    $username = $url["user"];
-    $password = $url["pass"];
-    $database = substr($url["path"], 1);
 
     /*
     |--------------------------------------------------------------------------
@@ -80,10 +75,10 @@ return [
 
         'pgsql' => [
             'driver'   => 'pgsql',
-            'host'     => $host,
-            'database' => $database,
-            'username' => $username,
-            'password' => $password,
+            'host'     => 'ec2-23-23-184-76.compute-1.amazonaws.com',
+            'database' => 'd5b2gsuddb5o9o',
+            'username' => 'livkilqznncasp',
+            'password' => '1e4585eda607589866143d29d7a2422492904acc48d2a12d058c2c76b22ac529',
             'charset'  => 'utf8',
             'prefix'   => '',
             'schema'   => 'public',
