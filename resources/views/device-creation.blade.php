@@ -219,15 +219,15 @@
       if(allowPost == true){
 
         var data = {
-          _token: '{{csrf_token()}}',
-          name : name,
-          brand : brand,
-          model : model,
-          quantity : quantity,
+          _token         : '{{csrf_token()}}',
+          name           : name,
+          brand          : brand,
+          model          : model,
+          quantity       : quantity,
           serial_numbers : serial_numbers,
-          building : building,
-          room : room,
-          tags : tags
+          building       : building,
+          room           : room,
+          tags           : tags
         };
 
         $.ajax({

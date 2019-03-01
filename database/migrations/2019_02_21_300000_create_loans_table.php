@@ -15,11 +15,11 @@ class CreateLoansTable extends Migration
     {
         Schema::create('loans', function (Blueprint $table) {
             $table->increments('id');
-
-            $table->date('start-date')->nullable();
-            $table->date('end-date')->nullable();
-            $table->date('loan-date')->nullable();
-            $table->date('return-date')->nullable();
+            
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->date('loan_date')->nullable();
+            $table->date('return_date')->nullable();
             $table->string('status')->nullable();
             $table->string('reason')->nullable();
 

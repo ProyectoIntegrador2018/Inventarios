@@ -55,14 +55,14 @@ class HomeController extends Controller
             SELECT d.serial_number
             FROM devices d JOIN states s
             ON d.id = s.device_id
-            WHERE d.model = 'iPhone7' AND s.state = 'Available';
+            WHERE d.model = '$requestedDevice' AND s.state = 'Available';
         ");
 
         $modelInformation = DB::select("
             SELECT d.name, d.brand, d.model
             FROM devices d JOIN states s
             ON d.id = s.device_id
-            WHERE d.model = 'iPhone7' AND s.state = 'Available'
+            WHERE d.model = '$requestedDevice' AND s.state = 'Available'
             GROUP BY d.name, d.brand, d.model;
         ");
 

@@ -25,3 +25,6 @@ Route::get('/requestLoan/{deviceModel}', 'HomeController@requestLoan')->name('re
 
 // Devices Routes
 Route::post('/createDevice', 'DeviceController@createDevice')->name('createDevice');
+
+// Loans Controller
+Route::post('/createLoan', 'LoanController@createLoan')->name('createLoan');
