@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Device;
+use App\Loan;
 
 use DB;
 
@@ -74,9 +75,7 @@ class HomeController extends Controller
     }
 
     public function getLoans() {
-        $loans = DB::select("
-        SELECT *
-        FROM loans
-    ");
+
+        return view('loans')->with('loans', Loan::all());
     }
 }
