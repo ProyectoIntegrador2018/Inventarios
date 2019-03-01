@@ -22,6 +22,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/deviceCreation', 'HomeController@deviceCreation')->name('deviceCreation');
 Route::get('/inventory', 'HomeController@inventory')->name('inventory');
 Route::get('/requestLoan/{deviceModel}', 'HomeController@requestLoan')->name('requestLoan');
+Route::get('/loans', 'HomeController@getLoans')->name('loans');
 
 // Devices Routes
 Route::post('/createDevice', 'DeviceController@createDevice')->name('createDevice');
