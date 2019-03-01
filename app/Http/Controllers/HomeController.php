@@ -72,4 +72,11 @@ class HomeController extends Controller
 
         return view('request-loan')->with('serialNumbers', $serialNumbers)->with('modelInformation', $modelInformation)->with('quantity', $quantity);
     }
+
+    public function getLoans() {
+        $loans = DB::select("
+        SELECT *
+        FROM loans
+    ");
+    }
 }
