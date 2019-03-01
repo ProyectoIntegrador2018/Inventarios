@@ -12,9 +12,13 @@
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
+                        
                     @endif
 
                     You are logged in!
+                    
+                    <hr><a href="{{url('/deviceCreation')}}">Alta de Dispositivos</a>
+                    <hr><a href="{{url('/inventory')}}">Inventario</a>
                 </div>
             </div>
         </div>
