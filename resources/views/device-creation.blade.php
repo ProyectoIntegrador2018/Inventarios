@@ -3,13 +3,14 @@
 @csrf
 <!-- Vista principal -->
 <main role="main" class="container bg-white">
-  
-  <a href="{{url('/home')}}">Regresar a inicio</a>
-  
+  <br><a class="btn btn-primary" href="{{url('/home')}}" role="button">Regresar al Menú Principal</a>
   <div class="alert alert-success devices-success" role="alert" style="display:none;">Los dispositivos se han agregado correctamente al inventario.</div>
   <div class="alert alert-danger devices-error" role="alert" style="display:none;">Error: Verifique que los números de serie no estén repetidos en el inventario.</div>
 
   <div class="flex-center position-ref full-height">
+    <div class="col">
+      <h1 class="text-center">Alta de dispositivos</h1>
+    </div>
     <div class="container">
       <!-- Formulario -->
       <div class="row">
@@ -118,7 +119,7 @@
       </div>
     </div>
   </div>
-
+<br>
 </main>
 
 @endsection
@@ -242,6 +243,15 @@
             if(jsonReceived.status == 1){
               $('.devices-success').show();
               $('.devices-error').hide();
+
+              $('#txb_nombre').val('');
+              $('#txb_marca').val('');
+              $('#txb_modelo').val('');
+              $('#txb_cantidad').val(0);
+              $('#txb_noSeries').val('');
+              $('#dpm_edificio').text('Elija uno');
+              $('#txb_salon').val('');
+              $('#txa_etiquetas').val('');
             }
             
             if(jsonReceived.status == 2){

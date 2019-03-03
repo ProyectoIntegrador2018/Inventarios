@@ -23,6 +23,9 @@ Route::get('/deviceCreation', 'HomeController@deviceCreation')->name('deviceCrea
 Route::get('/inventory', 'HomeController@inventory')->name('inventory');
 Route::get('/requestLoan/{deviceModel}', 'HomeController@requestLoan')->name('requestLoan');
 Route::get('/loans', 'HomeController@getLoans')->name('loans');
+Route::get('/deviceDetails/{deviceModel}', 'HomeController@deviceDetails')->name('deviceDetails');
+Route::get('/loansList', 'HomeController@getLoans')->name('loansList');
+Route::get('/getAllLoans', 'HomeController@getAllLoans')->name('getAllLoans');
 
 // Devices Routes
 Route::post('/createDevice', 'DeviceController@createDevice')->name('createDevice');

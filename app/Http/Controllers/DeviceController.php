@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 
 use App\User;
 use App\Location;
+use App\Device;
 
 use DB;
 
@@ -333,7 +334,7 @@ class DeviceController extends Controller
     }
 
     // public function getAllDevices(Request $request){
-    //     return view('inventory')->with('devices', $Device::all());
+    //     return view('inventory')->with('devices', Device::all());
     // }
 
 }

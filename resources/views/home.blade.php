@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Dashboard</div>
+                <div class="card-header">Menú Principal</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -15,10 +15,12 @@
                         
                     @endif
 
-                    You are logged in!
                     
-                    <hr><a href="{{url('/deviceCreation')}}">Alta de Dispositivos</a>
-                    <hr><a href="{{url('/inventory')}}">Inventario</a>
+                    
+                    <a href="{{url('/deviceCreation')}}">Alta de Dispositivos</a>
+                    <hr><a href="{{url('/inventory')}}">Inventario de Dispositivos</a>
+                    <hr><a href="{{url('/loansList')}}">Lista de Préstamos</a>
+                    
                 </div>
             </div>
         </div>

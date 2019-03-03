@@ -14,7 +14,7 @@
           color: #636b6f;
           font-family: 'Nunito', sans-serif;
           font-weight: 200;
-          height: 100vh;
+          /* height: 100vh; */
           margin: 0;
         }
         .full-height {
@@ -64,6 +64,7 @@
         <link rel="stylesheet" type="text/css" href="/daterangepicker/daterangepicker.css" />
         <!-- JS scripts -->
         <script type="text/javascript" src="/js/reservaciones.js"></script>
+
     </head>
     <body class="bg-light">
         <!-- Barra de herramientas -->
@@ -113,6 +114,12 @@
 
         <!-- Vista principal -->
         <main role="main" class="container bg-white">
+          <br><a class="btn btn-primary" href="{{url('/inventory')}}" role="button">Regresar a inventario</a><br><br>
+          <div class="alert alert-success loans-success" role="alert" style="display:none;">El préstamo de dispositivo(s) se ha creado correctamente.</div><br>
+          <div class="alert alert-danger loans-error" role="alert" style="display:none;">Error: Verifique que la información sea correcta para poder crear el préstamo</div>
+          <div class="col">
+              <h1 class="text-center">Solicitud de Préstamo</h1>
+          </div>
           <!-- <div class="flex-center position-ref full-height"> -->
             <div class="container">
               <!-- Formulario -->
@@ -122,15 +129,15 @@
                     <div class="card-body" id="crd_detallesDispositivo">
                         <h2 class="card-title" id="h_nombreDispositivo">{{$modelInformation->name}}</h2>
                         <br>
-                        <h5 class="card-subtitle mb-2 text-muted" id="h_cantidad">{{$quantity}} dispositivos disponibles:</h5>
-                        
+                        <h5 class="card-subtitle mb-2 text-muted" id="h_cantidad"><span style="color:black;">{{$quantity}}</span> dispositivos disponibles:</h5>
+                        <br>
                         @foreach($serialNumbers as $serialNumber)
-                        <h6 class="card-subtitle mb-2 text-muted" id="h_noSerie"><b>No.Serie:</b> {{$serialNumber->serial_number}}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted" id="h_noSerie"><b>Número de Serie:</b> <span style="color:black;">{{$serialNumber->serial_number}}</span></h6>
                         @endforeach
                         <br>
-                        <h6 class="card-subtitle mb-2 text-muted" id="h_marca"><b>Marca:</b> {{$modelInformation->brand}}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted" id="h_marca"><b>Marca:</b> <span style="color:black;">{{$modelInformation->brand}}</span></h6>
                         <br>
-                        <h6 class="card-subtitle mb-2 text-muted" id="h_modelo"><b>Modelo:</b> {{$modelInformation->model}}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><b>Modelo:</b> <span id="h_modelo" style="color:black;">{{$modelInformation->model}}</span></h6>
                     </div>
                 </div>
 
@@ -199,36 +206,45 @@
                         </div>
                       </div>
                       <div class="col-md-12 mt-3">
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="chb_esEstudiante">
-                          <label class="custom-control-label" for="same-address">
-                            Soy un estudiante
-                          </label>
+                        <div class="form-group">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="chb_esEstudiante">
+                            <label class="form-check-label" for="chb_esEstudiante">
+                              Soy un estudiante
+                            </label>
+                          </div>
                         </div>
                       </div>
+
                       <hr class="my-4">
-                      <div class="col-md-4 mt-4">
-                        <label for="firstName">Carrera</label>
-                        <input type="text" class="form-control" id="txb_carrera" placeholder="" value="" required="">
-                        <div class="invalid-feedback">
-                          Por favor escriba las siglas de su carrera
+                      <div class="row" id="div_student">
+                        <div class="col-md-4 mt-4">
+                          <label for="firstName">Carrera</label>
+                          <input type="text" class="form-control" id="txb_carrera" placeholder="" value="" required="">
+                          <div class="invalid-feedback">
+                            Por favor escriba las siglas de su carrera
+                          </div>
                         </div>
-                      </div>
-                      <div class="col-md-8 mt-4">
-                        <label for="firstName">Nombre de profesor responsable</label>
-                        <input type="text" class="form-control" id="txb_nombreResponsable" placeholder="" value="" required="">
-                        <div class="invalid-feedback">
-                          Por favor escriba el nombre del profesor que será responsable de su préstamo
+                        <div class="col-md-8 mt-4">
+                          <label for="firstName">Nombre de profesor responsable</label>
+                          <input type="text" class="form-control" id="txb_nombreResponsable" placeholder="" value="" required="">
+                          <div class="invalid-feedback">
+                            Por favor escriba el nombre del profesor que será responsable de su préstamo
+                          </div>
                         </div>
-                      </div>
-                      <div class="col-md-12 mt-3">
-                        <label for="firstName">Correo electrónico de profesor responsable</label>
-                        <input type="text" class="form-control" id="txb_emailResponsable" placeholder="" value="" required="">
-                        <div class="invalid-feedback">
-                          Por favor escriba el correo electrónico del profesor responsable de su préstamo
+                        <div class="col-md-12 mt-3">
+                          <label for="firstName">Correo electrónico de profesor responsable</label>
+                          <input type="text" class="form-control" id="txb_emailResponsable" placeholder="" value="" required="">
+                          <div class="invalid-feedback">
+                            Por favor escriba el correo electrónico del profesor responsable de su préstamo
+                          </div>
                         </div>
                       </div>
                     </div>
+
+                    <script>
+                      $("#div_student").hide();
+                    </script>
 
                   </div>
                 </div>
@@ -238,12 +254,12 @@
               <div class="row">
                 <div class="col">
                   @csrf
-                  <button class="btn btn-primary btn-lg btn-block disabled" id="btn_reservar" type="submit">Reservar</button>
+                  <button class="btn btn-primary btn-lg btn-block" id="btn_reservar" type="submit">Reservar</button>
                 </div>
               </div>
             </div>
           <!-- </div> -->
-
+        <br>
         </main>
 
     </body>

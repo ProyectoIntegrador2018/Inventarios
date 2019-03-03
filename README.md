@@ -77,7 +77,12 @@ $ composer update
 $ php artisan key:generate
 ```
 
-5. Migrar la base de datos
+5. Crear la base de datos en PostgreSQL
+```
+Crear una base de datos con el nombre de 'inventarios'
+```
+
+6. Migrar la base de datos
 
 ```
 $ php artisan migrate
