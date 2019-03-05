@@ -112,14 +112,6 @@
           <br><a class="btn btn-primary" href="{{url('/home')}}" role="button">Regresar al Menú Principal</a>
           <div class="content">
 
-            <div class="col-md-12">
-              <br><br>
-              <h1>Lista de Préstamos</h1>
-              <br>
-            </div>
-
-            <hr>
-
             <h1>Lista de Préstamos</h1>
             <div class="col-md-12 mt-5 input-group">
               <input type="text" class="form-control" id="txb_search" placeholder="Buscar préstamos..." value="" required="">
