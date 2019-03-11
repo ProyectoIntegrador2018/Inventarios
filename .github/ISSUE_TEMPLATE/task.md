@@ -3,15 +3,19 @@ name: Task
 about: Crea una nueva tarea atómica
 
 ---
-  TASK-T###
+## Identificador
+TASK-####
   
-< Descripción breve de la tarea >
+## Descripción
+< Descripción detallada de la tarea >
 
-## Conversación
-< Detalles adicionales >
+## To-Do
+- [ ] Tasks individuales
 
-## Criterios de terminación
+## Criterios de Aceptación
 - < Criterios a completar para asegurar que la tarea esta terminada >
 
 ## Relaciones
-- #< id del issue relacionado>
+< ID de la historia de usuario a la que está relacionada u a otro task. Si no aplica poner: NA >
+ID: _HU-####_
+
