@@ -11,14 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
 // Navigation Routes
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/about', 'AboutController@about')->name('about');
+Route::get('/', 'AboutController@about')->name('about');
 Route::get('/deviceCreation', 'HomeController@deviceCreation')->name('deviceCreation');
 Route::get('/inventory', 'HomeController@inventory')->name('inventory');
 Route::get('/requestLoan/{deviceModel}', 'HomeController@requestLoan')->name('requestLoan');
