@@ -19,7 +19,6 @@ class CreateResponsablesTable extends Migration
             
             $table->string('name')->nullable();
             $table->string('email')->nullable();
-            $table->string('responsable_id')->nullable();
 
             $table->timestamps();
 
