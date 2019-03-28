@@ -36,7 +36,7 @@ class HomeController extends Controller
     }
 
     public function inventory(){
-        
+
         $devices = DB::select("
             SELECT COUNT(d.id) as quantity, d.name, d.brand, d.model
             FROM devices d JOIN states s
@@ -51,7 +51,7 @@ class HomeController extends Controller
     }
 
     public function requestLoan($requestedDevice){
-        
+
         $serialNumbers = DB::select("
             SELECT d.serial_number
             FROM devices d JOIN states s
@@ -75,7 +75,7 @@ class HomeController extends Controller
     }
 
     public function deviceDetails($requestedDevice){
-        
+
         $serialNumbers = DB::select("
             SELECT d.serial_number
             FROM devices d
@@ -96,7 +96,7 @@ class HomeController extends Controller
         WHERE model = '$requestedDevice' AND s.state = 'Available';
         ");
         $availableDevices = $availableDevices[0]->quantity;
-        
+
         $reservedDevices = DB::select("
         SELECT count(d.id) as quantity
         FROM devices d JOIN states s
@@ -147,7 +147,7 @@ class HomeController extends Controller
     }
 
     public function getAllLoans() {
-        
+
         $loans = DB::select("
         SELECT loans.id, loans.status, responsables.name AS responsableName, applicants.name AS solicitantName, devices.name AS deviceName, COUNT(devices.id) AS deviceQuantity
         FROM responsables
