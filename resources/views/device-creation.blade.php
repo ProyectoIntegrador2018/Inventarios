@@ -7,7 +7,7 @@
   <div class="alert alert-success devices-success" role="alert" style="display:none;">Los dispositivos se han agregado correctamente al inventario.</div>
   <div class="alert alert-danger devices-error" role="alert" style="display:none;">Error: Verifique que los números de serie no estén repetidos en el inventario.</div>
 
-  <div class="flex-center position-ref full-height">
+  <div class="row flex-center position-ref full-height">
     <div class="col">
       <h1 class="text-center">Alta de dispositivos</h1>
     </div>
@@ -127,7 +127,7 @@
 @section('script')
 <script type="text/javascript">
   $(document).ready(function(){
-    
+
     var allowPost = false;
 
     $(document).on('click', '#btn-dar-alta', function () {
@@ -200,7 +200,7 @@
       }else{
         $('.room-invalid-feedback').show();
       }
-      
+
       // Let's allow the post if no one of the previous conditions are false
       if(
         (name != "") &&
@@ -237,7 +237,7 @@
           data: data,
           dataType: 'json',
           success: function (jsonReceived) {
-            
+
             console.log(jsonReceived);
 
             if(jsonReceived.status == 1){
@@ -253,7 +253,7 @@
               $('#txb_salon').val('');
               $('#txa_etiquetas').val('');
             }
-            
+
             if(jsonReceived.status == 2){
               $('.devices-error').show();
               $('.devices-success').hide();

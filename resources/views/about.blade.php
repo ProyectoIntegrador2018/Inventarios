@@ -5,10 +5,10 @@
   <div class="container">
     <!-- About -->
     <div class="row align-items-center pt-5">
-      <div class="col-md-4">
+      <div class="mx-auto">
         <div class="display-3"> Acerca del sitio </div>
       </div>
-      <div class="col-md-8">
+      <div class="">
         <p>Bienvenido al Inventario de Dispositivos Tec, un sitio web
         donde podrás consultar y reservar gadgets para realizar
         proyectos académicos o actividades de investigación
