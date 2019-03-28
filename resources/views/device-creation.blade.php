@@ -3,7 +3,7 @@
 @csrf
 <!-- Vista principal -->
 <main role="main" class="container bg-white">
-  <br><a class="btn btn-primary" href="{{url('/home')}}" role="button">Regresar al Menú Principal</a>
+  <br>
   <div class="alert alert-success devices-success" role="alert" style="display:none;">Los dispositivos se han agregado correctamente al inventario.</div>
   <div class="alert alert-danger devices-error" role="alert" style="display:none;">Error: Verifique que los números de serie no estén repetidos en el inventario.</div>
 

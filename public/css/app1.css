@@ -13,6 +13,10 @@ footer {
   font-size: 0.75rem;
 }
 
+.border-5 {
+    border-width:5px !important;
+}
+
 .flex-center {
   align-items: center;
   display: flex;

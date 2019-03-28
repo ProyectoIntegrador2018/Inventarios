@@ -22,7 +22,7 @@ $(document).ready(function() {
   $(document).on('click', '#btn_reservar', function(){
     // alert("Botón presionado");
     // Selection of elements por the post function
-    
+
     var model            = $("#h_modelo").text();
     var quantity         = $('#txb_cantidad').val();
     var reason           = $('#txa_motivo').val();
@@ -61,7 +61,7 @@ $(document).ready(function() {
 
         // console.log(jsonReceived);
         if(jsonReceived.status == 1){
-          
+
           // Para el sprint dos, que los mensajes de error que se devuelven del Back-End se pongan en el mensaje de alerta
 
           $('.loans-success').show();
@@ -161,7 +161,7 @@ function validateFields() {
     solicitantName.removeClass("is-invalid");
   }
   //----------------------- Rules for SOLICITANT EMAIL -----------------------//
-  
+
   //---------------------------- Rules for DEGREE ----------------------------//
   if (solicitantDegree.val().match(/\d/) || solicitantDegree.hasClass('is-invalid')) {
     solicitantDegree.addClass("is-invalid");
@@ -236,7 +236,7 @@ function validateFields() {
 
         // console.log(jsonReceived);
         if(jsonReceived.status == 1){
-          
+
           // Para el sprint dos, que los mensajes de error que se devuelven del Back-End se pongan en el mensaje de alerta
 
           $('.loans-success').show();
