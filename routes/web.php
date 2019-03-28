@@ -24,18 +24,20 @@ Route::get('/loansList', 'HomeController@getLoans')->name('loansList');
 Route::get('/getAllLoans', 'HomeController@getAllLoans')->name('getAllLoans');
 Route::get('/exportCSV', 'HomeController@exportCSV')->name('exportCSV');
 Route::get('/checkLoan', 'LoanController@checkLoan')->name('checkLoan');
+Route::get('/edit/{deviceModel}', 'HomeController@edit')->name('edit');
+Route::get('/getSerialNumbers/{deviceModel}', 'HomeController@getSerialNumbers')->name('getSerialNumbers');
 
 // Devices Routes
 Route::post('/createDevice', 'DeviceController@createDevice')->name('createDevice');
 Route::get('/getDeviceNames', 'DeviceController@getDeviceNames')->name('getDeviceNames');
 Route::get('/getDeviceBrands', 'DeviceController@getDeviceBrands')->name('getDeviceBrands');
 Route::get('/getDeviceModels', 'DeviceController@getDeviceModels')->name('getDeviceModels');
+Route::post('/editDevice', 'DeviceController@editDevice')->name('editDevice');
 
 // Loans Controller
 Route::post('/createLoan', 'LoanController@createLoan')->name('createLoan');
 Route::post('/changeStatus', 'LoanController@changeStatus')->name('changeStatus');
 Route::post('/cancelLoan', 'LoanController@cancelLoan')->name('cancelLoan');
-
 Route::get('/exportLoans', 'LoanController@exportLoans')->name('exportLoans');
 
 // About Controller | Public Controller

@@ -144,7 +144,7 @@ class HomeController extends Controller
         SELECT count(d.id) as quantity
         FROM devices d JOIN states s
         ON d.id = s.device_id
-        WHERE model = '$requestedDevice' AND s.state = 'Decrease';
+        WHERE model = '$requestedDevice' AND s.state = 'Exclusive';
         ");
         $exclusiveDevices = $exclusiveDevices[0]->quantity;
 
@@ -158,6 +158,98 @@ class HomeController extends Controller
         ->with('exclusiveDevices', $exclusiveDevices)
         ->with('serialNumbers', $serialNumbers)
         ->with('totalDevices', $totalDevices)
+        ;
+    }
+
+    public function edit($requestedDevice){
+        $serialNumbers = DB::select("
+            SELECT d.serial_number, s.state
+            FROM devices d JOIN states s
+            ON d.id = s.device_id
+            WHERE d.model = '$requestedDevice';
+        ");
+
+        $modelInformation = DB::select("
+        SELECT d.name, d.brand, d.model, d.location_id
+        FROM devices d
+        WHERE d.model = '$requestedDevice';
+        ");
+        $modelInformation = $modelInformation[0];
+
+        $deviceLocation = DB::select("
+        SELECT building, room
+        FROM locations l
+        WHERE l.id = '$modelInformation->location_id'
+        ");
+        $location = $deviceLocation[0];
+
+        $availableDevices = DB::select("
+        SELECT count(d.id) as quantity
+        FROM devices d JOIN states s
+        ON d.id = s.device_id
+        WHERE model = '$requestedDevice' AND s.state = 'Available';
+        ");
+        $availableDevices = $availableDevices[0]->quantity;
+
+        $reservedDevices = DB::select("
+        SELECT count(d.id) as quantity
+        FROM devices d JOIN states s
+        ON d.id = s.device_id
+        WHERE model = '$requestedDevice' AND s.state = 'Reserved';
+        ");
+        $reservedDevices = $reservedDevices[0]->quantity;
+
+        $repairingDevices = DB::select("
+        SELECT count(d.id) as quantity
+        FROM devices d JOIN states s
+        ON d.id = s.device_id
+        WHERE model = '$requestedDevice' AND s.state = 'Repairing';
+        ");
+        $repairingDevices = $repairingDevices[0]->quantity;
+
+        $decreaseDevices = DB::select("
+        SELECT count(d.id) as quantity
+        FROM devices d JOIN states s
+        ON d.id = s.device_id
+        WHERE model = '$requestedDevice' AND s.state = 'Decrease';
+        ");
+        $decreaseDevices = $decreaseDevices[0]->quantity;
+
+        $exclusiveDevices = DB::select("
+        SELECT count(d.id) as quantity
+        FROM devices d JOIN states s
+        ON d.id = s.device_id
+        WHERE model = '$requestedDevice' AND s.state = 'Exclusive';
+        ");
+        $exclusiveDevices = $exclusiveDevices[0]->quantity;
+
+        $tagList = DB::select("
+        SELECT t.tag
+        FROM tags t JOIN device_tag dt
+        ON t.id = dt.tag_id
+        JOIN devices d
+        ON d.id = dt.device_id
+        WHERE model = '$requestedDevice'
+        GROUP BY t.tag;
+        ");
+
+        $tags = $tagList[0]->tag;
+        for($i = 1; $i < sizeof($tagList); $i++) {
+            $tags = $tags.', '.$tagList[$i]->tag;
+        }
+
+        $totalDevices = $availableDevices + $reservedDevices + $repairingDevices + $decreaseDevices + $exclusiveDevices;
+
+        return view('edit')->with('device', $modelInformation)
+        ->with('availableDevices', $availableDevices)
+        ->with('reservedDevices', $reservedDevices)
+        ->with('repairingDevices', $repairingDevices)
+        ->with('decreaseDevices', $decreaseDevices)
+        ->with('exclusiveDevices', $exclusiveDevices)
+        ->with('serialNumbers', $serialNumbers)
+        ->with('totalDevices', $totalDevices)
+        ->with('location', $location)
+        ->with('tags', $tags)
         ;
     }
 
@@ -179,5 +271,15 @@ class HomeController extends Controller
         ");
 
         return json_encode($loans);
+    }
+
+    public function getSerialNumbers($model){
+        $serialNumbers = DB::select("
+            SELECT d.serial_number, s.state
+            FROM devices d JOIN states s
+            ON d.id = s.device_id
+            WHERE d.model = '$model';
+        ");
+        return json_encode($serialNumbers);
     }
 }

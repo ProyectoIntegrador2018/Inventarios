@@ -39,15 +39,14 @@
                     <li class="list-group-item">Exclusivos clase: 0</li>
                 </ul>
                 <br>
-                <div class="col-sm-8">
-                    <h3>Total de dispositivos: {{$totalDevices}}</h3>
-                </div>
+                <h5>Total de dispositivos: {{$totalDevices}}</h5>
+                <br>
             </div>
         </div>
         <!--Button-->
         <div class="col">
             <div class="col">
-                <button class="btn btn-primary btn-lg btn-block" type="submit">Hacer cambios</button>
+                <button onclick="location='{{url('/edit/'.$device->model)}}'" id="btn-edit" class="btn btn-primary btn-lg btn-block" type="submit">Hacer cambios</button>
             </div>
         </div>
       </div>

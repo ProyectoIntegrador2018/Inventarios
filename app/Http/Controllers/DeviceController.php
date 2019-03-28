@@ -582,6 +582,117 @@ class DeviceController extends Controller
         // return json_encode($response);
     }
 
+    public function editDevice(Request $request){ 
+        $finalMessage = "vvv";
+        $finalStatus = 0;
+        
+        $model = $request->input('model');
+        $name = $request->input('name');
+        $brand = $request->input('brand');
+        $serialNumbers = $request->input('serial_numbers');
+        $status = $request->input('status');
+        $oldTags = $request->input('oldTags');
+        $newTags = $request->input('newTags');
+        $oldStatus = $request->input('oldStatus');
+        $newStatus = $request->input('newStatus');
+
+        // Get the ids and serials from that model
+        $devices = DB::select("
+        SELECT d.id, d.serial_number
+        FROM devices d
+        WHERE d.model = '$model';
+        ");
+
+        $id = Auth::user()->id;
+
+        if (strcmp($oldTags,$newTags) != 0) {
+            $separatedTags = explode(",", $newTags);
+
+            // Delete the actual device-tag relations on all the id's on that model
+            foreach($devices as $device) {
+                $id = $device->id;
+                DB::delete("
+                DELETE FROM device_tag
+                WHERE id = '$id';
+                ");
+            }
+
+            for($y = 0; $y < count($separatedTags); $y++){
+                
+                // Search if the tag actually exists
+                // If it exists, just get the id to after use it in the relation
+                // If not exists already, the tag and device_tag instances are going to be created
+
+                // strtolower($str);
+
+                $tagExistance = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get();
+
+                if(count($tagExistance) > 0){
+                    
+                    // The tag already exists, let's get tag id and just create the relation
+
+                    $tagID = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get(['id']);
+                    $tagID = $tagID[0]->id;
+
+                    foreach($devices as $device) {
+                        DB::table('device_tag')->insert(
+                            [
+                                'tag_id' => $tagID,
+                                'device_id' => $device->id,
+                                'created_at' => \Carbon\Carbon::now(),
+                                'updated_at' => \Carbon\Carbon::now()
+                            ]
+                        );
+                    }
+                }else{
+                    // The tag doesn't exists, let's create both
+                    DB::table('tags')->insert(
+                        [
+                            'tag' => $separatedTags[$y],
+                            'created_at' => \Carbon\Carbon::now(),
+                            'updated_at' => \Carbon\Carbon::now()
+                        ]
+                    );
+
+                    $lastTagAddedID = DB::table('tags')->orderBy('id', 'desc')->first();
+
+                    foreach($devices as $device) {
+                        DB::table('device_tag')->insert(
+                            [
+                                'tag_id' => $lastTagAddedID->id,
+                                'device_id' => $device->id,
+                                'created_at' => \Carbon\Carbon::now(),
+                                'updated_at' => \Carbon\Carbon::now()
+                            ]
+                        );
+                    }   
+                }
+                $finalStatus++;
+                $finalMessage = "Tags been happen";
+            }
+        }
+
+        for($i = 0; $i < count($serialNumbers); $i++) {
+            if (strcmp($newStatus[$i], $oldStatus[$i]) != 0 ) {
+                $sn = $serialNumbers[$i];
+                $deviceIdArr = DB::select(
+                    "SELECT d.id
+                    FROM devices d 
+                    WHERE d.serial_number = '$sn'"
+                );
+                $device_id = $deviceIdArr[0]->id;
+                DB::update('UPDATE states SET state = ? WHERE device_id = ?', [$newStatus[$i], $device_id]);
+                $finalMessage = "update must be done";
+            }
+        }
+
+        DB::update('UPDATE devices SET name = ?, brand = ? WHERE model = ?', [$name, $brand, $model]);
+
+        $response["status"] = 1;
+        $response["message"] = $finalMessage;
+        return json_encode($response);
+    }
+
     // public function getAllDevices(Request $request){
     //     return view('inventory')->with('devices', Device::all());
     // }

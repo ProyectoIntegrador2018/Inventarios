@@ -77,15 +77,9 @@
                 <label for="firstName">Edificio</label>
                 <select class="custom-select" id="dpm_edificio">
                   <option selected>Elija uno</option>
-                  <option value="A1">A1</option>
-                  <option value="A2">A2</option>
                   <option value="A3">A3</option>
                   <option value="A4">A4</option>
-                  <option value="A5">A5</option>
-                  <option value="A6">A6</option>
                   <option value="A7">A7</option>
-                  <option value="CIAP">CIAP</option>
-                  <option value="CETEC">CETEC</option>
                 </select>
                 <div class="building-invalid-feedback" style="display:none;color:red;">Por favor seleccione un edificio</div>
               </div>
