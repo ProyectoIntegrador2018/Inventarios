@@ -9,9 +9,6 @@
 
     <title>{{ config('app.name') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
@@ -20,11 +17,6 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app1.css') }}" rel="stylesheet">
-
-    <!-- Date picker -->
-    <script type="text/javascript" src="/daterangepicker/moment.min.js"></script>
-    <script type="text/javascript" src="/daterangepicker/daterangepicker.js"></script>
-    <link rel="stylesheet" type="text/css" href="/daterangepicker/daterangepicker.css" />
 
 </head>
 <body>
@@ -116,9 +108,12 @@
           integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
           crossorigin="anonymous">
         </script>
-         <script type="text/javascript" src="js/navbar.js"></script>
-         <script type="text/javascript" src="/js/prestamos.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script type="text/javascript" src="js/navbar.js"></script>
+        <script type="text/javascript" src="/js/prestamos.js"></script>
         @yield('script')
+
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
         <footer class="text-muted text-center px-5">
           <hr>

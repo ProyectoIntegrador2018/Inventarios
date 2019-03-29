@@ -20,7 +20,7 @@
             <h4 class="card-title">Datos del dispositivo</h4>
             <form class="needs-validation" novalidate="">
               <div class="row my-3">
-                <div class="col">
+                <div class="col ui-widget">
                   <label for="firstName">Nombre</label>
                   <input type="text" class="form-control" id="txb_nombre" placeholder="" value="" required="">
                   <div class="device-invalid-feedback" style="display:none;color:red;">Por favor escriba el nombre del dispositivo</div>
@@ -125,8 +125,68 @@
 @endsection
 
 @section('script')
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
+
+    // Autocomplete for device names
+    $( function() {
+      $.ajax({
+        url : '/getDeviceNames',
+        type : 'GET',
+        dataType: 'json',
+        success: function (dataReceived) {
+          dataReceived = dataReceived[0];
+          // Translate dataReceived (array of objects) to newData (array of strings)
+          var newData = [];
+          for (i = 0; i < dataReceived.length; i++) {
+            newData[i] = dataReceived[i].name;
+          }
+          dataReceived = newData;
+          $("#txb_nombre").autocomplete({ source: dataReceived });
+        }
+      });
+    });
+
+    // Autocomplete for device names
+    $( function() {
+
+      $.ajax({
+        url : '/getDeviceBrands',
+        type : 'GET',
+        dataType: 'json',
+        success: function (dataReceived) {
+          dataReceived = dataReceived[0];
+          // Translate dataReceived (array of objects) to newData (array of strings)
+          var newData = [];
+          for (i = 0; i < dataReceived.length; i++) {
+            newData[i] = dataReceived[i].brand;
+          }
+          dataReceived = newData;
+          $("#txb_marca").autocomplete({ source: dataReceived });
+        }
+      });
+    });
+
+    // Autocomplete for device names
+    $( function() {
+
+      $.ajax({
+        url : '/getDeviceModels',
+        type : 'GET',
+        dataType: 'json',
+        success: function (dataReceived) {
+          dataReceived = dataReceived[0];
+          // Translate dataReceived (array of objects) to newData (array of strings)
+          var newData = [];
+          for (i = 0; i < dataReceived.length; i++) {
+            newData[i] = dataReceived[i].model;
+          }
+          dataReceived = newData;
+          $("#txb_modelo").autocomplete({ source: dataReceived });
+        }
+      });
+    });
 
     var allowPost = false;
 
@@ -143,6 +203,7 @@
         Name of the room
         Name(s) of the tag(s)
       */
+
 
       var name           = $('#txb_nombre').val();
       var brand          = $('#txb_marca').val();
@@ -237,8 +298,6 @@
           data: data,
           dataType: 'json',
           success: function (jsonReceived) {
-
-            console.log(jsonReceived);
 
             if(jsonReceived.status == 1){
               $('.devices-success').show();
