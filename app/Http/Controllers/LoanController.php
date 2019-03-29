@@ -211,7 +211,7 @@ class LoanController extends Controller
                         [
                             'name'           => $responsableName,
                             'email'          => $responsableEmail,
-                            'responsable_id' => "",
+                            // 'responsable_id' => "",
                             'applicant_id'   => $lastApplicantID,
                             'created_at'     => Carbon::now(),
                             'updated_at'     => Carbon::now()
@@ -366,5 +366,28 @@ class LoanController extends Controller
         $response = array( 'status' => 'NOT FOUND' );
       }
       return json_encode($response);
+    }
+
+    public function showView_LoanRequest ($requestedDevice){
+      $serialNumbers = DB::select("
+          SELECT d.serial_number
+          FROM devices d JOIN states s
+          ON d.id = s.device_id
+          WHERE d.model = '$requestedDevice' AND s.state = 'Available';
+      ");
+
+      $modelInformation = DB::select("
+          SELECT d.name, d.brand, d.model
+          FROM devices d JOIN states s
+          ON d.id = s.device_id
+          WHERE d.model = '$requestedDevice' AND s.state = 'Available'
+          GROUP BY d.name, d.brand, d.model;
+      ");
+
+      $modelInformation = $modelInformation[0];
+
+      $quantity = count($serialNumbers);
+
+      return view('request-loan')->with('serialNumbers', $serialNumbers)->with('modelInformation', $modelInformation)->with('quantity', $quantity);
     }
 }

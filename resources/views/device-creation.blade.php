@@ -186,7 +186,7 @@
           $("#txb_modelo").autocomplete({ source: dataReceived });
         }
       });
-    
+    });
     var requiredSerialNumbers = false;
 
     $('#exampleCheck1').change(function() {
@@ -253,7 +253,7 @@
         $('.quantity-invalid-feedback').show();
       }
 
-      
+
       if(serial_numbers != ""){
         if(requiredSerialNumbers == false){
           $('.serial-number-invalid-feedback').hide();
@@ -267,7 +267,7 @@
           $('.serial-number-invalid-feedback').hide();
         }
       }
-      
+
 
       if(parseInt(quantity) == (parseInt((serial_numbers.match(/,/g) || []).length) + 1)){
         // Falta hacer esta parte
@@ -321,7 +321,7 @@
       }
 
       if(allowPost == true){
-        
+
         var requiredSerialNumbersInString = "no";
 
         if(requiredSerialNumbers == true){

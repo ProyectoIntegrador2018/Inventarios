@@ -58,6 +58,7 @@ return [
             'engine' => null,
         ],
 
+
         // Stock PostgreSQL configuration, erase once it works PostgreSQL on Heroku
         'pgsql' => [
             'driver' => 'pgsql',
@@ -84,6 +85,7 @@ return [
            'schema'   => 'public',
        ],
         */
+
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',

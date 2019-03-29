@@ -43,7 +43,7 @@ class DeviceController extends Controller
         // Creation of the device
 
         $locationExistence = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get();
-        
+
         if($requiredSerialNumbers == "yes"){
             //Do the process like always
             if(count($locationExistence) == 0){
@@ -62,14 +62,14 @@ class DeviceController extends Controller
 
                 $locationID = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get(['id']);
                 $locationID = $locationID[0]->id;
-                
+
                 // Let's check if the quantity variable and the serial numbers array size are the same
                 $serialNumbersSeparated = explode(",", $serialNumbers);
 
                 if($quantity == count($serialNumbersSeparated)){
-                    
+
                     // $response["message"] = "Are the same size";
-                    
+
                     for($x = 0; $x < $quantity; $x++) {
 
                         $temporarySerialNumber = $serialNumbersSeparated[$x];
@@ -100,7 +100,7 @@ class DeviceController extends Controller
                                     'updated_at'         => \Carbon\Carbon::now()
                                 ]
                             );
-                            
+
                             $lastDeviceAddedID = DB::table('devices')->where(
                                 [
                                     ['serial_number', '=', $serialNumbersSeparated[$x]],
@@ -108,7 +108,7 @@ class DeviceController extends Controller
                                 ]
                                 )->get(['id']);
                             $lastDeviceAddedID = $lastDeviceAddedID[0]->id;
-                            
+
                             DB::table('states')->insert(
                                 [
                                     'state'      => 'Available',
@@ -121,7 +121,7 @@ class DeviceController extends Controller
                             $separatedTags = explode(",", $tags);
 
                             for($y = 0; $y < count($separatedTags); $y++){
-                                
+
                                 // Search if the tag actually exists
                                 // If it exists, just get the id to after use it in the relation
                                 // If not exists already, the tag and device_tag instances are going to be created
@@ -131,7 +131,7 @@ class DeviceController extends Controller
                                 $tagExistance = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get();
 
                                 if(count($tagExistance) > 0){
-                                    
+
                                     // The tag already exists, let's get tag id and just create the relation
 
                                     $tagID = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get(['id']);
@@ -145,7 +145,7 @@ class DeviceController extends Controller
                                             'updated_at' => \Carbon\Carbon::now()
                                         ]
                                     );
-                                    
+
                                 }else{
                                     // The tag doesn't exists, let's create both
                                     DB::table('tags')->insert(
@@ -193,22 +193,22 @@ class DeviceController extends Controller
                     $response["message"] = "The quantity value specifies and the serial numbers size provided are not the same amount.";
                     return json_encode($response);
                 }
-                
+
             }else{
-                
+
                 // A location with that building and room already exists
                 // $response["message"] = "The location already exists, nothing more done, just the verification.";
-                
+
                 $locationID = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get(['id']);
                 $locationID = $locationID[0]->id;
-                
+
                 // Let's check if the quantity variable and the serial numbers array size are the same
                 $serialNumbersSeparated = explode(",", $serialNumbers);
 
                 if($quantity == count($serialNumbersSeparated)){
-                    
+
                     // $response["message"] = "Are the same size";
-                    
+
                     for($x = 0; $x < $quantity; $x++) {
 
                         $temporarySerialNumber = $serialNumbersSeparated[$x];
@@ -239,7 +239,7 @@ class DeviceController extends Controller
                                     'updated_at'         => \Carbon\Carbon::now()
                                 ]
                             );
-                            
+
                             $lastDeviceAddedID = DB::table('devices')->where(
                                 [
                                     ['serial_number', '=', $serialNumbersSeparated[$x]],
@@ -247,7 +247,7 @@ class DeviceController extends Controller
                                 ]
                                 )->get(['id']);
                             $lastDeviceAddedID = $lastDeviceAddedID[0]->id;
-                            
+
                             DB::table('states')->insert(
                                 [
                                     'state'      => 'Available',
@@ -260,7 +260,7 @@ class DeviceController extends Controller
                             $separatedTags = explode(",", $tags);
 
                             for($y = 0; $y < count($separatedTags); $y++){
-                                
+
                                 // Search if the tag actually exists
                                 // If it exists, just get the id to after use it in the relation
                                 // If not exists already, the tag and device_tag instances are going to be created
@@ -268,7 +268,7 @@ class DeviceController extends Controller
                                 $tagExistance = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get();
 
                                 if(count($tagExistance) > 0){
-                                    
+
                                     // The tag already exists, let's get tag id and just create the relation
 
                                     $tagID = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get(['id']);
@@ -282,7 +282,7 @@ class DeviceController extends Controller
                                             'updated_at' => \Carbon\Carbon::now()
                                         ]
                                     );
-                                    
+
                                 }else{
                                     // The tag doesn't exists, let's create both
                                     DB::table('tags')->insert(
@@ -315,13 +315,13 @@ class DeviceController extends Controller
                     }else{
                         $response["status"] = 1;
                     }
-                    
+
                     if($finalMessage != ""){
                         $response["messsage"] = $finalMessage;
                     }else{
                         $response["messsage"] = "Location, Devices, States, Tags and Device-Tag instances created.";
                     }
-                    
+
                     return json_encode($response);
 
                 }else{
@@ -350,13 +350,13 @@ class DeviceController extends Controller
 
                 $locationID = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get(['id']);
                 $locationID = $locationID[0]->id;
-                
+
                 // $response["message"] = "Are the same size";
 
                 for($x = 0; $x < $quantity; $x++) {
 
 
-                    
+
                         // The device does not exist, it will be created
                         DB::table('devices')->insert(
                             [
@@ -438,7 +438,7 @@ class DeviceController extends Controller
                                 );
                             }
                         }
-                    
+
 
                 }
 
@@ -455,20 +455,20 @@ class DeviceController extends Controller
                 }
 
                 return json_encode($response);
-                
+
             }else{
-                
+
                 // A location with that building and room already exists
                 // $response["message"] = "The location already exists, nothing more done, just the verification.";
-                
+
                 $locationID = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get(['id']);
                 $locationID = $locationID[0]->id;
-                
+
                 // Let's check if the quantity variable and the serial numbers array size are the same
                 // $serialNumbersSeparated = explode(",", $serialNumbers);
 
-                
-                    
+
+
                 // $response["message"] = "Are the same size";
 
                 for($x = 0; $x < $quantity; $x++) {
@@ -477,7 +477,7 @@ class DeviceController extends Controller
                         DB::table('devices')->insert(
                             [
                                 'name'               => $name,
-                                'serial_number'      => $temporarySerialNumber,
+                                'serial_number'      => "",
                                 'brand'              => $brand,
                                 'model'              => $model,
                                 'added_to_warehouse' => \Carbon\Carbon::now(),
@@ -553,7 +553,7 @@ class DeviceController extends Controller
                                 );
                             }
                         }
-                    
+
 
                 }
 
@@ -574,7 +574,7 @@ class DeviceController extends Controller
             }
         }
 
-        
+
 
         // $response["status"] = 1;
         // $response["message"] = "Location created in this case.";

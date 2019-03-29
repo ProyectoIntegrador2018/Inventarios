@@ -6,7 +6,7 @@
   <main role="main" class="container bg-white">
   <br>
     <div class="content">
-      <div class="col">
+      <div class="col p-5">
         <h1 class="text-center">Inventario de dispositivos</h1>
       </div>
       <div class="col">
@@ -20,7 +20,9 @@
               <div class="card-body">
                 <h5 class="card-title">Sin dispositivos</h5>
                 <p class="card-text">No hay ningún dispositivo registrado en los almacénes</p>
+                @auth
                 <a href="{{url('/deviceCreation')}}" class="btn btn-primary">Dar de alta un dispositivo</a>
+                @endauth
               </div>
             </div>
           @endif
@@ -28,18 +30,20 @@
             @if(($i % 4) == 1)
               <div class="card-deck">
             @endif
-            <div class="col-md-3">
+            <div class="col-md-5 col-lg-4">
             <div class="card">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{$devices[$i-1]->name}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{$devices[$i-1]->brand}}</h6>
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content</p>
                 <div class="row mt-auto">
+                  @auth
                   <div class="col">
-                    <a href="{{url('/deviceDetails/'.$devices[$i-1]->model)}}" class="card-link float-left">Detalles</a>
+                    <a href="{{url('/deviceDetails/'.$devices[$i-1]->model)}}" class="card-link">Detalles</a>
                   </div>
+                  @endauth
                   <div class="col">
-                    <a href="{{url('/requestLoan/'.$devices[$i-1]->model)}}" class="card-link float-right">Apartar</a>
+                    <a href="{{url('/requestLoan/'.$devices[$i-1]->model)}}" class="card-link">Apartar</a>
                   </div>
                 </div>
               </div>
