@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 use App\Device;
@@ -35,8 +36,25 @@ class HomeController extends Controller
         return view('device-creation');
     }
 
+    public function exportCSV(){
+        return view('export-csv');
+    }
+
     public function inventory(){
 
+        $id = Auth::user()->id;
+        
+        $devices = DB::select("
+            SELECT COUNT(d.id) as quantity, d.name, d.brand, d.model, l.building, l.room, u.id
+            FROM states s
+            JOIN devices d ON s.device_id = d.id
+            JOIN locations l ON l.id = d.location_id
+            JOIN users u ON u.id = l.user_id
+            WHERE s.state = 'Available' AND u.id = '$id'
+            GROUP BY d.name, d.brand, d.model, l.building, l.room, u.id;
+        ");
+
+        /*
         $devices = DB::select("
             SELECT COUNT(d.id) as quantity, d.name, d.brand, d.model
             FROM devices d JOIN states s
@@ -44,6 +62,7 @@ class HomeController extends Controller
             WHERE s.state = 'Available'
             GROUP BY d.name, d.brand, d.model
         ");
+        */
 
         $quantity = count($devices);
 
@@ -147,7 +166,7 @@ class HomeController extends Controller
     }
 
     public function getAllLoans() {
-
+        
         $loans = DB::select("
         SELECT loans.id, loans.status, responsables.name AS responsableName, applicants.name AS solicitantName, devices.name AS deviceName, COUNT(devices.id) AS deviceQuantity
         FROM responsables

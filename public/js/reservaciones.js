@@ -233,8 +233,11 @@ function validateFields() {
       data: data,
       dataType: 'json',
       success: function (jsonReceived) {
-
+        // location.reload();
         // console.log(jsonReceived);
+
+        $("#exampleModalCenter").modal('show');
+
         if(jsonReceived.status == 1){
 
           // Para el sprint dos, que los mensajes de error que se devuelven del Back-End se pongan en el mensaje de alerta
@@ -280,4 +283,9 @@ function checkEmpty(htmlInput) {
   } else  {
     htmlInput.removeClass("is-invalid");
   }
+}
+
+function afterLoanCreated() {
+
+  document.location.href="/inventory";
 }

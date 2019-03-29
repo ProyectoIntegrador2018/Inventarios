@@ -55,14 +55,14 @@
             <h4 class="card-title">Identificadores</h4>
             <label for="address">No. de Serie</label>
             <div class="col">
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="chb_requiereSerie">
-                <label class="custom-control-label" for="same-address">Se requiere un número de serie</label>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1">Se requiere un número de serie</label>
               </div>
               <br>
             </div>
             <div class="mb-3">
-              <input type="text" class="form-control" id="txb_noSeries" placeholder="No. de Serie" required="">
+              <input type="text" class="form-control" id="txb_noSeries" placeholder="No. de Serie" required="" style="display:none">
               <div class="serial-number-invalid-feedback" style="display:none;color:red;">Por favor, ingrese un número de serie.</div>
             </div>
           </div>
@@ -186,6 +186,19 @@
           $("#txb_modelo").autocomplete({ source: dataReceived });
         }
       });
+    
+    var requiredSerialNumbers = false;
+
+    $('#exampleCheck1').change(function() {
+        if(this.checked) {
+          requiredSerialNumbers = true;
+          console.log("Se requieren números de serie");
+          $("#txb_noSeries").show();
+        }else{
+          requiredSerialNumbers = false;
+          console.log("No se requieren números de serie");
+          $("#txb_noSeries").hide();
+        }
     });
 
     var allowPost = false;
@@ -214,6 +227,8 @@
       var room           = $('#txb_salon').val();
       var tags           = $('#txa_etiquetas').val();
 
+      tags = tags.replace(/\s/g,'');
+
       if(name != ""){
         $('.device-invalid-feedback').hide();
       }else{
@@ -238,16 +253,28 @@
         $('.quantity-invalid-feedback').show();
       }
 
+      
       if(serial_numbers != ""){
-        $('.serial-number-invalid-feedback').hide();
+        if(requiredSerialNumbers == false){
+          $('.serial-number-invalid-feedback').hide();
+        }else{
+          $('.serial-number-invalid-feedback').show();
+        }
       }else{
-        $('.serial-number-invalid-feedback').show();
+        if(requiredSerialNumbers == true){
+          $('.serial-number-invalid-feedback').show();
+        }else{
+          $('.serial-number-invalid-feedback').hide();
+        }
       }
+      
 
       if(parseInt(quantity) == (parseInt((serial_numbers.match(/,/g) || []).length) + 1)){
         // Falta hacer esta parte
       }else{
-        alert("La cantidad de dispositivos y números de serie no es la misma.")
+        if(requiredSerialNumbers == true){
+          alert("La cantidad de dispositivos y números de serie no es la misma.")
+        }
       }
 
       if(building != "Elija uno"){
@@ -278,7 +305,28 @@
         // One or more of the conditions are false
       }
 
+      if(
+        (requiredSerialNumbers == false) &&
+        (name != "") &&
+        (brand != "") &&
+        (model != "") &&
+        (quantity != "") &&
+        (building != "Elija uno") &&
+        (room != "")
+      ){
+        // Allowed because the serial numbers are not required
+        allowPost = true;
+      }else{
+        console.log("De todos modos no se pudo");
+      }
+
       if(allowPost == true){
+        
+        var requiredSerialNumbersInString = "no";
+
+        if(requiredSerialNumbers == true){
+          requiredSerialNumbersInString = "yes";
+        }
 
         var data = {
           _token         : '{{csrf_token()}}',
@@ -289,7 +337,8 @@
           serial_numbers : serial_numbers,
           building       : building,
           room           : room,
-          tags           : tags
+          tags           : tags,
+          requiredSN     : requiredSerialNumbersInString
         };
 
         $.ajax({
@@ -322,6 +371,7 @@
         });
       }else{
         // The post function could not be triggered
+        console.log("The post function could not be triggered");
       }
 
     });

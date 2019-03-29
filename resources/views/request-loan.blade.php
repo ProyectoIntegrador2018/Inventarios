@@ -168,4 +168,32 @@
           <!-- </div> -->
         <br>
         </main>
+
+        <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+          Launch demo modal
+        </button> -->
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Préstamo creado correctamente.</h5>
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button> -->
+              </div>
+              <div class="modal-body">
+                Ya lo puedes visualizar en la sección de préstamos.
+              </div>
+              <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                <button onclick="afterLoanCreated()" type="button" class="btn btn-primary">Continuar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </body>
+</html>
 @endsection

@@ -33,6 +33,8 @@ class DeviceController extends Controller
         $building = $request->input('building');
         $room = $request->input('room');
 
+        $requiredSerialNumbers = $request->input('requiredSN');
+
         $id = Auth::user()->id;
 
         // Create location if does not exists previously
@@ -41,53 +43,325 @@ class DeviceController extends Controller
         // Creation of the device
 
         $locationExistence = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get();
+        
+        if($requiredSerialNumbers == "yes"){
+            //Do the process like always
+            if(count($locationExistence) == 0){
 
-        if(count($locationExistence) == 0){
+                // That location does not exist yet, let's create it
 
-            // That location does not exist yet, let's create it
+                DB::table('locations')->insert(
+                    [
+                        'building'   => $building,
+                        'room'       => $room,
+                        'user_id'    => $id,
+                        'created_at' => \Carbon\Carbon::now(),
+                        'updated_at' => \Carbon\Carbon::now()
+                    ]
+                );
 
-            DB::table('locations')->insert(
-                [
-                    'building'   => $building,
-                    'room'       => $room,
-                    'user_id'    => $id,
-                    'created_at' => \Carbon\Carbon::now(),
-                    'updated_at' => \Carbon\Carbon::now()
-                ]
-            );
+                $locationID = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get(['id']);
+                $locationID = $locationID[0]->id;
+                
+                // Let's check if the quantity variable and the serial numbers array size are the same
+                $serialNumbersSeparated = explode(",", $serialNumbers);
 
-            $locationID = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get(['id']);
-            $locationID = $locationID[0]->id;
+                if($quantity == count($serialNumbersSeparated)){
+                    
+                    // $response["message"] = "Are the same size";
+                    
+                    for($x = 0; $x < $quantity; $x++) {
 
-            // Let's check if the quantity variable and the serial numbers array size are the same
-            $serialNumbersSeparated = explode(",", $serialNumbers);
+                        $temporarySerialNumber = $serialNumbersSeparated[$x];
 
-            if($quantity == count($serialNumbersSeparated)){
+                        // Let's check if the serial number exists in the brand already
+                        $serialNumberExistance = DB::table('devices')->where([
+                            ['serial_number', '=', $temporarySerialNumber],
+                            ['model', '=', $model]
+                        ])->get();
 
+                        if(count($serialNumberExistance) > 0){
+                            // The device already exists in the database, the aggregate will be skipped
+                            // At the moment, where are not returning this situation
+                            $finalMessage = "The device already exists.";
+                            $finalStatus = 2;
+                            continue;
+                        }else{
+                            // The device does not exist, it will be created
+                            DB::table('devices')->insert(
+                                [
+                                    'name'               => $name,
+                                    'serial_number'      => $temporarySerialNumber,
+                                    'brand'              => $brand,
+                                    'model'              => $model,
+                                    'added_to_warehouse' => \Carbon\Carbon::now(),
+                                    'location_id'        => $locationID,
+                                    'created_at'         => \Carbon\Carbon::now(),
+                                    'updated_at'         => \Carbon\Carbon::now()
+                                ]
+                            );
+                            
+                            $lastDeviceAddedID = DB::table('devices')->where(
+                                [
+                                    ['serial_number', '=', $serialNumbersSeparated[$x]],
+                                    ['model', '=', $model]
+                                ]
+                                )->get(['id']);
+                            $lastDeviceAddedID = $lastDeviceAddedID[0]->id;
+                            
+                            DB::table('states')->insert(
+                                [
+                                    'state'      => 'Available',
+                                    'device_id'  => $lastDeviceAddedID,
+                                    'created_at' => \Carbon\Carbon::now(),
+                                    'updated_at' => \Carbon\Carbon::now()
+                                ]
+                            );
+
+                            $separatedTags = explode(",", $tags);
+
+                            for($y = 0; $y < count($separatedTags); $y++){
+                                
+                                // Search if the tag actually exists
+                                // If it exists, just get the id to after use it in the relation
+                                // If not exists already, the tag and device_tag instances are going to be created
+
+                                // strtolower($str);
+
+                                $tagExistance = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get();
+
+                                if(count($tagExistance) > 0){
+                                    
+                                    // The tag already exists, let's get tag id and just create the relation
+
+                                    $tagID = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get(['id']);
+                                    $tagID = $tagID[0]->id;
+
+                                    DB::table('device_tag')->insert(
+                                        [
+                                            'tag_id' => $tagID,
+                                            'device_id' => $lastDeviceAddedID,
+                                            'created_at' => \Carbon\Carbon::now(),
+                                            'updated_at' => \Carbon\Carbon::now()
+                                        ]
+                                    );
+                                    
+                                }else{
+                                    // The tag doesn't exists, let's create both
+                                    DB::table('tags')->insert(
+                                        [
+                                            //'tag' => $separatedTags[$y],
+                                            'tag' => strtolower($separatedTags[$y]),
+                                            'created_at' => \Carbon\Carbon::now(),
+                                            'updated_at' => \Carbon\Carbon::now()
+                                        ]
+                                    );
+
+                                    $lastTagAddedID = DB::table('tags')->orderBy('id', 'desc')->first();
+
+                                    DB::table('device_tag')->insert(
+                                        [
+                                            'tag_id' => $lastTagAddedID->id,
+                                            'device_id' => $lastDeviceAddedID,
+                                            'created_at' => \Carbon\Carbon::now(),
+                                            'updated_at' => \Carbon\Carbon::now()
+                                        ]
+                                    );
+                                }
+                            }
+                        }
+
+                    }
+
+                    if($finalStatus == 2){
+                        $response["status"] = 2;
+                    }else{
+                        $response["status"] = 1;
+                    }
+
+                    if($finalMessage != ""){
+                        $response["messsage"] = $finalMessage;
+                    }else{
+                        $response["messsage"] = "Location, Devices, States, Tags and Device-Tag instances created.";
+                    }
+
+                    return json_encode($response);
+
+                }else{
+                    //Return the valid reponse code to indicate the following situation
+                    $response["status"] = 2;
+                    $response["message"] = "The quantity value specifies and the serial numbers size provided are not the same amount.";
+                    return json_encode($response);
+                }
+                
+            }else{
+                
+                // A location with that building and room already exists
+                // $response["message"] = "The location already exists, nothing more done, just the verification.";
+                
+                $locationID = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get(['id']);
+                $locationID = $locationID[0]->id;
+                
+                // Let's check if the quantity variable and the serial numbers array size are the same
+                $serialNumbersSeparated = explode(",", $serialNumbers);
+
+                if($quantity == count($serialNumbersSeparated)){
+                    
+                    // $response["message"] = "Are the same size";
+                    
+                    for($x = 0; $x < $quantity; $x++) {
+
+                        $temporarySerialNumber = $serialNumbersSeparated[$x];
+
+                        // Let's check if the serial number exists in the brand already
+                        $serialNumberExistance = DB::table('devices')->where([
+                            ['serial_number', '=', $temporarySerialNumber],
+                            ['model', '=', $model]
+                        ])->get();
+
+                        if(count($serialNumberExistance) > 0){
+                            // The device already exists in the database, the aggregate will be skipped
+                            // At the moment, where are not returning this situation
+                            $finalMessage = "The device already exists.";
+                            $finalStatus = 2;
+                            continue;
+                        }else{
+                            // The device does not exist, it will be created
+                            DB::table('devices')->insert(
+                                [
+                                    'name'               => $name,
+                                    'serial_number'      => $temporarySerialNumber,
+                                    'brand'              => $brand,
+                                    'model'              => $model,
+                                    'added_to_warehouse' => \Carbon\Carbon::now(),
+                                    'location_id'        => $locationID,
+                                    'created_at'         => \Carbon\Carbon::now(),
+                                    'updated_at'         => \Carbon\Carbon::now()
+                                ]
+                            );
+                            
+                            $lastDeviceAddedID = DB::table('devices')->where(
+                                [
+                                    ['serial_number', '=', $serialNumbersSeparated[$x]],
+                                    ['model', '=', $model]
+                                ]
+                                )->get(['id']);
+                            $lastDeviceAddedID = $lastDeviceAddedID[0]->id;
+                            
+                            DB::table('states')->insert(
+                                [
+                                    'state'      => 'Available',
+                                    'device_id'  => $lastDeviceAddedID,
+                                    'created_at' => \Carbon\Carbon::now(),
+                                    'updated_at' => \Carbon\Carbon::now()
+                                ]
+                            );
+
+                            $separatedTags = explode(",", $tags);
+
+                            for($y = 0; $y < count($separatedTags); $y++){
+                                
+                                // Search if the tag actually exists
+                                // If it exists, just get the id to after use it in the relation
+                                // If not exists already, the tag and device_tag instances are going to be created
+
+                                $tagExistance = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get();
+
+                                if(count($tagExistance) > 0){
+                                    
+                                    // The tag already exists, let's get tag id and just create the relation
+
+                                    $tagID = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get(['id']);
+                                    $tagID = $tagID[0]->id;
+
+                                    DB::table('device_tag')->insert(
+                                        [
+                                            'tag_id' => $tagID,
+                                            'device_id' => $lastDeviceAddedID,
+                                            'created_at' => \Carbon\Carbon::now(),
+                                            'updated_at' => \Carbon\Carbon::now()
+                                        ]
+                                    );
+                                    
+                                }else{
+                                    // The tag doesn't exists, let's create both
+                                    DB::table('tags')->insert(
+                                        [
+                                            //'tag' => $separatedTags[$y],
+                                            'tag' => strtolower($separatedTags[$y]),
+                                            'created_at' => \Carbon\Carbon::now(),
+                                            'updated_at' => \Carbon\Carbon::now()
+                                        ]
+                                    );
+
+                                    $lastTagAddedID = DB::table('tags')->orderBy('id', 'desc')->first();
+
+                                    DB::table('device_tag')->insert(
+                                        [
+                                            'tag_id' => $lastTagAddedID->id,
+                                            'device_id' => $lastDeviceAddedID,
+                                            'created_at' => \Carbon\Carbon::now(),
+                                            'updated_at' => \Carbon\Carbon::now()
+                                        ]
+                                    );
+                                }
+                            }
+                        }
+
+                    }
+
+                    if($finalStatus == 2){
+                        $response["status"] = 2;
+                    }else{
+                        $response["status"] = 1;
+                    }
+                    
+                    if($finalMessage != ""){
+                        $response["messsage"] = $finalMessage;
+                    }else{
+                        $response["messsage"] = "Location, Devices, States, Tags and Device-Tag instances created.";
+                    }
+                    
+                    return json_encode($response);
+
+                }else{
+                    //Return the valid reponse code to indicate the following situation
+                    $response["status"] = 2;
+                    $response["message"] = "The quantity value specifies and the serial numbers size provided are not the same amount.";
+                    return json_encode($response);
+                }
+
+            }
+        }else{
+            //Do the process without serial numbers
+            if(count($locationExistence) == 0){
+
+                // That location does not exist yet, let's create it
+
+                DB::table('locations')->insert(
+                    [
+                        'building'   => $building,
+                        'room'       => $room,
+                        'user_id'    => $id,
+                        'created_at' => \Carbon\Carbon::now(),
+                        'updated_at' => \Carbon\Carbon::now()
+                    ]
+                );
+
+                $locationID = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get(['id']);
+                $locationID = $locationID[0]->id;
+                
                 // $response["message"] = "Are the same size";
 
                 for($x = 0; $x < $quantity; $x++) {
 
-                    $temporarySerialNumber = $serialNumbersSeparated[$x];
 
-                    // Let's check if the serial number exists in the brand already
-                    $serialNumberExistance = DB::table('devices')->where([
-                        ['serial_number', '=', $temporarySerialNumber],
-                        ['model', '=', $model]
-                    ])->get();
-
-                    if(count($serialNumberExistance) > 0){
-                        // The device already exists in the database, the aggregate will be skipped
-                        // At the moment, where are not returning this situation
-                        $finalMessage = "The device already exists.";
-                        $finalStatus = 2;
-                        continue;
-                    }else{
+                    
                         // The device does not exist, it will be created
                         DB::table('devices')->insert(
                             [
                                 'name'               => $name,
-                                'serial_number'      => $temporarySerialNumber,
+                                'serial_number'      => "",
                                 'brand'              => $brand,
                                 'model'              => $model,
                                 'added_to_warehouse' => \Carbon\Carbon::now(),
@@ -99,7 +373,6 @@ class DeviceController extends Controller
 
                         $lastDeviceAddedID = DB::table('devices')->where(
                             [
-                                ['serial_number', '=', $serialNumbersSeparated[$x]],
                                 ['model', '=', $model]
                             ]
                             )->get(['id']);
@@ -146,7 +419,8 @@ class DeviceController extends Controller
                                 // The tag doesn't exists, let's create both
                                 DB::table('tags')->insert(
                                     [
-                                        'tag' => $separatedTags[$y],
+                                        //'tag' => $separatedTags[$y],
+                                        'tag' => strtolower($separatedTags[$y]),
                                         'created_at' => \Carbon\Carbon::now(),
                                         'updated_at' => \Carbon\Carbon::now()
                                     ]
@@ -164,7 +438,7 @@ class DeviceController extends Controller
                                 );
                             }
                         }
-                    }
+                    
 
                 }
 
@@ -181,46 +455,24 @@ class DeviceController extends Controller
                 }
 
                 return json_encode($response);
-
+                
             }else{
-                //Return the valid reponse code to indicate the following situation
-                $response["status"] = 2;
-                $response["message"] = "The quantity value specifies and the serial numbers size provided are not the same amount.";
-                return json_encode($response);
-            }
+                
+                // A location with that building and room already exists
+                // $response["message"] = "The location already exists, nothing more done, just the verification.";
+                
+                $locationID = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get(['id']);
+                $locationID = $locationID[0]->id;
+                
+                // Let's check if the quantity variable and the serial numbers array size are the same
+                // $serialNumbersSeparated = explode(",", $serialNumbers);
 
-        }else{
-
-            // A location with that building and room already exists
-            // $response["message"] = "The location already exists, nothing more done, just the verification.";
-
-            $locationID = DB::table('locations')->where([['building', '=', $building],['room', '=', $room]])->get(['id']);
-            $locationID = $locationID[0]->id;
-
-            // Let's check if the quantity variable and the serial numbers array size are the same
-            $serialNumbersSeparated = explode(",", $serialNumbers);
-
-            if($quantity == count($serialNumbersSeparated)){
-
+                
+                    
                 // $response["message"] = "Are the same size";
 
                 for($x = 0; $x < $quantity; $x++) {
 
-                    $temporarySerialNumber = $serialNumbersSeparated[$x];
-
-                    // Let's check if the serial number exists in the brand already
-                    $serialNumberExistance = DB::table('devices')->where([
-                        ['serial_number', '=', $temporarySerialNumber],
-                        ['model', '=', $model]
-                    ])->get();
-
-                    if(count($serialNumberExistance) > 0){
-                        // The device already exists in the database, the aggregate will be skipped
-                        // At the moment, where are not returning this situation
-                        $finalMessage = "The device already exists.";
-                        $finalStatus = 2;
-                        continue;
-                    }else{
                         // The device does not exist, it will be created
                         DB::table('devices')->insert(
                             [
@@ -282,7 +534,8 @@ class DeviceController extends Controller
                                 // The tag doesn't exists, let's create both
                                 DB::table('tags')->insert(
                                     [
-                                        'tag' => $separatedTags[$y],
+                                        //'tag' => $separatedTags[$y],
+                                        'tag' => strtolower($separatedTags[$y]),
                                         'created_at' => \Carbon\Carbon::now(),
                                         'updated_at' => \Carbon\Carbon::now()
                                     ]
@@ -300,7 +553,7 @@ class DeviceController extends Controller
                                 );
                             }
                         }
-                    }
+                    
 
                 }
 
@@ -318,14 +571,10 @@ class DeviceController extends Controller
 
                 return json_encode($response);
 
-            }else{
-                //Return the valid reponse code to indicate the following situation
-                $response["status"] = 2;
-                $response["message"] = "The quantity value specifies and the serial numbers size provided are not the same amount.";
-                return json_encode($response);
             }
-
         }
+
+        
 
         // $response["status"] = 1;
         // $response["message"] = "Location created in this case.";

@@ -12,8 +12,116 @@ use DB;
 
 use Carbon\Carbon;
 
+use App\Exports\LoansExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\Controller;
+
 class LoanController extends Controller
-{
+{   
+    public function cancelLoan(Request $request){
+        
+        $loanID     = $request->input('loanID');
+        $loanStatus = $request->input('loanStatus');
+
+        Loan::where('id', $loanID)->update(['status' => "Cancelled"]);
+
+        $response["status"] = 1;
+        $response["message"] = "Loan successfully cancelled";
+        return json_encode($response);
+    }
+
+    public function changeStatus(Request $request){
+
+        $loanID     = $request->input('loanID');
+        $loanStatus = $request->input('loanStatus');
+
+        /*
+            -> Nueva solicitud
+            <- Apartado
+
+            -> Cancelado
+            <-
+
+            -> Apartado
+            <- Prestado
+
+            -> Prestado
+            <- Recibido
+
+            -> Recibido
+            <-
+
+            -> Recibido tarde
+            <-
+
+            -> Expirado
+            <- Recibido tarde
+
+            -> Unknown status
+            <-
+        */
+
+        /*
+            -> New
+            <- Separated
+
+            -> Cancelled
+            <-
+
+            -> Separated
+            <- Taken
+
+            -> Taken
+            <- Received
+
+            -> Received
+            <-
+
+            -> Received late
+            <-
+
+            -> Expired
+            <- Received late
+
+            -> Unknown status
+            <-
+        */
+        
+        switch ($loanStatus) {
+            case "New":
+                //$loanStatus = "Separated";
+                Loan::where('id', $loanID)->update(['status' => "Separated"]);
+                break;
+            case "Cancelled":
+                break;
+            case "Separated":
+                // $loanStatus = "Taken";
+                Loan::where('id', $loanID)->update(['status' => "Taken"]);
+                break;
+            case "Taken":
+                // $loanStatus = "Received";
+                Loan::where('id', $loanID)->update(['status' => "Received"]);
+                break;
+            case "Received":
+                break;
+            case "Received late":
+                break;
+            case "Expired":
+                // $loanStatus = "Received late";
+                Loan::where('id', $loanID)->update(['status' => "Received late"]);
+                break;
+            case "Unknown status":
+                break;
+        }
+
+        $response["status"] = 1;
+        
+        $response["message"] = "Loan status successfully updated";
+
+        return json_encode($response);
+
+    }
+
     public function createLoan(Request $request){
 
         $model            = $request->input('model');
@@ -183,5 +291,11 @@ class LoanController extends Controller
         $response["status"] = 3;
         $response["message"] = "Nothing is happening";
         return json_encode($response);
+    }
+
+    public function exportLoans(Request $request){
+        
+        return Excel::download(new LoansExport, 'users.xlsx');
+        
     }
 }

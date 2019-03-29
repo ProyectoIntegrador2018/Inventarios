@@ -20,6 +20,7 @@
                     <a href="{{url('/deviceCreation')}}">Alta de Dispositivos</a>
                     <hr><a href="{{url('/inventory')}}">Inventario de Dispositivos</a>
                     <hr><a href="{{url('/loansList')}}">Lista de Préstamos</a>
+                    <hr><a href="{{url('/exportCSV')}}">Generación de Reportes</a>
                     
                 </div>
             </div>

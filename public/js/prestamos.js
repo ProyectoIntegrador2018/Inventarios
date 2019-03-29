@@ -38,10 +38,13 @@ $(document).ready(function() {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
       });
   });
+  
+  /*
+  $(".btn_detalles").on('click', loanDetails);
+  $(".btn_siguiente").on('click', loanChangeStatus);
+  $(".btn_cancelar").on('click', loanCancel);
+  */
 
-  $(".btn_detalles").on("click", loanDetails);
-  $(".btn_siguiente").on("click", loanChangeStatus);
-  $(".btn_cancelar").on("click", loanCancel);
 });
 
 function loanDetails() {
@@ -65,62 +68,74 @@ function loanDetails() {
                       };
 
   var loanID = $(this).parent().parent().parent().attr('id')
+  
   console.log(loanID);
 
   // Search on DB for the full details of a device with the given id
   // ...
 
-    // Fill in the modal with the rest of the details
-    solicitant.id.text("A01234567");
-    solicitant.name.text("JUAN PEREZ");
-    solicitant.degree.text("ABC");
-    solicitant.email.text("A01234567@itesm.mx");
+  // Fill in the modal with the rest of the details
+  solicitant.id.text("A01234567");
+  solicitant.name.text("JUAN PEREZ");
+  solicitant.degree.text("ABC");
+  solicitant.email.text("A01234567@itesm.mx");
 
-    responsable.name.text("PROFESOR X");
-    responsable.email.text("x.profesor@itesm.mx");
+  responsable.name.text("PROFESOR X");
+  responsable.email.text("x.profesor@itesm.mx");
 
-    var dbQuerySerials = ["ABC12-DEF34-GHI56", "JKL12-MNO34-PQR56", "STU12-VWX34-YZZ56"];
-    var dbQueryStatus = "Nueva solicitud";
-    var dbQueryQuantity = 1;
+  var dbQuerySerials = ["ABC12-DEF34-GHI56", "JKL12-MNO34-PQR56", "STU12-VWX34-YZZ56"];
+  var dbQueryStatus = "Nueva solicitud";
+  var dbQueryQuantity = 1;
 
-    device.name.text("DISPOSITIVO BLABLABLA");
-    setStatus(dbQueryStatus, device.status);
-    device.quantity.text("Cantidad pedidos: " + dbQueryQuantity);
-    setSerialNumbers(dbQuerySerials, device.serial);
-    device.start.text("01/15/2019");
-    device.end.text("01/18/2019");
-    device.purpose.text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque congue euismod maximus. Proin nec augue non lectus vehicula faucibus. Fusce iaculis congue dui vel commodo. In vitae leo arcu. Nullam neque turpis, consectetur quis tristique at, aliquet sed neque.");
-    // If fail, show error
+  device.name.text("DISPOSITIVO BLABLABLA");
+  setStatus(dbQueryStatus, device.status);
+  device.quantity.text("Cantidad pedidos: " + dbQueryQuantity);
+  setSerialNumbers(dbQuerySerials, device.serial);
+  device.start.text("01/15/2019");
+  device.end.text("01/18/2019");
+  device.purpose.text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque congue euismod maximus. Proin nec augue non lectus vehicula faucibus. Fusce iaculis congue dui vel commodo. In vitae leo arcu. Nullam neque turpis, consectetur quis tristique at, aliquet sed neque.");
+  // If fail, show error
 }
 
-function loanChangeStatus() {
-  // Get the loan ID to make the query
-  var loanID = $(this).parent().parent().parent().attr('id');
+function loanCancel (loanID, loanStatus) {
 
-  // Get the current status
-  var currentStatus = $(this).parent().parent().parent().find(".badge-pill");
-  currentStatus = currentStatus.html()
-
-  // Get the next status
-  var nextStatus = getNextStatus(currentStatus);
-
-  // Make call to DB and update loan with 'nextStatus' and 'loanID'
-  console.log(nextStatus);
-}
-
-function loanCancel () {
   console.log("CANCELAR");
   // Get the loan ID to make the query
-  var loanID = $(this).parent().parent().parent().attr('id');
+  // var loanID = $(this).parent().parent().parent().attr('id');
 
   // Set the state to cancelled
-  var currentStatus = 'Cancelado';
+  // var currentStatus = 'Cancelado';
   
   // Make call to DB and update loan with 'nextStatus' and 'loanID'
+  var data = {
+    _token     : $('meta[name="csrf-token"]').attr('content'),
+    loanID     : loanID,
+    loanStatus : loanStatus
+  };
+
+  console.log(data);
+  
+  $.ajax({
+    url : '/cancelLoan',
+    type : 'POST',
+    data: data,
+    dataType: 'json',
+    success: function (jsonReceived) {
+
+      console.log(jsonReceived);
+      if(jsonReceived.status == 1){
+        console.log("Se canceló el préstamo");
+        location.reload();
+      }else{
+        console.log("No se canceló el préstamo");
+      }
+    }
+
+  });
 }
 
 function fillLoanTable(dbQueryLoans) {
-  // console.log(dbQueryLoans);
+  console.log(dbQueryLoans);
   // Variable declaration
   var table = $("#tbl_prestamos");
 
@@ -248,7 +263,7 @@ function insertLoan(loan) {
   data += "<td>" + loan.devicename + "</td>";
   data += "<td>" + loan.devicequantity + "</td>";
   data += getHTMLstatusBadge(loan.status);
-  data += getHTMLtoolButtons(loan.status);
+  data += getHTMLtoolButtons(loan.status, loan.id, loan.status);
 
   return row + data + "</tr>"
 }
@@ -295,11 +310,53 @@ function statesTraductor(stateInEnglish){
   return stateInSpanish;
 }
 
+function statesTraductorToEnglish(stateInSpanish){
+
+  var stateInEnglish = '';
+
+  switch (stateInSpanish) {
+
+    case 'Nueva solicitud':
+      stateInEnglish = "New";
+      break;
+
+    case 'Cancelado':
+      stateInEnglish = "Cancelled";
+      break;
+
+    case 'Apartado':
+      stateInEnglish = "Separated";
+      break;
+
+    case 'Prestado':
+      stateInEnglish = "Taken";
+      break;
+
+    case 'Recibido':
+      stateInEnglish = "Received";
+      break;
+
+    case 'Recibido tarde':
+      stateInEnglish = "Received late";
+      break;
+
+    case 'Expirado':
+      stateInEnglish = "Expired";
+      break;
+
+    default:
+      stateInEnglish = "Unknown status";
+      break;
+  }
+
+  return stateInEnglish;
+}
+
 function getHTMLstatusBadge(status) {
   var html = "<td><div class=\"badge-lg badge-pill ";
   var badgeClass = "";
 
-  status = statesTraductor(status);
+  status = statesTraductor(status); 
 
   switch (status) {
     case 'Nueva solicitud':
@@ -340,7 +397,10 @@ function getHTMLstatusBadge(status) {
   return html
 }
 
-function getHTMLtoolButtons(status) {
+function getHTMLtoolButtons(status, loanID, loanStatus) {
+
+  status = statesTraductor(status);
+
   var html = "";
   var buttonNext = "";
   var buttonCancel = "";
@@ -349,11 +409,13 @@ function getHTMLtoolButtons(status) {
   buttonNext  = "<button";
   buttonNext += " type=\"button\""
   buttonNext += " class=\"btn btn-secondary w-100 border-white rounded-0 btn_siguiente\""
+  buttonNext += " onclick=\"loanChangeStatus(" + loanID + "," + "\'" + loanStatus + "\'" + ")\""
   buttonNext += " role=\"button\">";
 
   buttonCancel  = "<button";
   buttonCancel += " type=\"button\""
   buttonCancel += " class=\"btn btn-secondary w-100 border-white rounded-0 btn_cancelar\""
+  buttonCancel += " onclick=\"loanCancel(" + loanID + "," + "\'" + loanStatus + "\'" +")\""
   buttonCancel += " role=\"button\">";
 
   buttonDetails  = "<button";
@@ -405,6 +467,7 @@ function getHTMLtoolButtons(status) {
 }
 
 function getNextStatus(current) {
+
   switch (current) {
     case 'Nueva solicitud':
       return 'Apartado';
@@ -435,4 +498,58 @@ function getNextStatus(current) {
       return 'Unknown status';
       break;
   }
+  
+}
+
+function loanChangeStatus(loanID, loanStatus) {
+  
+  console.log("CAMBIAR STATUS")
+  
+  // Get the loan ID to make the query
+  // var loanID = $(this).parent().parent().parent().attr('id');
+
+  console.log("-> " + loanID);
+  
+  // Get the current status
+  // var currentStatus = $(this).parent().parent().parent().find(".badge-pill");
+  // currentStatus = currentStatus.html();
+  console.log("-> " + loanStatus);
+  
+  // Get the next status
+  var nextStatus = getNextStatus(statesTraductor(loanStatus));
+
+  nextStatus = statesTraductorToEnglish(nextStatus);
+
+  // Make call to DB and update loan with 'nextStatus' and 'loanID'
+  console.log(nextStatus);
+  
+  var data = {
+    _token     : $('meta[name="csrf-token"]').attr('content'),
+    loanID     : loanID,
+    loanStatus : loanStatus
+  };
+
+  console.log(data);
+
+  
+  $.ajax({
+    url : '/changeStatus',
+    type : 'POST',
+    data: data,
+    dataType: 'json',
+    success: function (jsonReceived) {
+
+      console.log(jsonReceived);
+      if(jsonReceived.status == 1){
+        console.log("Se actualizó el estado del préstamo");
+        location.reload();
+      }else{
+        console.log("No se actualizó el estado del préstamo");
+      }
+    }
+
+  });
+  
+  console.log("----------");
+  
 }
