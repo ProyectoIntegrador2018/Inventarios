@@ -7,7 +7,7 @@ Aplicación web para llevar el control del inventario de dispositivos del depart
 * [Detalles del cliente](#detalles-del-cliente)
 * [URLS del ambiente](#urls-del-ambiente)
 * [Equipo](#equipo)
-* [Stack Tecnológico] (#stack-tecnológico)
+* [Stack Tecnológico](#stack-tecnológico)
 * [Herramientas administrativas](#herramientas-administrativas)
 * [Configurar el proyecto](#configurar-el-proyecto)
 * [Correr el stack para desarrollo](#correr-el-stack-para-desarrollo)
