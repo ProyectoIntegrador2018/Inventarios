@@ -7,6 +7,7 @@ Aplicación web para llevar el control del inventario de dispositivos del depart
 * [Detalles del cliente](#detalles-del-cliente)
 * [URLS del ambiente](#urls-del-ambiente)
 * [Equipo](#equipo)
+* [Stack Tecnológico] (#Stack Tecnológico)
 * [Herramientas administrativas](#herramientas-administrativas)
 * [Configurar el proyecto](#configurar-el-proyecto)
 * [Correr el stack para desarrollo](#correr-el-stack-para-desarrollo)
@@ -37,6 +38,13 @@ Aplicación web para llevar el control del inventario de dispositivos del depart
 | Abelardo Gonzalez | abelardo_gonzalezg@hotmail.com | Development |
 | Luis Rojo         | luis_alfonso_96@hotmail.com    | Development |
 | Guillermo Mendoza | ams.guillermo@gmail.com        | Development |
+
+### Stack Tecnológico
+
+* PHP - Versión 7.1.23
+* Laravel - Versión 5.7.26
+* PostgreSQL - Versión 11.1
+* Laravel Excel - Versión 3.1 (Utilizando la herramienta de Composer para instalarlo y actualizarlo)
 
 ### Herramientas administrativas
 
