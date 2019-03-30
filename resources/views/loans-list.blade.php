@@ -24,7 +24,7 @@
               <thead>
                 <tr>
                   <th scope="col">Solicitante</th>
-                  <th scope="col">Profesor responsable</th>
+                  <th scope="col">Responsable</th>
                   <th scope="col">Dispositivo</th>
                   <th scope="col">Cantidad</th>
                   <th scope="col">Estatus</th>

@@ -56,7 +56,7 @@
                     </li>
                   @else
                     <li class="nav-item">
-                      <a class="nav-link" href="{{url('/inventory')}}">Ver dispositivos</a>
+                      <a class="nav-link" href="{{url('/inventoryGuest')}}">Dispositivos disponibles</a>
                     </li>
                     <li class="nav-item" id="nav-checkloan">
                       <a class="nav-link" href="{{url('/checkLoan')}}">Mis préstamos</a>

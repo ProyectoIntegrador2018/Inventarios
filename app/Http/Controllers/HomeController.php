@@ -40,34 +40,27 @@ class HomeController extends Controller
         return view('export-csv');
     }
 
+    /*
     public function inventory(){
 
-        $id = Auth::user()->id;
+        // $id = Auth::user()->id;
+        $id = "1";
         
         $devices = DB::select("
             SELECT COUNT(d.id) as quantity, d.name, d.brand, d.model, l.building, l.room, u.id
             FROM states s
-            JOIN devices d ON s.device_id = d.id
+            JOIN devices d ON d.id = s.device_id
             JOIN locations l ON l.id = d.location_id
             JOIN users u ON u.id = l.user_id
             WHERE s.state = 'Available' AND u.id = '$id'
             GROUP BY d.name, d.brand, d.model, l.building, l.room, u.id;
         ");
 
-        /*
-        $devices = DB::select("
-            SELECT COUNT(d.id) as quantity, d.name, d.brand, d.model
-            FROM devices d JOIN states s
-            ON d.id = s.device_id
-            WHERE s.state = 'Available'
-            GROUP BY d.name, d.brand, d.model
-        ");
-        */
-
         $quantity = count($devices);
 
         return view('inventory')->with('devices', $devices)->with('quantity', $quantity);
     }
+    */
 
     public function requestLoan($requestedDevice){
 
@@ -258,15 +251,47 @@ class HomeController extends Controller
     }
 
     public function getAllLoans() {
-        
+        /*
+        txt_solicitante_nombre - LISTO
+        txt_solicitante_degree - LISTO
+        txt_solicitante_email - LISTO
+        txt_solicitante_id - LISTO
+
+        txt_responsable_nombre - LISTO
+        txt_responsable_email - LISTO
+
+        txt_dispositivo_nombre - LISTO
+        bdg_dispositivo_status - LISTO
+        txt_dispositivo_cantidad - LISTO
+        txt_dispositivo_serie - LISTO
+
+        txt_dispositivo_inicio
+        txt_dispositivo_fin
+        txt_dispositivo_motivo
+        */
         $loans = DB::select("
-        SELECT loans.id, loans.status, responsables.name AS responsableName, applicants.name AS solicitantName, devices.name AS deviceName, COUNT(devices.id) AS deviceQuantity
+        SELECT loans.id,
+        loans.status,
+        responsables.name AS responsableName,
+        responsables.email AS responsableEmail,
+        applicants.name AS solicitantName,
+        devices.name AS deviceName,
+        devices.serial_number AS deviceSerialNumber,
+        COUNT(devices.id) AS deviceQuantity,
+        applicants.degree AS solicitantDegree,
+        applicants.email AS solicitantEmail,
+        applicants.applicant_id AS solicitantID,
+        states.state AS deviceState,
+        loans.start_date AS loanStartDate,
+        loans.end_date AS loanEndDate,
+        loans.reason AS loanReason
         FROM responsables
         JOIN applicants ON responsables.applicant_id = applicants.id
         JOIN loans ON applicants.id = loans.applicant_id
         JOIN loan_device ON loans.id = loan_device.loan_id
         JOIN devices ON loan_device.device_id = devices.id
-        GROUP BY responsables.name, applicants.name, loans.id, loans.status, devices.name
+        JOIN states ON devices.id = states.device_id
+        GROUP BY responsables.name, applicants.name, loans.id, loans.status, devices.name, applicants.degree, applicants.email, applicants.applicant_id, responsables.email, devices.serial_number, states.state, loans.start_date, loans.end_date, loans.reason
         ORDER BY loans.id ASC;
         ");
 

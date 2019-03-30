@@ -44,3 +44,4 @@ Route::get('/exportLoans', 'LoanController@exportLoans')->name('exportLoans');
 // Route::get('/about', 'AboutController@about')->name('about');
 Route::get('/', 'AboutController@about')->name('about');
 Route::post('/searchLoan', 'LoanController@searchLoan')->name('loan.search');
+Route::get('/inventoryGuest', 'AboutController@inventory')->name('inventoryGuest');

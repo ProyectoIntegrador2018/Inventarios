@@ -9,7 +9,7 @@
 
   <div class="row flex-center position-ref full-height">
     <div class="col">
-      <h1 class="text-center">Alta de dispositivos</h1>
+      <h1 class="text-center">Alta de Dispositivos</h1>
     </div>
     <div class="container">
       <!-- Formulario -->
@@ -57,12 +57,12 @@
             <div class="col">
               <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Se requiere un número de serie</label>
+                <label class="form-check-label" for="exampleCheck1">Se requiere(n) número(s) de serie</label>
               </div>
               <br>
             </div>
             <div class="mb-3">
-              <input type="text" class="form-control" id="txb_noSeries" placeholder="No. de Serie" required="" style="display:none">
+              <input type="text" class="form-control" id="txb_noSeries" placeholder="Número(s) de Serie" required="" style="display:none">
               <div class="serial-number-invalid-feedback" style="display:none;color:red;">Por favor, ingrese un número de serie.</div>
             </div>
           </div>

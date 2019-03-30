@@ -1,6 +1,6 @@
-$(document).ready(function() {
+var dbQueryLoans = [];
 
-  var dbQueryLoans = [];
+$(document).ready(function() {
 
   $.ajax({
     url : '/getAllLoans',
@@ -46,6 +46,59 @@ $(document).ready(function() {
   */
 
 });
+
+  function loadLoanDetailsInModal(loanID){
+    // alert("HOLA");
+    // alert(loanID);
+    /*
+    txt_solicitante_nombre
+    txt_solicitante_degree
+    txt_solicitante_email
+    txt_solicitante_id
+
+    txt_responsable_nombre
+    txt_responsable_email
+
+    txt_dispositivo_nombre
+    bdg_dispositivo_status
+    txt_dispositivo_cantidad
+    txt_dispositivo_serie
+
+    txt_dispositivo_inicio
+    txt_dispositivo_fin
+    txt_dispositivo_motivo
+    */
+    for(var i = 0; i < dbQueryLoans.length; i++){
+      if(loanID == dbQueryLoans[i].id){
+        console.log(dbQueryLoans[i]);
+        $('#txt_solicitante_nombre').html(dbQueryLoans[i].solicitantname);
+        $('#txt_solicitante_degree').html(dbQueryLoans[i].solicitantdegree);
+        $('#txt_solicitante_email').html(dbQueryLoans[i].solicitantemail);
+        $('#txt_solicitante_id').html(dbQueryLoans[i].solicitantid);
+
+        if(dbQueryLoans[i].responsablename == null){
+          $('#txt_responsable_nombre').html("Sin responsable");
+        }else{
+          $('#txt_responsable_nombre').html(dbQueryLoans[i].responsablename);
+        }
+        
+        if(dbQueryLoans[i].responsableemail == null){
+          $('#txt_responsable_email').html("Sin correo de responsable");
+        }else{
+          $('#txt_responsable_email').html(dbQueryLoans[i].responsableemail);
+        }
+
+        $('#txt_dispositivo_nombre').html(dbQueryLoans[i].devicename);
+        $('#bdg_dispositivo_status').html(dbQueryLoans[i].devicestate);
+        $('#txt_dispositivo_serie').html(dbQueryLoans[i].deviceserialnumber);
+        $('#txt_dispositivo_cantidad').html(dbQueryLoans[i].devicequantity);
+
+        $('#txt_dispositivo_inicio').html(dbQueryLoans[i].loanstartdate);
+        $('#txt_dispositivo_fin').html(dbQueryLoans[i].loanenddate);
+        $('#txt_dispositivo_motivo').html(dbQueryLoans[i].loanreason);
+      }
+    }
+  }
 
 function loanDetails() {
   // Variable declaration
@@ -261,7 +314,12 @@ function insertLoan(loan) {
   var data = "";
 
   data  = "<td>" + loan.solicitantname + "</td>";
-  data += "<td>" + loan.responsablename + "</td>";
+  if(loan.responsablename == null){
+  data += "<td style='color:red;'>" + "Sin responsable" + "</td>";
+  }else{
+    data += "<td>" + loan.responsablename + "</td>";
+  }
+
   data += "<td>" + loan.devicename + "</td>";
   data += "<td>" + loan.devicequantity + "</td>";
   data += getHTMLstatusBadge(loan.status);
@@ -421,6 +479,7 @@ function getHTMLtoolButtons(status, loanID, loanStatus) {
   buttonCancel += " role=\"button\">";
 
   buttonDetails  = "<button";
+  buttonDetails += " onclick=\"loadLoanDetailsInModal(" + loanID + ")\"";
   buttonDetails += " type=\"button\"";
   buttonDetails += " class=\"btn btn-secondary w-100 border-white rounded-0 btn_detalles\"";
   buttonDetails += " role=\"button\"";
