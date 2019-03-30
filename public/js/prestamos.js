@@ -38,7 +38,7 @@ $(document).ready(function() {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
       });
   });
-  
+
   /*
   $(".btn_detalles").on('click', loanDetails);
   $(".btn_siguiente").on('click', loanChangeStatus);
@@ -68,7 +68,7 @@ function loanDetails() {
                       };
 
   var loanID = $(this).parent().parent().parent().attr('id')
-  
+
   console.log(loanID);
 
   // Search on DB for the full details of a device with the given id
@@ -105,7 +105,7 @@ function loanCancel (loanID, loanStatus) {
 
   // Set the state to cancelled
   // var currentStatus = 'Cancelado';
-  
+
   // Make call to DB and update loan with 'nextStatus' and 'loanID'
   var data = {
     _token     : $('meta[name="csrf-token"]').attr('content'),
@@ -113,8 +113,10 @@ function loanCancel (loanID, loanStatus) {
     loanStatus : loanStatus
   };
 
+  console.log(loanStatus);
+
   console.log(data);
-  
+
   $.ajax({
     url : '/cancelLoan',
     type : 'POST',
@@ -140,7 +142,7 @@ function fillLoanTable(dbQueryLoans) {
   var table = $("#tbl_prestamos");
 
   // Fetch from DB all the loans
-  
+
   /*
   var dbQueryLoans = [{ id: "1",
                         solicitantName: "Miguel Angel Banda",
@@ -356,7 +358,7 @@ function getHTMLstatusBadge(status) {
   var html = "<td><div class=\"badge-lg badge-pill ";
   var badgeClass = "";
 
-  status = statesTraductor(status); 
+  status = statesTraductor(status);
 
   switch (status) {
     case 'Nueva solicitud':
@@ -498,23 +500,23 @@ function getNextStatus(current) {
       return 'Unknown status';
       break;
   }
-  
+
 }
 
 function loanChangeStatus(loanID, loanStatus) {
-  
+
   console.log("CAMBIAR STATUS")
-  
+
   // Get the loan ID to make the query
   // var loanID = $(this).parent().parent().parent().attr('id');
 
   console.log("-> " + loanID);
-  
+
   // Get the current status
   // var currentStatus = $(this).parent().parent().parent().find(".badge-pill");
   // currentStatus = currentStatus.html();
   console.log("-> " + loanStatus);
-  
+
   // Get the next status
   var nextStatus = getNextStatus(statesTraductor(loanStatus));
 
@@ -522,7 +524,7 @@ function loanChangeStatus(loanID, loanStatus) {
 
   // Make call to DB and update loan with 'nextStatus' and 'loanID'
   console.log(nextStatus);
-  
+
   var data = {
     _token     : $('meta[name="csrf-token"]').attr('content'),
     loanID     : loanID,
@@ -531,7 +533,7 @@ function loanChangeStatus(loanID, loanStatus) {
 
   console.log(data);
 
-  
+
   $.ajax({
     url : '/changeStatus',
     type : 'POST',
@@ -549,7 +551,7 @@ function loanChangeStatus(loanID, loanStatus) {
     }
 
   });
-  
+
   console.log("----------");
-  
+
 }

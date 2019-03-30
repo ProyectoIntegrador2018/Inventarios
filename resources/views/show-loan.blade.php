@@ -102,6 +102,13 @@
           </div>
         </div>
       </div>
+      <div class="row my-3 justify-content-center">
+        <div class="col-lg-4">
+          <button type="button" id="btn_eliminar" class="btn btn-danger w-100">
+            <i class="fas fa-trash-alt"></i> Cancelar Solicitud
+          </button>
+        </div>
+      </div>
     </div>
   </main>
 @endsection
@@ -110,6 +117,10 @@
   <script type="text/javascript">
     $(document).ready(function(){
       setMessage('EMPTY');
+
+      displayDeleteButton();
+
+      $('#btn_eliminar').on('click', deleteLoanApplication);
 
       $('#txb_search').keyup(function(e){
         if(e.keyCode == 8) {
@@ -121,6 +132,17 @@
           searchLoan()
         }
       })
+
+      function displayDeleteButton() {
+        var status = $('#estatus');
+        var btn_delete = $('#btn_eliminar');
+
+        if(status.text() == 'Cancelado') {
+          btn_delete.parent().parent().hide();
+        } else {
+          btn_delete.parent().parent().show();
+        }
+      }
 
       function searchLoan() {
         var searchBar = $('#txb_search');
@@ -142,6 +164,7 @@
               dataType: 'json',
               success: function (dataReceived) {
                 loadLoanDetails(dataReceived);
+                displayDeleteButton();
               },
               error: function (error) {
                 console.log("CONNECTION ERROR");
@@ -214,7 +237,6 @@
         setMessage(data.status);
 
         if(data.status == "SUCCESS") {
-          console.log(data);
           // If there is no responsable, then the loan belongs to a professor
           if(data.responsable.name == null) {
             formatForProfessor(data);
@@ -255,7 +277,6 @@
       }
 
       function formatForProfessor(data) {
-        console.log("PROFESOR");
         var loan_ID = $('#loan_id');
         var applicant_name = $('#solicitante_nombre');
         var applicant_id = $('#solicitante_id');
@@ -296,7 +317,9 @@
       }
 
       function setStatus(status, htmlTarget) {
-        status = statesTraductor(status);
+        status = translate(status, 'to_ES');
+        htmlTarget.removeClass();
+        htmlTarget.addClass("badge-lg badge-pill badge-primary text-center");
         htmlTarget.text(status);
         switch (status) {
           case 'Nueva solicitud':
@@ -333,46 +356,111 @@
         }
       }
 
-      function statesTraductor(stateInEnglish){
+      function translate(state){
+        var translated = '';
 
-        var stateInSpanish = '';
+        if ('to_EN') {
+          switch (state) {
 
-        switch (stateInEnglish) {
-
-          case 'New':
-            stateInSpanish = "Nueva solicitud";
+            case 'Nueva solicitud':
+            translated = "New";
             break;
 
-          case 'Cancelled':
-            stateInSpanish = "Cancelado";
+            case 'Cancelado':
+            translated = "Cancelled";
             break;
 
-          case 'Separated':
-            stateInSpanish = "Apartado";
+            case 'Apartado':
+            translated = "Separated";
             break;
 
-          case 'Taken':
-            stateInSpanish = "Prestado";
+            case 'Prestado':
+            translated = "Taken";
             break;
 
-          case 'Received':
-            stateInSpanish = "Recibido";
+            case 'Recibido':
+            translated = "Received";
             break;
 
-          case 'Received late':
-            stateInSpanish = "Recibido tarde";
+            case 'Recibido tarde':
+            translated = "Received late";
             break;
 
-          case 'Expired':
-            stateInSpanish = "Expirado";
+            case 'Expirado':
+            translated = "Expired";
             break;
 
-          default:
-            stateInSpanish = "Sin estado";
+            default:
+            translated = "Sin estado";
             break;
+          }
         }
 
-        return stateInSpanish;
+        if ('to_ES') {
+          switch (state) {
+
+            case 'New':
+            translated = "Nueva solicitud";
+            break;
+
+            case 'Cancelled':
+            translated = "Cancelado";
+            break;
+
+            case 'Separated':
+            translated = "Apartado";
+            break;
+
+            case 'Taken':
+            translated = "Prestado";
+            break;
+
+            case 'Received':
+            translated = "Recibido";
+            break;
+
+            case 'Received late':
+            translated = "Recibido tarde";
+            break;
+
+            case 'Expired':
+            translated = "Expirado";
+            break;
+
+            default:
+            translated = "Sin estado";
+            break;
+          }
+        }
+        return translated;
+      }
+
+      function deleteLoanApplication() {
+        var loanID = $('#txb_search').val();
+        var status = $('#estatus').text();
+        status = translate(status, 'to EN');
+
+        var data = {
+          _token     : $('meta[name="csrf-token"]').attr('content'),
+          loanID     : loanID,
+          loanStatus : status
+        };
+
+        $.ajax({
+          url : '/cancelLoan',
+          type : 'POST',
+          data: data,
+          dataType: 'json',
+          success: function (jsonReceived) {
+
+            if(jsonReceived.status == 1){
+              location.reload();
+            }else{
+              console.log("No se canceló el préstamo");
+            }
+          }
+
+        });
       }
 
     });

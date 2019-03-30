@@ -124,35 +124,30 @@
                       </div>
 
                       <hr class="my-4">
-                      <div class="row" id="div_student">
-                        <div class="col-md-4 mt-4">
-                          <label for="firstName">Carrera</label>
-                          <input type="text" class="form-control" id="txb_carrera" placeholder="" value="" required="">
-                          <div class="invalid-feedback">
-                            Por favor escriba las siglas de su carrera
-                          </div>
+                    </div>
+                    <div class="row" id="div_student" style="display: none;">
+                      <div class="col-md-4 mt-4">
+                        <label for="firstName">Carrera</label>
+                        <input type="text" class="form-control" id="txb_carrera" placeholder="" value="" required="">
+                        <div class="invalid-feedback">
+                          Por favor escriba las siglas de su carrera
                         </div>
-                        <div class="col-md-8 mt-4">
-                          <label for="firstName">Nombre de profesor responsable</label>
-                          <input type="text" class="form-control" id="txb_nombreResponsable" placeholder="" value="" required="">
-                          <div class="invalid-feedback">
-                            Por favor escriba el nombre del profesor que será responsable de su préstamo
-                          </div>
+                      </div>
+                      <div class="col-md-8 mt-4">
+                        <label for="firstName">Nombre de profesor responsable</label>
+                        <input type="text" class="form-control" id="txb_nombreResponsable" placeholder="" value="" required="">
+                        <div class="invalid-feedback">
+                          Por favor escriba el nombre del profesor que será responsable de su préstamo
                         </div>
-                        <div class="col-md-12 mt-3">
-                          <label for="firstName">Correo electrónico de profesor responsable</label>
-                          <input type="text" class="form-control" id="txb_emailResponsable" placeholder="" value="" required="">
-                          <div class="invalid-feedback">
-                            Por favor escriba el correo electrónico del profesor responsable de su préstamo
-                          </div>
+                      </div>
+                      <div class="col-md-12 mt-3">
+                        <label for="firstName">Correo electrónico de profesor responsable</label>
+                        <input type="text" class="form-control" id="txb_emailResponsable" placeholder="" value="" required="">
+                        <div class="invalid-feedback">
+                          Por favor escriba el correo electrónico del profesor responsable de su préstamo
                         </div>
                       </div>
                     </div>
-
-                    <script>
-                      $("#div_student").hide();
-                    </script>
-
                   </div>
                 </div>
               </div>
