@@ -52,14 +52,14 @@
                     </li>
                     <!-- Link a Reportes -->
                     <li class="nav-item" id="nav-reports">
-                      <a class="nav-link" href="#">Reportes</a>
+                      <a class="nav-link" href="{{url('exportCSV')}}">Reportes</a>
                     </li>
                   @else
                     <li class="nav-item">
                       <a class="nav-link" href="{{url('/inventory')}}">Ver dispositivos</a>
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">Mis préstamos</a>
+                    <li class="nav-item" id="nav-checkloan">
+                      <a class="nav-link" href="{{url('/checkLoan')}}">Mis préstamos</a>
                     </li>
                   @endauth
                 </ul>

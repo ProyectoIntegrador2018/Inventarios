@@ -17,9 +17,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 
 class LoanController extends Controller
-{   
+{
     public function cancelLoan(Request $request){
-        
+
         $loanID     = $request->input('loanID');
         $loanStatus = $request->input('loanStatus');
 
@@ -86,7 +86,7 @@ class LoanController extends Controller
             -> Unknown status
             <-
         */
-        
+
         switch ($loanStatus) {
             case "New":
                 //$loanStatus = "Separated";
@@ -115,7 +115,7 @@ class LoanController extends Controller
         }
 
         $response["status"] = 1;
-        
+
         $response["message"] = "Loan status successfully updated";
 
         return json_encode($response);
@@ -130,12 +130,12 @@ class LoanController extends Controller
 
         $reason           = $request->input('reason');
         $dates            = $request->input('dates');
-        
+
         $applicant        = $request->input('applicant');
         $applicantID      = $request->input('applicantID');
         $email            = $request->input('email');
         $bachelor         = $request->input('bachelor');
-        
+
         $responsableName  = $request->input('responsableName');
         $responsableEmail = $request->input('responsableEmail');
 
@@ -170,7 +170,7 @@ class LoanController extends Controller
             device_id
         */
 
-        
+
         $modelAvailability = DB::select("
             SELECT COUNT(d.model) as quantity
             FROM devices d JOIN states s
@@ -185,7 +185,7 @@ class LoanController extends Controller
             // There is at least one available
             if($quantity <= $modelAvailability){
                 // There are enough devices to create the loan
-                
+
                 // Applicant creation
                 // Responsable creation
                 // Loan creation
@@ -234,9 +234,9 @@ class LoanController extends Controller
                         'updated_at'   => Carbon::now()
                     ]
                 );
-                
+
                 $lastLoanID = DB::table('loans')->orderBy('id', 'desc')->first();
-                
+
                 // Obtener los n elementos dependiendo de la cantidad y el modelo
                 // Crear las relaciones Loan - Device
                 // Cambiar los estados de los dispositivos a 'Reserved'
@@ -250,7 +250,7 @@ class LoanController extends Controller
                 ");
 
                 for($x = 0; $x < $quantity; $x++) {
-                    
+
                     DB::table('loan_device')->insert(
                         [
                             'loan_id'        => $lastLoanID->id,
@@ -264,7 +264,7 @@ class LoanController extends Controller
 
                     State::where('device_id', $lastLoanDeviceID->device_id)->update(['state' => "Reserved"]);
                 }
-                
+
                 $response["status"] = 1;
                 $response["message"] = "Loan and all its dependencies were correctly created.";
                 return json_encode($response);
@@ -281,8 +281,8 @@ class LoanController extends Controller
             $response["message"] = "There is no devices available of that model";
             return json_encode($response);
         }
-        
-        
+
+
         // $dates = explode("-", $dates);
         // $response["status"] = 1;
         // $response["message"] = Carbon::parse($dates[1]);
@@ -294,8 +294,77 @@ class LoanController extends Controller
     }
 
     public function exportLoans(Request $request){
-        
+
         return Excel::download(new LoansExport, 'users.xlsx');
-        
+    }
+
+    public function getLoanfromID($loanID) {
+      $deviceNames = DB::select("
+          SELECT d.name
+          FROM devices d
+          GROUP BY d.name;
+      ");
+      return array($deviceNames);
+    }
+
+    public function checkLoan() {
+      return view('show-loan');
+    }
+
+    public function searchLoan(Request $request) {
+      // Retrieve the loan ID from the search bar
+      $loanID = $request->input('txb_search');
+
+      // Search loan with the given ID and retrieve the loan details
+      $loan = DB::select("
+          SELECT l.start_date, l.end_date, l.status
+          FROM loans l
+          WHERE l.id = '$loanID';
+      ");
+
+      // If the loan exists, keep searching for more details
+      if(sizeof($loan) > 0)
+      {
+        // Search its applicant details
+        $applicant = DB::select("
+        SELECT a.name, a.applicant_id, a.degree
+        FROM loans l JOIN applicants a
+        ON l.applicant_id = a.id
+        WHERE l.id = '$loanID';
+        ");
+        // Search the details of a responsible, if exists.
+        $responsable = DB::select("
+        SELECT r.name
+        FROM loans l JOIN applicants a
+        ON l.applicant_id = a.id
+        JOIN responsables r
+        ON a.id = r.applicant_id
+        WHERE l.id = '$loanID';
+        ");
+        // Search the details of the device loaned
+        $device = DB::select("
+          SELECT d.name, d.brand, d.model
+          FROM loans l JOIN loan_device ld
+            ON l.id = ld.loan_id
+          JOIN devices d
+            ON ld.device_id = d.id
+          WHERE l.id = '$loanID';
+        ");
+        // Prepare the answer
+        $response = array(
+          'status' =>      'SUCCESS',
+          'device' =>      $device[0],
+          'loan' =>      $loan[0],
+          'applicant' =>   $applicant[0],
+          'responsable' => $responsable[0]);
+
+
+      }
+      // If the loan doesnt exists, then return.
+      else
+      {
+        $response = array( 'status' => 'NOT FOUND' );
+      }
+      return json_encode($response);
     }
 }

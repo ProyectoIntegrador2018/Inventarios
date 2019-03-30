@@ -15,7 +15,7 @@
       <!-- Formulario -->
       <div class="row">
         <!-- Datos del dispositivo -->
-        <div class="col-md-4 card border-0">
+        <div class="col-md-4 card">
           <div class="card-body">
             <h4 class="card-title">Datos del dispositivo</h4>
             <form class="needs-validation" novalidate="">
@@ -132,7 +132,7 @@
     // Autocomplete for device names
     $( function() {
       $.ajax({
-        url : '/getDeviceNames',
+        url : '/searchLoan',
         type : 'GET',
         dataType: 'json',
         success: function (dataReceived) {
