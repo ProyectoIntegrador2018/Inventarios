@@ -14,34 +14,33 @@
 Auth::routes();
 
 // Navigation Routes
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/deviceCreation', 'HomeController@deviceCreation')->name('deviceCreation');
-Route::get('/inventory', 'InventoryController@inventory')->name('inventory');
-Route::get('/requestLoan/{deviceModel}', 'LoanController@showView_LoanRequest')->name('requestLoan');
-Route::get('/loans', 'HomeController@getLoans')->name('loans');
-Route::get('/deviceDetails/{deviceModel}', 'HomeController@deviceDetails')->name('deviceDetails');
-Route::get('/loansList', 'HomeController@getLoans')->name('loansList');
+Route::get('/home', 'HomeController@viewHome')->name('home');
+Route::get('/deviceCreation', 'HomeController@viewCreateDevice')->name('deviceCreation');
+Route::get('/inventory', 'InventoryController@viewInventory')->name('inventory');
+Route::get('/requestLoan/{deviceModel}', 'LoanController@viewLoanRequest')->name('requestLoan');
+Route::get('/loans', 'HomeController@viewLoansList')->name('loans');
+Route::get('/deviceDetails/{deviceModel}', 'HomeController@getDeviceDetails')->name('deviceDetails');
+Route::get('/loansList', 'HomeController@viewLoansList')->name('loansList');
 Route::get('/getAllLoans', 'HomeController@getAllLoans')->name('getAllLoans');
-Route::get('/exportCSV', 'HomeController@exportCSV')->name('exportCSV');
-Route::get('/checkLoan', 'LoanController@checkLoan')->name('checkLoan');
-Route::get('/edit/{deviceModel}', 'HomeController@edit')->name('edit');
+Route::get('/exportCSV', 'HomeController@viewReports')->name('exportCSV');
+Route::get('/checkLoan', 'LoanController@viewSearchLoan')->name('checkLoan');
+Route::get('/edit/{deviceModel}', 'HomeController@viewEditDeviceDetails')->name('edit');
 Route::get('/getSerialNumbers/{deviceModel}', 'HomeController@getSerialNumbers')->name('getSerialNumbers');
 
 // Devices Routes
 Route::post('/createDevice', 'DeviceController@createDevice')->name('createDevice');
+Route::post('/editDevice', 'DeviceController@editDevice')->name('editDevice');
 Route::get('/getDeviceNames', 'DeviceController@getDeviceNames')->name('getDeviceNames');
 Route::get('/getDeviceBrands', 'DeviceController@getDeviceBrands')->name('getDeviceBrands');
 Route::get('/getDeviceModels', 'DeviceController@getDeviceModels')->name('getDeviceModels');
-Route::post('/editDevice', 'DeviceController@editDevice')->name('editDevice');
 
 // Loans Controller
 Route::post('/createLoan', 'LoanController@createLoan')->name('createLoan');
-Route::post('/changeStatus', 'LoanController@changeStatus')->name('changeStatus');
+Route::post('/changeStatus', 'LoanController@setLoanStatus')->name('changeStatus');
 Route::post('/cancelLoan', 'LoanController@cancelLoan')->name('cancelLoan');
-Route::get('/exportLoans', 'LoanController@exportLoans')->name('exportLoans');
+Route::get('/exportLoans', 'LoanController@getLoansToCSV')->name('exportLoans');
 
 // About Controller | Public Controller
-// Route::get('/about', 'AboutController@about')->name('about');
-Route::get('/', 'AboutController@about')->name('about');
-Route::post('/searchLoan', 'LoanController@searchLoan')->name('loan.search');
-Route::get('/inventoryGuest', 'AboutController@inventory')->name('inventoryGuest');
+Route::get('/', 'AboutController@viewAbout')->name('about');
+Route::post('/searchLoan', 'LoanController@getLoanFromID')->name('loan.search');
+Route::get('/inventoryGuest', 'AboutController@getInventory')->name('inventoryGuest');

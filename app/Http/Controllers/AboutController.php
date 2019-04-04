@@ -8,11 +8,13 @@ use DB;
 
 class AboutController extends Controller
 {
-  public function about() {
+  public function viewAbout()
+  {
       return view('about');
   }
 
-  public function inventory(){
+  public function getInventory()
+  {
     $devices = DB::select("
       SELECT COUNT(d.id) as quantity, d.name, d.brand, d.model
       FROM devices d JOIN states s

@@ -14,11 +14,11 @@ class InventoryController extends Controller
       $this->middleware('auth');
   }
 
-  
-  public function inventory(){
-    
+  public function viewInventory()
+  {
+
     $id = Auth::user()->id;
-    
+
     $devices = DB::select("
       SELECT COUNT(d.id) as quantity, d.name, d.brand, d.model, l.building, l.room, u.id
       FROM states s
@@ -33,5 +33,4 @@ class InventoryController extends Controller
 
     return view('inventory')->with('devices', $devices)->with('quantity', $quantity);
   }
-  
 }

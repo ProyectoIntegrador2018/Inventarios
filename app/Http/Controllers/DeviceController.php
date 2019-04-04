@@ -582,10 +582,10 @@ class DeviceController extends Controller
         // return json_encode($response);
     }
 
-    public function editDevice(Request $request){ 
+    public function editDevice(Request $request){
         $finalMessage = "vvv";
         $finalStatus = 0;
-        
+
         $model = $request->input('model');
         $name = $request->input('name');
         $brand = $request->input('brand');
@@ -618,7 +618,7 @@ class DeviceController extends Controller
             }
 
             for($y = 0; $y < count($separatedTags); $y++){
-                
+
                 // Search if the tag actually exists
                 // If it exists, just get the id to after use it in the relation
                 // If not exists already, the tag and device_tag instances are going to be created
@@ -628,7 +628,7 @@ class DeviceController extends Controller
                 $tagExistance = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get();
 
                 if(count($tagExistance) > 0){
-                    
+
                     // The tag already exists, let's get tag id and just create the relation
 
                     $tagID = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get(['id']);
@@ -665,7 +665,7 @@ class DeviceController extends Controller
                                 'updated_at' => \Carbon\Carbon::now()
                             ]
                         );
-                    }   
+                    }
                 }
                 $finalStatus++;
                 $finalMessage = "Tags been happen";
@@ -677,7 +677,7 @@ class DeviceController extends Controller
                 $sn = $serialNumbers[$i];
                 $deviceIdArr = DB::select(
                     "SELECT d.id
-                    FROM devices d 
+                    FROM devices d
                     WHERE d.serial_number = '$sn'"
                 );
                 $device_id = $deviceIdArr[0]->id;
@@ -693,11 +693,8 @@ class DeviceController extends Controller
         return json_encode($response);
     }
 
-    // public function getAllDevices(Request $request){
-    //     return view('inventory')->with('devices', Device::all());
-    // }
-
-    public function getDeviceNames() {
+    public function getDeviceNames()
+    {
       $deviceNames = DB::select("
           SELECT d.name
           FROM devices d
@@ -706,7 +703,8 @@ class DeviceController extends Controller
       return array($deviceNames);
     }
 
-    public function getDeviceBrands() {
+    public function getDeviceBrands()
+    {
       $deviceBrands = DB::select("
           SELECT d.brand
           FROM devices d
@@ -715,7 +713,8 @@ class DeviceController extends Controller
       return array($deviceBrands);
     }
 
-    public function getDeviceModels() {
+    public function getDeviceModels()
+    {
       $deviceModels = DB::select("
           SELECT d.model
           FROM devices d
