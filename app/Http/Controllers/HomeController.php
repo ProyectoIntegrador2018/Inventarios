@@ -204,20 +204,20 @@ class HomeController extends Controller
     {
       $loans = DB::select("
       SELECT loans.id,
-      loans.status,
-      responsables.name AS responsableName,
-      responsables.email AS responsableEmail,
-      applicants.name AS solicitantName,
-      devices.name AS deviceName,
-      devices.serial_number AS deviceSerialNumber,
-      COUNT(devices.id) AS deviceQuantity,
-      applicants.degree AS solicitantDegree,
-      applicants.email AS solicitantEmail,
-      applicants.applicant_id AS solicitantID,
-      states.state AS deviceState,
-      loans.start_date AS loanStartDate,
-      loans.end_date AS loanEndDate,
-      loans.reason AS loanReason
+        loans.status,
+        responsables.name AS responsableName,
+        responsables.email AS responsableEmail,
+        applicants.name AS solicitantName,
+        devices.name AS deviceName,
+        devices.serial_number AS deviceSerialNumber,
+        COUNT(devices.id) AS deviceQuantity,
+        applicants.degree AS solicitantDegree,
+        applicants.email AS solicitantEmail,
+        applicants.applicant_id AS solicitantID,
+        states.state AS deviceState,
+        loans.start_date AS loanStartDate,
+        loans.end_date AS loanEndDate,
+        loans.reason AS loanReason
       FROM responsables
       JOIN applicants ON responsables.applicant_id = applicants.id
       JOIN loans ON applicants.id = loans.applicant_id
@@ -241,7 +241,7 @@ class HomeController extends Controller
       ");
       return json_encode($serialNumbers);
     }
-    
+
     public function requestLoan($requestedDevice)
     {
 

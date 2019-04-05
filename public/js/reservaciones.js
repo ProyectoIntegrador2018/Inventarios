@@ -53,7 +53,7 @@ $(document).ready(function() {
     };
 
     $.ajax({
-      url : '/createLoan',
+      url : route('loan.create'),
       type : 'POST',
       data: data,
       dataType: 'json',
@@ -228,7 +228,7 @@ function validateFields() {
     };
 
     $.ajax({
-      url : '/createLoan',
+      url : route('loan.create'),
       type : 'POST',
       data: data,
       dataType: 'json',

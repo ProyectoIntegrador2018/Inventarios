@@ -155,7 +155,7 @@
           // Search the given loan ID
           $( function() {
             $.ajax({
-              url : '/searchLoan',
+              url : route('loan.get.byID'),
               type : 'POST',
               data : {
                 _token: $('meta[name="csrf-token"]').attr('content'),
@@ -447,7 +447,7 @@
         };
 
         $.ajax({
-          url : '/cancelLoan',
+          url : route('loan.cancel'),
           type : 'POST',
           data: data,
           dataType: 'json',

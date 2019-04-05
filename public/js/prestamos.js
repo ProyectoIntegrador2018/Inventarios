@@ -3,7 +3,7 @@ var dbQueryLoans = [];
 $(document).ready(function() {
 
   $.ajax({
-    url : '/getAllLoans',
+    url : route('loan.get.all'),
     type : 'GET',
     dataType: 'json',
     success: function (jsonReceived) {
@@ -81,7 +81,7 @@ $(document).ready(function() {
         }else{
           $('#txt_responsable_nombre').html(dbQueryLoans[i].responsablename);
         }
-        
+
         if(dbQueryLoans[i].responsableemail == null){
           $('#txt_responsable_email').html("Sin correo de responsable");
         }else{
@@ -171,7 +171,7 @@ function loanCancel (loanID, loanStatus) {
   console.log(data);
 
   $.ajax({
-    url : '/cancelLoan',
+    url : route('loan.cancel'),
     type : 'POST',
     data: data,
     dataType: 'json',
@@ -594,7 +594,7 @@ function loanChangeStatus(loanID, loanStatus) {
 
 
   $.ajax({
-    url : '/changeStatus',
+    url : route('loan.set.status'),
     type : 'POST',
     data: data,
     dataType: 'json',

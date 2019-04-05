@@ -46,7 +46,7 @@
         <!--Button-->
         <div class="col">
             <div class="col">
-                <button onclick="location='{{url('/edit/'.$device->model)}}'" id="btn-edit" class="btn btn-primary btn-lg btn-block" type="submit">Hacer cambios</button>
+                <button onclick="location='{{ route('view.editDevice', $device->model) }}'" id="btn-edit" class="btn btn-primary btn-lg btn-block" type="submit">Hacer cambios</button>
             </div>
         </div>
       </div>

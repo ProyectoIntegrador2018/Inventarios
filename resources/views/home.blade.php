@@ -12,16 +12,16 @@
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
-                        
+
                     @endif
 
-                    
-                    
-                    <a href="{{url('/deviceCreation')}}">Alta de Dispositivos</a>
-                    <hr><a href="{{url('/inventory')}}">Inventario de Dispositivos</a>
-                    <hr><a href="{{url('/loansList')}}">Lista de Préstamos</a>
-                    <hr><a href="{{url('/exportCSV')}}">Generación de Reportes</a>
-                    
+
+
+                    <a href="{{ route('view.createDevice') }}">Alta de Dispositivos</a>
+                    <hr><a href="{{ route('view.inventory') }}">Inventario de Dispositivos</a>
+                    <hr><a href="{{ route('view.loansList') }}">Lista de Préstamos</a>
+                    <hr><a href="{{ route('view.reports') }}">Generación de Reportes</a>
+
                 </div>
             </div>
         </div>

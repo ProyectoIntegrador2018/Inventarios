@@ -21,7 +21,7 @@
                 <h5 class="card-title">Sin dispositivos</h5>
                 <p class="card-text">No hay ningún dispositivo registrado en los almacénes</p>
                 @auth
-                <a href="{{url('/deviceCreation')}}" class="btn btn-primary">Dar de alta un dispositivo</a>
+                <a href="{{ route('view.createDevice') }}" class="btn btn-primary">Dar de alta un dispositivo</a>
                 @endauth
               </div>
             </div>
@@ -39,11 +39,11 @@
                 <div class="row mt-auto">
                   @auth
                   <div class="col">
-                    <a href="{{url('/deviceDetails/'.$devices[$i-1]->model)}}" class="card-link">Detalles</a>
+                    <a href="{{ route('view.deviceDetails', $devices[$i-1]->model) }}" class="card-link">Detalles</a>
                   </div>
                   @endauth
                   <div class="col">
-                    <a href="{{url('/requestLoan/'.$devices[$i-1]->model)}}" class="card-link">Apartar</a>
+                    <a href="{{ route('view.requestLoan', $devices[$i-1]->model) }}" class="card-link">Apartar</a>
                   </div>
                 </div>
               </div>

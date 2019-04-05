@@ -180,8 +180,8 @@ return [
         /*
          * Laravel Excel
          */
-
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Tightenco\Ziggy\ZiggyServiceProvider::class,
     ],
 
     /*
@@ -230,7 +230,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        
+
         // Laravel Excel alias
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],

@@ -161,7 +161,7 @@
     var serial_numbers = [];
 
     $.ajax({
-      url : '/getSerialNumbers/'+$('#txb_modelo').val(),
+      url : route('device.get.serialNumbers', $('#txb_modelo').val()),
       type : 'GET',
       dataType: 'json',
       success: function (jsonReceived) {
@@ -220,14 +220,14 @@
         (name != "") &&
         (brand != "") &&
         (serial_numbers != []) &&
-        (newStatus != []) && 
+        (newStatus != []) &&
         (newTags != "")
       ){
         allowPost = true;
       }else{
         // One or more of the conditions are false
       }
-      
+
       if(allowPost == true){
         var data = {
           _token         : '{{csrf_token()}}',
@@ -242,7 +242,7 @@
         };
 
         $.ajax({
-          url : '/editDevice',
+          url : route('device.edit'),
           type : 'POST',
           data: data,
           dataType: 'json',
@@ -253,7 +253,7 @@
               $('.devices-error').hide();
               console.log(jsonReceived);
             }
-            
+
             if(jsonReceived.status == 2){
               $('.devices-error').show();
               $('.devices-success').hide();

@@ -3,11 +3,7 @@
 @section('content')
 
 <!-- <button onclick="reportGeneration()">Generar reporte de préstamos</button> -->
-<a href="{{ route('exportLoans') }}" >Export to Excel</a>
-<!-- <form action="{{route('exportCSV')}}" method="get">
-    {{ csrf_field() }}
-    <button type="submit" class="btn btn-success" >Generar reporte</button>
-</form> -->
+<a href="{{ route('report.get.loans') }}" >Export to Excel</a>
 
 @endsection
 
@@ -19,12 +15,12 @@
 
     function reportGeneration(){
         $.ajax({
-          url : '/exportCSV',
+          url : route('view.reports'),
           type : 'GET',
         //   data: data,
         //   dataType: 'json',
           success: function (jsonReceived) {
-            
+
             console.log(jsonReceived.message);
 
           }

@@ -126,7 +126,7 @@
     // Autocomplete for device names
     $( function() {
       $.ajax({
-        url : '/searchLoan',
+        url : route('device.get.names'),
         type : 'GET',
         dataType: 'json',
         success: function (dataReceived) {
@@ -146,7 +146,7 @@
     $( function() {
 
       $.ajax({
-        url : '/getDeviceBrands',
+        url : route('device.get.brands'),
         type : 'GET',
         dataType: 'json',
         success: function (dataReceived) {
@@ -166,7 +166,7 @@
     $( function() {
 
       $.ajax({
-        url : '/getDeviceModels',
+        url : route('device.get.models'),
         type : 'GET',
         dataType: 'json',
         success: function (dataReceived) {
@@ -336,7 +336,7 @@
         };
 
         $.ajax({
-          url : '/createDevice',
+          url : route('device.create'),
           type : 'POST',
           data: data,
           dataType: 'json',

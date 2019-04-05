@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
+    @routes
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -25,7 +26,7 @@
     <div id="app">
       <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
+            <a class="navbar-brand" href="{{ route('view.about') }}">
                 {{ config('app.name') }}
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -42,24 +43,24 @@
                         Inventario
                       </a>
                       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{url('/inventory')}}">Ver inventario</a>
-                        <a class="dropdown-item" href="{{url('/deviceCreation')}}">Alta de dispositivo</a>
+                        <a class="dropdown-item" href="{{ route('view.inventory') }}">Ver inventario</a>
+                        <a class="dropdown-item" href="{{ route('view.createDevice') }}">Alta de dispositivo</a>
                       </div>
                     </li>
                     <!-- Link a Préstamos -->
                     <li class="nav-item" id="nav-loans">
-                      <a class="nav-link" href="{{url('/loansList')}}">Préstamos</a>
+                      <a class="nav-link" href="{{ route('view.loansList') }}">Préstamos</a>
                     </li>
                     <!-- Link a Reportes -->
                     <li class="nav-item" id="nav-reports">
-                      <a class="nav-link" href="{{url('exportCSV')}}">Reportes</a>
+                      <a class="nav-link" href="{{ route('view.reports') }}">Reportes</a>
                     </li>
                   @else
                     <li class="nav-item">
-                      <a class="nav-link" href="{{url('/inventoryGuest')}}">Dispositivos disponibles</a>
+                      <a class="nav-link" href="{{ route('view.inventoryGuest') }}">Dispositivos disponibles</a>
                     </li>
                     <li class="nav-item" id="nav-checkloan">
-                      <a class="nav-link" href="{{url('/checkLoan')}}">Mis préstamos</a>
+                      <a class="nav-link" href="{{ route('view.searchLoan') }}">Mis préstamos</a>
                     </li>
                   @endauth
                 </ul>
