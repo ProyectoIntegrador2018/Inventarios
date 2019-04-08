@@ -15,16 +15,16 @@ Auth::routes();
 
 // Navigation Routes
 Route::get('/', 'AboutController@viewAbout')->name('view.about');
-Route::get('/inventoryGuest', 'AboutController@getInventory')->name('view.inventoryGuest');
-Route::get('/home', 'HomeController@viewHome')->name('home');
-Route::get('/deviceCreation', 'HomeController@viewCreateDevice')->name('view.createDevice');
-Route::get('/inventory', 'InventoryController@viewInventory')->name('view.inventory');
-Route::get('/requestLoan/{deviceModel}', 'LoanController@viewLoanRequest')->name('view.requestLoan');
-Route::get('/deviceDetails/{deviceModel}', 'HomeController@getDeviceDetails')->name('view.deviceDetails');
-Route::get('/loansList', 'HomeController@viewLoansList')->name('view.loansList');
-Route::get('/exportCSV', 'HomeController@viewReports')->name('view.reports');
-Route::get('/checkLoan', 'LoanController@viewSearchLoan')->name('view.searchLoan');
-Route::get('/edit/{deviceModel}', 'HomeController@viewEditDeviceDetails')->name('view.editDevice');
+Route::get('/dispositivos', 'AboutController@getInventory')->name('view.inventoryGuest');
+Route::get('/inicio', 'HomeController@viewHome')->name('home');
+Route::get('/alta', 'HomeController@viewCreateDevice')->name('view.createDevice');
+Route::get('/inventario', 'InventoryController@viewInventory')->name('view.inventory');
+Route::get('/{deviceModel}/solicitarPrestamo', 'LoanController@viewLoanRequest')->name('view.requestLoan');
+Route::get('/{deviceModel}/detalles', 'HomeController@getDeviceDetails')->name('view.deviceDetails');
+Route::get('/prestamos', 'HomeController@viewLoansList')->name('view.loansList');
+Route::get('/reportes', 'HomeController@viewReports')->name('view.reports');
+Route::get('/buscar-prestamo', 'LoanController@viewSearchLoan')->name('view.searchLoan');
+Route::get('/{deviceModel}/editar', 'HomeController@viewEditDeviceDetails')->name('view.editDevice');
 
 // Devices Routes
 Route::get('/getSerialNumbers/{deviceModel}', 'HomeController@getSerialNumbers')->name('device.get.serialNumbers');

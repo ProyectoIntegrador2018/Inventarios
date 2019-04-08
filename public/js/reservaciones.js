@@ -287,5 +287,5 @@ function checkEmpty(htmlInput) {
 
 function afterLoanCreated() {
 
-  document.location.href="/inventory";
+  document.location.href=route('view.inventory');
 }

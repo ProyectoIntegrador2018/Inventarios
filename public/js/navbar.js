@@ -3,7 +3,7 @@ $(document).ready(function() {
 });
 
 function updateNavbar() {
-  if(window.location.href.indexOf("inventory") > -1) {
+  if(window.location.href.indexOf("inventario") > -1) {
       $('#nav-inventory').addClass("border-bottom border-5");
       $('#nav-loans').removeClass("border-bottom border-5");
       $("#nav-reports").removeClass("border-bottom border-5");
@@ -11,7 +11,7 @@ function updateNavbar() {
       $("#nav-reports").removeClass("border-bottom border-5");
   }
 
-  if(window.location.href.indexOf("deviceCreation") > -1) {
+  if(window.location.href.indexOf("alta") > -1) {
       $('#nav-inventory').addClass("border-bottom border-5");
       $('#nav-loans').removeClass("border-bottom border-5");
       $("#nav-reports").removeClass("border-bottom border-5");
@@ -19,7 +19,7 @@ function updateNavbar() {
       $("#nav-reports").removeClass("border-bottom border-5");
   }
 
-  if(window.location.href.indexOf("loansList") > -1) {
+  if(window.location.href.indexOf("prestamos") > -1) {
       $('#nav-inventory').removeClass("border-bottom border-5");
       $('#nav-loans').addClass("border-bottom border-5");
       $("#nav-reports").removeClass("border-bottom border-5");
@@ -41,7 +41,7 @@ function updateNavbar() {
       $("#nav-checkloan").addClass("border-bottom border-5");
       $("#nav-reports").removeClass("border-bottom border-5");
   }
-  if(window.location.href.indexOf("exportCSV") > -1) {
+  if(window.location.href.indexOf("reportes") > -1) {
       $('#nav-inventory').removeClass("border-bottom border-5");
       $('#nav-loans').removeClass("border-bottom border-5");
       $("#nav-reports").removeClass("border-bottom border-5");

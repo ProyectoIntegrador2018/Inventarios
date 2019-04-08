@@ -23,7 +23,7 @@ $(document).ready(function() {
           '<div class="card-body">' +
             '<h5 class="card-title">Sin préstamos existente</h5>' +
             '<p class="card-text">No hay ningún préstamo registrado en el sistema</p>' +
-            '<a href="/inventory" class="btn btn-primary">Ver los dispositivos existentes</a>' +
+            '<a href="/inventario" class="btn btn-primary">Ver los dispositivos existentes</a>' +
           '</div>' +
         '</div><br>'
         );

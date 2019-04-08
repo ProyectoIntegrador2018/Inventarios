@@ -7,7 +7,7 @@
   <br>
     <div class="content">
       <div class="col p-5">
-        <h1 class="text-center">Inventario de dispositivos</h1>
+        <h1 class="text-center">Catálogo de dispositivos</h1>
       </div>
       <div class="col">
         <!-- <div class="card-deck"> -->
