@@ -2,7 +2,16 @@
 @section('content')
 @csrf
 <!-- Vista principal -->
-<main role="main" class="container bg-white">
+<div class="text-center" id="spinner-loader">
+  <br><br><br><br><br><br><br><br><br><br>
+  <div class="spinner-border" role="status">
+    <span class="sr-only m-0">Loading...</span>
+  </div>
+  <p class="font-weight-lighter m-0">Espere un momento porfavor</p>
+  <br><br><br><br><br><br><br><br><br><br>
+</div>
+
+<main role="main" class="container bg-white" style="display:none;">
   <br>
   <div class="alert alert-success devices-success" role="alert" style="display:none;">Los dispositivos se han agregado correctamente al inventario.</div>
   <div class="alert alert-danger devices-error" role="alert" style="display:none;">Error: Verifique que los números de serie no estén repetidos en el inventario.</div>
@@ -15,7 +24,7 @@
       <!-- Formulario -->
       <div class="row">
         <!-- Datos del dispositivo -->
-        <div class="col-md-4 card">
+        <div class="col-lg-4 card border border-0">
           <div class="card-body">
             <h4 class="card-title">Datos del dispositivo</h4>
             <form class="needs-validation" novalidate="">
@@ -50,7 +59,7 @@
         </div>
 
         <!-- Identificadores -->
-        <div class="col-md-4 card border-top-0 border-bottom-0">
+        <div class="col-lg-4 card border-top-0 border-bottom-0">
           <div class="card-body">
             <h4 class="card-title">Identificadores</h4>
             <label for="address">No. de Serie</label>
@@ -62,14 +71,19 @@
               <br>
             </div>
             <div class="mb-3">
-              <input type="text" class="form-control" id="txb_noSeries" placeholder="Número(s) de Serie" required="" style="display:none">
+              <textarea type="text"
+              class="form-control"
+              id="txb_noSeries"
+              placeholder="Ingrese los números de serie separado por comas"
+              required=""
+              style="display:none"></textarea>
               <div class="serial-number-invalid-feedback" style="display:none;color:red;">Por favor, ingrese un número de serie.</div>
             </div>
           </div>
         </div>
 
         <!-- Others -->
-        <div class="col-md-4 card border-0">
+        <div class="col-lg-4 card border-0">
           <div class="card-body">
             <h4 class="card-title">Ubicación</h4>
             <div class="row my-3">
@@ -89,7 +103,7 @@
                 <div class="room-invalid-feedback" style="display:none;color:red;">Por favor escriba el salón</div>
               </div>
             </div>
-            <hr class="my-4">
+
             <h4 class="card-title">Etiquetas</h4>
             <div class="row my-3">
               <div class="col">
@@ -123,8 +137,10 @@
 <script type="text/javascript">
   $(document).ready(function(){
 
+
+
     // Autocomplete for device names
-    $( function() {
+    function fetchDeviceNames() {
       $.ajax({
         url : route('device.get.names'),
         type : 'GET',
@@ -140,11 +156,10 @@
           $("#txb_nombre").autocomplete({ source: dataReceived });
         }
       });
-    });
+    }
 
-    // Autocomplete for device names
-    $( function() {
-
+    // Autocomplete for device brands
+    function fetchDeviceBrands() {
       $.ajax({
         url : route('device.get.brands'),
         type : 'GET',
@@ -160,11 +175,10 @@
           $("#txb_marca").autocomplete({ source: dataReceived });
         }
       });
-    });
+    }
 
-    // Autocomplete for device names
-    $( function() {
-
+    // Autocomplete for device models
+    function fetchDeviceModels() {
       $.ajax({
         url : route('device.get.models'),
         type : 'GET',
@@ -180,17 +194,23 @@
           $("#txb_modelo").autocomplete({ source: dataReceived });
         }
       });
-    });
+    }
+
+    // Wait for autocomplete fields to fetch data
+    $.when(fetchDeviceNames(), fetchDeviceBrands(), fetchDeviceModels())
+    .done(setTimeout(function(){
+      $('#spinner-loader').hide();
+      $('main').show();
+    }, 1000));
+
     var requiredSerialNumbers = false;
 
     $('#exampleCheck1').change(function() {
         if(this.checked) {
           requiredSerialNumbers = true;
-          console.log("Se requieren números de serie");
           $("#txb_noSeries").show();
         }else{
           requiredSerialNumbers = false;
-          console.log("No se requieren números de serie");
           $("#txb_noSeries").hide();
         }
     });
@@ -311,7 +331,7 @@
         // Allowed because the serial numbers are not required
         allowPost = true;
       }else{
-        console.log("De todos modos no se pudo");
+
       }
 
       if(allowPost == true){
@@ -365,11 +385,10 @@
         });
       }else{
         // The post function could not be triggered
-        console.log("The post function could not be triggered");
+
       }
 
     });
-
   });
 </script>
 @endsection
