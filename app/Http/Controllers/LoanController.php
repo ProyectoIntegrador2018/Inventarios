@@ -143,7 +143,41 @@ class LoanController extends Controller
 
     public function getLoansToCSV(Request $request)
     {
-        return Excel::download(new LoansExport, 'users.xlsx');
+        // Translate from JSON plain text true, to PHP boolean true
+        $request["allDates"] = ($request["allDates"] == "true" ? true : false);
+        $request["professor"] = ($request["professor"] == "true" ? true : false);
+        $request["student"] = ($request["student"] == "true" ? true : false);
+        $request["allStatus"] = ($request["allStatus"] == "true" ? true : false);
+
+        // Recapture the data received from the VIEW
+        $dates       = array( 'selectAll' => $request["allDates"],
+                              'start'     => $request["startDate"],
+                              'end'       => $request["endDate"]);
+        $solicitants = array( 'professor' => $request["professor"],
+                              'student'   => $request["student"]);
+        $status      = array( 'selectAll'  => $request["allStatus"],
+                              'statuses'   => $request["statuses"]);
+        $inputs      = array( 'dates'        => $dates,
+                              'solicitants'  => $solicitants,
+                              'status'       => $status);
+
+        // Assign a descriptive name to the spread sheet file
+        $fileName = 'Reporte-prestamos';
+        if($request["allDates"])
+        {
+          $fileName = "{$fileName}_Historico";
+        }
+        else
+        {
+          // Replace '/' character in dates to avoid file-naming-error
+          $startDate = str_replace('/', "-", $request["startDate"]);
+          $endDate = str_replace('/', "-", $request["endDate"]);
+          $fileName = "{$fileName}_del_{$startDate}_al_{$endDate}";
+        }
+        $fileName = "{$fileName}.xlsx";
+
+        // Return the Excel file with the report
+        return Excel::download(new LoansExport($inputs), $fileName);
     }
 
     public function getDeviceNameFromLoan($loanID)
@@ -405,5 +439,4 @@ class LoanController extends Controller
       $response["message"] = "Nothing is happening";
       return json_encode($response);
     }
-
 }
