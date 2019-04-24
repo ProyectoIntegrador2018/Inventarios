@@ -9,7 +9,7 @@ checks:
   file-lines:
     enabled: true
     config:
-      threshold: 500
+      threshold: 250
   method-complexity:
     enabled: true
     config:
@@ -21,7 +21,7 @@ checks:
   method-lines:
     enabled: true
     config:
-      threshold: 100
+      threshold: 25
   nested-control-flow:
     enabled: true
     config:
@@ -31,21 +31,20 @@ checks:
   similar-code:
     enabled: true
     config:
-      threshold: #language-specific defaults. overrides affect all languages.
+      threshold: 28
   identical-code:
     enabled: true
     config:
-      threshold: #language-specific defaults. overrides affect all languages.
+      threshold: 28
 plugins:
  eslint:
   enabled: true
 exclude_patterns:
-- "config/"
 - "database/"
 - "bootstrap/"
 - "features/"
 - "**/node_modules/"
-- "public/"
+- "public/daterangepicker/"
 - "**/spec/"
 - "tests/"
 - "storage/"
