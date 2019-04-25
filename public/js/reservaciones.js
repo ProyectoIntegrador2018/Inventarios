@@ -169,18 +169,14 @@ function validateFields() {
     if (isStudent) {
       if (mail.substring(0,1) === "A" && mail.length === 9 && checkDomain(domain) && mail === solicitantID.val()) {
         solicitantEmail.removeClass("is-invalid");
-        console.log("Student mail is OK");
       } else {
         solicitantEmail.addClass("is-invalid");
-        console.log("Student mail is BAD");
       }
     } else {
       if (mail.substring(0,1) === "L" && mail.length === 9 && checkDomain(domain)) {
         solicitantEmail.removeClass("is-invalid");
-        console.log("Professor mail is OK");
       } else {
         solicitantEmail.addClass("is-invalid");
-        console.log("Professor mail is BAD");
       }
     }
   } else {
