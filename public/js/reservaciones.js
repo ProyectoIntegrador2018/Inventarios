@@ -167,7 +167,7 @@ function validateFields() {
     var mail = solicitantEmail.val().substring(0, atPosition);
     
     if (isStudent) {
-      if (mail.substring(0,1) === "A" && mail.length === 9 && checkDomain(domain) && mail) {
+      if (mail.substring(0,1) === "A" && mail.length === 9 && checkDomain(domain) && mail === solicitantID.val()) {
         solicitantEmail.removeClass("is-invalid");
         console.log("Student mail is OK");
       } else {
