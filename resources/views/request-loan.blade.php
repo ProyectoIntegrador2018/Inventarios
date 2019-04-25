@@ -106,10 +106,10 @@
                         </div>
                       </div>
                       <div class="col-md-6 mt-3">
-                        <label for="firstName">Correo electrónico</label>
+                        <label for="firstName">Correo Institucional</label>
                         <input type="text" class="form-control" id="txb_emailSolicitante" placeholder="" value="" required="">
                         <div class="invalid-feedback">
-                          Por favor escriba su correo electrónico
+                          Por favor escriba correctamente su correo institucional
                         </div>
                       </div>
                       <div class="col-md-12 mt-3">
