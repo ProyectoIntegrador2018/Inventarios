@@ -75,7 +75,14 @@ class LoansExport implements FromQuery, WithHeadings
 
     private function getFilterSolicitant(array $data)
     {
-      if (includedAllSolicitants($data))? return 'TRUE': return singleSolicitant($data) ;
+      if ($this->includedAllSolicitants($data))
+      {
+        return 'TRUE';
+      }
+      else
+      {
+        return $this->singleSolicitant($data);
+      }
     }
 
     private function getFilterStatus(array $data)
@@ -99,7 +106,7 @@ class LoansExport implements FromQuery, WithHeadings
 
     private function includedAllSolicitants(array $data)
     {
-      return if($data["professor"] && $data["student"]);
+      return $data["professor"] && $data["student"];
     }
 
     private function singleSolicitant(array $data)
