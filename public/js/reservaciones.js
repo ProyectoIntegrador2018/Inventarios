@@ -228,23 +228,29 @@ function validateFields() {
     var responsableEmail = $('#txb_emailResponsable').val();
     var isStudent = $("#chb_esEstudiante").is(":checked");
 
+    var student = 0;
+
+    if(isStudent == true){
+      student = 1;
+    }
+
     // alert(quantity + " " + reason + " " + dates + applicant + " " + applicantID + " " + email + " " + bachelor + " " + responsableName + " " + responsableEmail);
 
     // Hacer validaciones después
 
     var data = {
-      _token: $('meta[name="csrf-token"]').attr('content'),
-      model: model,
-      quantity: quantity,
-      reason: reason,
-      dates: dates,
-      applicant: applicant,
-      applicantID: applicantID,
-      email: email,
-      bachelor: bachelor,
-      responsableName: responsableName,
-      responsableEmail: responsableEmail,
-      isStudent: isStudent
+      _token           : $('meta[name="csrf-token"]').attr('content'),
+      model            : model,
+      quantity         : quantity,
+      reason           : reason,
+      dates            : dates,
+      applicant        : applicant,
+      applicantID      : applicantID,
+      email            : email,
+      bachelor         : bachelor,
+      responsableName  : responsableName,
+      responsableEmail : responsableEmail,
+      isStudent        : student
     };
 
     $.ajax({

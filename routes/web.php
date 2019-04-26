@@ -43,3 +43,6 @@ Route::get('/exportLoans', 'LoanController@getLoansToCSV')->name('report.get.loa
 
 // About Controller | Public Controller
 Route::post('/searchLoan', 'LoanController@getLoanFromID')->name('loan.get.byID');
+
+Route::get('/acceptLoanResponsability/{loanID}', 'AboutController@acceptLoan')->name('loan.accept');
+Route::get('/declineLoanResponsability/{loanID}', 'AboutController@declineLoan')->name('loan.decline');

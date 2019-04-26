@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+// namespace App\Mail;
 
 use Illuminate\Http\Request;
 
@@ -15,6 +16,12 @@ use Carbon\Carbon;
 use App\Exports\LoansExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
+
+use App\Mail\LoanDetailsWithResponsable;
+use App\Mail\LoanDetailsWithoutResponsable;
+use App\Mail\LoanSeparatedToUser;
+
+use Mail;
 
 class LoanController extends Controller
 {
@@ -110,13 +117,33 @@ class LoanController extends Controller
         case "New":
         //$loanStatus = "Separated";
         Loan::where('id', $loanID)->update(['status' => "Separated"]);
+
+        $informationToSend = DB::select("
+          SELECT a.email, a.name, l.id, d.name AS devicename
+          FROM applicants a JOIN loans l ON a.id = l.applicant_id
+          JOIN loan_device ld ON ld.loan_id = l.id
+          JOIN devices d ON d.id = ld.device_id
+          WHERE l.id = '$loanID';
+        ");
+
+        // Send mail to the person who requested the loan
+        #\Mail::to($responsableEmail)->send(new LoanDetailsWithResponsable($loanToSend, $model, $quantity, $applicant, $email, $responsableName, $responsableEmail, $reason, $applicantID, Carbon::parse($dates[0])->format('Y-m-d H:i'), Carbon::parse($dates[1])->format('Y-m-d H:i') ));
+        \Mail::to($informationToSend[0]->email)->send(new LoanSeparatedToUser(
+          $informationToSend[0]->name,
+          $informationToSend[0]->id,
+          $informationToSend[0]->devicename
+        ));
+
         break;
+
         case "Cancelled":
         break;
+
         case "Separated":
         // $loanStatus = "Taken";
         Loan::where('id', $loanID)->update(['status' => "Taken"]);
         break;
+
         case "Taken":
         // $loanStatus = "Received";
         Loan::where('id', $loanID)->update(['status' => "Received"]);
@@ -134,16 +161,21 @@ class LoanController extends Controller
               ->update(['state' => $newStatus]);
           }
         break;
+
         case "Received":
         break;
+
         case "Received late":
         break;
+
         case "Expired":
         // $loanStatus = "Received late";
         Loan::where('id', $loanID)->update(['status' => "Received late"]);
         break;
+
         case "Unknown status":
         break;
+
       }
 
       $response["status"] = 1;
@@ -230,7 +262,7 @@ class LoanController extends Controller
         SELECT r.name
         FROM loans l JOIN applicants a
         ON l.applicant_id = a.id
-        JOIN responsables r
+        LEFT OUTER JOIN responsables r
         ON a.id = r.applicant_id
         WHERE l.id = '$loanID';
         ");
@@ -373,7 +405,10 @@ class LoanController extends Controller
           $lastApplicantID = DB::table('applicants')->orderBy('id', 'desc')->first();
           $lastApplicantID = $lastApplicantID->id;
 
-          if($isStudent == true)
+          // At the moment we are going to set that the email has a responsable professor
+          $sendEmailWithResponsableProfessor = true;
+
+          if($isStudent == 1)
           {
             // responsable_id is going to be null at the moment
             DB::table('responsables')->insert(
@@ -386,23 +421,60 @@ class LoanController extends Controller
             'updated_at'     => Carbon::now()
             ]
             );
+
+          }else{
+            
+            // There is no existence of the responsable professor, so we are going to set it to false
+            $sendEmailWithResponsableProfessor = false;
+
           }
 
           $dates = explode("-", $dates);
+          
+          if($isStudent == 1)
+          {
+            DB::table('loans')->insert(
+            [
+            'start_date'   => Carbon::parse($dates[0]),
+            'end_date'     => Carbon::parse($dates[1]),
+            'loan_date'    => Carbon::now(),
+            'return_date'  => Carbon::parse($dates[1]),
+            'status'       => 'Pending',
+            'reason'       => $reason,
+            'applicant_id' => $lastApplicantID,
+            'created_at'   => Carbon::now(),
+            'updated_at'   => Carbon::now()
+            ]
+            );
 
-          DB::table('loans')->insert(
-          [
-          'start_date'   => Carbon::parse($dates[0]),
-          'end_date'     => Carbon::parse($dates[1]),
-          'loan_date'    => Carbon::now(),
-          'return_date'  => Carbon::parse($dates[1]),
-          'status'       => 'New',
-          'reason'       => $reason,
-          'applicant_id' => $lastApplicantID,
-          'created_at'   => Carbon::now(),
-          'updated_at'   => Carbon::now()
-          ]
-          );
+            $modelName = DB::select("
+              SELECT name
+              FROM devices
+              WHERE model = '$model'
+              LIMIT 1;
+            ");
+
+            $sendModelName = $modelName[0]->name;
+            
+            $lastLoanID = DB::table('loans')->orderBy('id', 'desc')->first();
+            $loanToSend = $lastLoanID->id;
+            \Mail::to($responsableEmail)->send(new LoanDetailsWithResponsable($loanToSend, $model, $quantity, $applicant, $email, $responsableName, $responsableEmail, $reason, $applicantID, Carbon::parse($dates[0])->format('Y-m-d H:i'), Carbon::parse($dates[1])->format('Y-m-d H:i'), $sendModelName));
+
+          }else{
+            DB::table('loans')->insert(
+            [
+            'start_date'   => Carbon::parse($dates[0]),
+            'end_date'     => Carbon::parse($dates[1]),
+            'loan_date'    => Carbon::now(),
+            'return_date'  => Carbon::parse($dates[1]),
+            'status'       => 'New',
+            'reason'       => $reason,
+            'applicant_id' => $lastApplicantID,
+            'created_at'   => Carbon::now(),
+            'updated_at'   => Carbon::now()
+            ]
+            );
+          }
 
           $lastLoanID = DB::table('loans')->orderBy('id', 'desc')->first();
 
@@ -433,10 +505,61 @@ class LoanController extends Controller
             $lastLoanDeviceID = DB::table('loan_device')->orderBy('id', 'desc')->first();
 
             State::where('device_id', $lastLoanDeviceID->device_id)->update(['state' => "Reserved"]);
+
           }
+          
+          /*
+          if($isStudent){
+            
+            // Send email with responsable professor
+
+            
+            // Information:
+            // - Mail sent to the responsable professor
+            // - Student name
+            // - Name of the device
+            // - Quantity of devices
+            // ¿Request to approve or not the loan? [Not yet]
+            
+            
+            // $model;
+            // $quantity;
+            // $applicant;
+            // $email;
+            // $responsableName;
+            // $responsableEmail;
+
+            // dd($model);
+            // $mailInfo = array(['model', $model]);
+            
+            $loanToSend = $lastLoanID->id;
+
+            \Mail::to($responsableEmail)->send(new LoanDetailsWithResponsable($loanToSend, $model, $quantity, $applicant, $email, $responsableName, $responsableEmail, $reason, $applicantID, Carbon::parse($dates[0])->format('Y-m-d H:i'), Carbon::parse($dates[1])->format('Y-m-d H:i') ));
+
+            // Mail::send('emails.activation', $data, function($message){
+            //   $message->from('email@from', 'name');
+            //   $message->to($email)->subject($subject);
+            // });
+            
+          }else{
+            
+            // Send email whithout responsable professor
+            
+            
+            // Information:
+            // - Mail sent to the professor (That in this case is the same person that it's requesting the loan)
+            // - Name of the device
+            // - Quantity of devices
+            // ¿Request to approve or not the loan? [Possible to not include it at the end]
+            
+
+            
+          }
+          */
 
           $response["status"] = 1;
           $response["message"] = "Loan and all its dependencies were correctly created.";
+
           return json_encode($response);
 
         }

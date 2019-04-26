@@ -218,18 +218,26 @@ class HomeController extends Controller
         loans.start_date AS loanStartDate,
         loans.end_date AS loanEndDate,
         loans.reason AS loanReason
-      FROM responsables
-      JOIN applicants ON responsables.applicant_id = applicants.id
-      JOIN loans ON applicants.id = loans.applicant_id
+      FROM loans
+      JOIN applicants ON loans.applicant_id = applicants.id
       JOIN loan_device ON loans.id = loan_device.loan_id
       JOIN devices ON loan_device.device_id = devices.id
-      JOIN states ON devices.id = states.device_id
+	    JOIN states ON devices.id = states.device_id
+      LEFT OUTER JOIN responsables ON applicants.id = responsables.applicant_id
       GROUP BY responsables.name, applicants.name, loans.id, loans.status, devices.name, applicants.degree, applicants.email, applicants.applicant_id, responsables.email, devices.serial_number, states.state, loans.start_date, loans.end_date, loans.reason
       ORDER BY loans.id ASC;
       ");
 
+      // FROM responsables
+      // JOIN applicants ON responsables.applicant_id = applicants.id
+      // JOIN loans ON applicants.id = loans.applicant_id
+      // JOIN loan_device ON loans.id = loan_device.loan_id
+      // JOIN devices ON loan_device.device_id = devices.id
+      // JOIN states ON devices.id = states.device_id
+
       return json_encode($loans);
     }
+
 
     public function getSerialNumbers($model)
     {

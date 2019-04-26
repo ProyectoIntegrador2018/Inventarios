@@ -363,7 +363,7 @@ function statesTraductor(stateInEnglish){
       break;
 
     default:
-      stateInSpanish = "Sin estado";
+      stateInSpanish = "Pendiente";
       break;
   }
 
@@ -405,7 +405,7 @@ function statesTraductorToEnglish(stateInSpanish){
       break;
 
     default:
-      stateInEnglish = "Unknown status";
+      stateInEnglish = "Pending";
       break;
   }
 
