@@ -147,6 +147,19 @@ class LoanController extends Controller
         case "Taken":
         // $loanStatus = "Received";
         Loan::where('id', $loanID)->update(['status' => "Received"]);
+          $device_ids = DB::select("
+            SELECT d.id
+            FROM loans l JOIN loan_device ld ON l.id = ld.loan_id
+            JOIN devices d ON d.id = ld.device_id
+            JOIN states s ON s.device_id = d.id
+            WHERE l.id = '$loanID';
+          ");
+
+          foreach ($device_ids as $device_id) {
+            $newStatus = "Available";
+            State::where('device_id', $device_id->id)
+              ->update(['state' => $newStatus]);
+          }
         break;
 
         case "Received":
@@ -175,7 +188,41 @@ class LoanController extends Controller
 
     public function getLoansToCSV(Request $request)
     {
-        return Excel::download(new LoansExport, 'users.xlsx');
+        // Translate from JSON plain text true, to PHP boolean true
+        $request["allDates"] = $this->transformToBoolean($request["allDates"]);
+        $request["professor"] = $this->transformToBoolean($request["professor"]);
+        $request["student"] = $this->transformToBoolean($request["student"]);
+        $request["allStatus"] = $this->transformToBoolean($request["allStatus"]);
+
+        // Recapture the data received from the VIEW
+        $dates       = array( 'selectAll' => $request["allDates"],
+                              'start'     => $request["startDate"],
+                              'end'       => $request["endDate"]);
+        $solicitants = array( 'professor' => $request["professor"],
+                              'student'   => $request["student"]);
+        $status      = array( 'selectAll'  => $request["allStatus"],
+                              'statuses'   => $request["statuses"]);
+        $inputs      = array( 'dates'        => $dates,
+                              'solicitants'  => $solicitants,
+                              'status'       => $status);
+
+        // Assign a descriptive name to the spread sheet file
+        $fileName = 'Reporte-prestamos';
+        if($request["allDates"])
+        {
+          $fileName = "{$fileName}_Historico";
+        }
+        else
+        {
+          // Replace '/' character in dates to avoid file-naming-error
+          $startDate = str_replace('/', "-", $request["startDate"]);
+          $endDate = str_replace('/', "-", $request["endDate"]);
+          $fileName = "{$fileName}_del_{$startDate}_al_{$endDate}";
+        }
+        $fileName = "{$fileName}.xlsx";
+
+        // Return the Excel file with the report
+        return Excel::download(new LoansExport($inputs), $fileName);
     }
 
     public function getDeviceNameFromLoan($loanID)
@@ -253,7 +300,21 @@ class LoanController extends Controller
       $loanStatus = $request->input('loanStatus');
 
       Loan::where('id', $loanID)->update(['status' => "Cancelled"]);
+      
+      $device_ids = DB::select("
+        SELECT d.id
+        FROM loans l JOIN loan_device ld ON l.id = ld.loan_id
+        JOIN devices d ON d.id = ld.device_id
+        JOIN states s ON s.device_id = d.id
+        WHERE l.id = '$loanID';
+      ");
 
+      foreach ($device_ids as $device_id) {
+        $newStatus = "Available";
+        State::where('device_id', $device_id->id)
+          ->update(['state' => $newStatus]);
+      }
+      
       $response["status"] = 1;
       $response["message"] = "Loan successfully cancelled";
       return json_encode($response);
@@ -529,4 +590,8 @@ class LoanController extends Controller
       return json_encode($response);
     }
 
+    private function transformToBoolean($value)
+    {
+      return  $value == "true" ? true : false;
+    }
 }

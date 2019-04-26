@@ -137,10 +137,10 @@
         var status = $('#estatus');
         var btn_delete = $('#btn_eliminar');
 
-        if(status.text() == 'Cancelado') {
-          btn_delete.parent().parent().hide();
-        } else {
+        if(status.text() == 'Nueva solicitud' || status.text() == 'Apartado') {
           btn_delete.parent().parent().show();
+        } else {
+          btn_delete.parent().parent().hide();
         }
       }
 

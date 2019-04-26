@@ -267,21 +267,13 @@
         $('.quantity-invalid-feedback').show();
       }
 
-
-      if(serial_numbers != ""){
-        if(requiredSerialNumbers == false){
+      if(requiredSerialNumbers === true){
+        if(serial_numbers != ""){ 
           $('.serial-number-invalid-feedback').hide();
-        }else{
+        } else {
           $('.serial-number-invalid-feedback').show();
-        }
-      }else{
-        if(requiredSerialNumbers == true){
-          $('.serial-number-invalid-feedback').show();
-        }else{
-          $('.serial-number-invalid-feedback').hide();
         }
       }
-
 
       if(parseInt(quantity) == (parseInt((serial_numbers.match(/,/g) || []).length) + 1)){
         // Falta hacer esta parte
@@ -297,7 +289,8 @@
         $('.building-invalid-feedback').show();
       }
 
-      if(room != ""){
+      console.log(room, building, serial_numbers);
+      if(room !== ""){
         $('.room-invalid-feedback').hide();
       }else{
         $('.room-invalid-feedback').show();

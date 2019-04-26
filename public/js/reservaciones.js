@@ -1,9 +1,9 @@
-$(document).ready(function() {
+$(document).ready(function () {
   $('#dat_fechas').daterangepicker();
   $("#chb_esEstudiante").on("click", showStudentForm);
   $("#btn_reservar").on("click", sendForm)
 
-  $(function() {
+  $(function () {
     $('#dat_fechas').daterangepicker({
       timePicker: true,
       startDate: moment().startOf('hour'),
@@ -122,28 +122,28 @@ function validateFields() {
   var formIsCorrect = true;
 
   var inputsGeneric = [quantity, purpose, dates,
-                        solicitantName, solicitantID, solicitantEmail]
+    solicitantName, solicitantID, solicitantEmail]
 
   var inputsStudent = [solicitantDegree, responsableName, responsableEmail];
 
 
   // Strip spaces
   for (i = 0; i < inputsGeneric.length; i++) {
-      cleanInputSpaces(inputsGeneric[i]);
+    cleanInputSpaces(inputsGeneric[i]);
   }
 
   // Check if empty
   for (i = 0; i < inputsGeneric.length; i++) {
-      checkEmpty(inputsGeneric[i]);
+    checkEmpty(inputsGeneric[i]);
   }
 
   // Follow the same process above if the user is a student
   if (isStudent) {
     for (i = 0; i < inputsStudent.length; i++) {
-        cleanInputSpaces(inputsStudent[i]);
+      cleanInputSpaces(inputsStudent[i]);
     }
     for (i = 0; i < inputsStudent.length; i++) {
-        checkEmpty(inputsStudent[i]);
+      checkEmpty(inputsStudent[i]);
     }
   }
 
@@ -151,27 +151,47 @@ function validateFields() {
   //--------------------------- Rules for QUANTITY ---------------------------//
   if (quantity.val() <= 0 || quantity.hasClass('is-invalid')) {
     quantity.addClass("is-invalid");
-  } else  {
+  } else {
     quantity.removeClass("is-invalid");
   }
   //------------------------ Rules for SOLICITANT NAME -----------------------//
   if (solicitantName.val().match(/\d/) || solicitantName.hasClass('is-invalid')) {
     solicitantName.addClass("is-invalid");
-  } else  {
+  } else {
     solicitantName.removeClass("is-invalid");
   }
   //----------------------- Rules for SOLICITANT EMAIL -----------------------//
+  var atPosition = solicitantEmail.val().indexOf("@");
+  if (atPosition !== -1) {
+    var domain = solicitantEmail.val().substring(atPosition + 1);
+    var mail = solicitantEmail.val().substring(0, atPosition);
 
+    if (isStudent) {
+      if (mail.substring(0,1) === "A" && mail.length === 9 && checkDomain(domain) && mail === solicitantID.val()) {
+        solicitantEmail.removeClass("is-invalid");
+      } else {
+        solicitantEmail.addClass("is-invalid");
+      }
+    } else {
+      if (mail.substring(0,1) === "L" && mail.length === 9 && checkDomain(domain)) {
+        solicitantEmail.removeClass("is-invalid");
+      } else {
+        solicitantEmail.addClass("is-invalid");
+      }
+    }
+  } else {
+    solicitantEmail.addClass("is-invalid");
+  }
   //---------------------------- Rules for DEGREE ----------------------------//
   if (solicitantDegree.val().match(/\d/) || solicitantDegree.hasClass('is-invalid')) {
     solicitantDegree.addClass("is-invalid");
-  } else  {
+  } else {
     solicitantDegree.removeClass("is-invalid");
   }
   //----------------------- Rules for RESPONSABLE NAME -----------------------//
   if (responsableName.val().match(/\d/) || responsableName.hasClass('is-invalid')) {
     responsableName.addClass("is-invalid");
-  } else  {
+  } else {
     responsableName.removeClass("is-invalid");
   }
   //---------------------- Rules for RESPONSABLE EMAIL -----------------------//
@@ -196,17 +216,17 @@ function validateFields() {
   if (formIsCorrect) {
     console.log("Form seems OK!");
 
-    var model            = $("#h_modelo").text();
-    var quantity         = $('#txb_cantidad').val();
-    var reason           = $('#txa_motivo').val();
-    var dates            = $('#dat_fechas').val();
-    var applicant        = $('#txb_nombreSolicitante').val();
-    var applicantID      = $('#txb_idSolicitante').val();
-    var email            = $('#txb_emailSolicitante').val();
-    var bachelor         = $('#txb_carrera').val();
-    var responsableName  = $('#txb_nombreResponsable').val();
+    var model = $("#h_modelo").text();
+    var quantity = $('#txb_cantidad').val();
+    var reason = $('#txa_motivo').val();
+    var dates = $('#dat_fechas').val();
+    var applicant = $('#txb_nombreSolicitante').val();
+    var applicantID = $('#txb_idSolicitante').val();
+    var email = $('#txb_emailSolicitante').val();
+    var bachelor = $('#txb_carrera').val();
+    var responsableName = $('#txb_nombreResponsable').val();
     var responsableEmail = $('#txb_emailResponsable').val();
-    var isStudent        = $("#chb_esEstudiante").is(":checked");
+    var isStudent = $("#chb_esEstudiante").is(":checked");
 
     var student = 0;
 
@@ -234,8 +254,8 @@ function validateFields() {
     };
 
     $.ajax({
-      url : route('loan.create'),
-      type : 'POST',
+      url: route('loan.create'),
+      type: 'POST',
       data: data,
       dataType: 'json',
       success: function (jsonReceived) {
@@ -244,7 +264,7 @@ function validateFields() {
 
         $("#exampleModalCenter").modal('show');
 
-        if(jsonReceived.status == 1){
+        if (jsonReceived.status == 1) {
 
           // Para el sprint dos, que los mensajes de error que se devuelven del Back-End se pongan en el mensaje de alerta
 
@@ -263,7 +283,7 @@ function validateFields() {
           // Aquí falta la nómina la nómina del profesor responsable, si se decide por no poner, también removerse de la base de datos
           $('#txb_emailResponsable').val('');
 
-        }else{
+        } else {
           $('.loans-error').show();
           $('.loans-success').hide();
         }
@@ -271,7 +291,6 @@ function validateFields() {
       }
     });
   }
-
 }
 
 function cleanInputSpaces(htmlInput) {
@@ -286,12 +305,22 @@ function cleanInputSpaces(htmlInput) {
 function checkEmpty(htmlInput) {
   if (htmlInput.val() == "") {
     htmlInput.addClass("is-invalid");
-  } else  {
+  } else {
     htmlInput.removeClass("is-invalid");
   }
 }
 
-function afterLoanCreated() {
+function adminAfterLoanCreated() {
+  document.location.href = route('view.inventory');
+}
 
-  document.location.href=route('view.inventory');
+function afterLoanCreated() {
+  document.location.href = route('view.inventoryGuest');
+}
+
+function checkDomain(mailDomain){
+  if (mailDomain === "tec.mx" || mailDomain === "itesm.mx") {
+    return true
+  }
+  return false
 }
