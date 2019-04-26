@@ -17,7 +17,7 @@ class LoansExport implements FromQuery, WithHeadings
       // If provided, filter loans by date
       $this->filterDate = $this->getFilterDate($query['dates']);
       // If provided, filter loans by solicitant type
-      $this->filterSolicitant = $this->getFilterSolicitant($query['solicitants']);
+      $this->filterSolicitant = $this->getLoanSolicitants($query['solicitants']);
       // If provided, filter loans by status
       $this->filterStatus = $this->getFilterStatus($query['status']);
     }
@@ -73,7 +73,7 @@ class LoansExport implements FromQuery, WithHeadings
       }
     }
 
-    private function getFilterSolicitant(array $data)
+    private function getLoanSolicitants(array $data)
     {
       // All solicitant types are required
       if($data["professor"] && $data["student"])
