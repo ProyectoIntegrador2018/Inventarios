@@ -165,7 +165,7 @@ function validateFields() {
   if (atPosition !== -1) {
     var domain = solicitantEmail.val().substring(atPosition + 1);
     var mail = solicitantEmail.val().substring(0, atPosition);
-    
+
     if (isStudent) {
       if (mail.substring(0,1) === "A" && mail.length === 9 && checkDomain(domain) && mail === solicitantID.val()) {
         solicitantEmail.removeClass("is-invalid");
@@ -284,7 +284,7 @@ function validateFields() {
 
       }
     });
-  } 
+  }
 }
 
 function cleanInputSpaces(htmlInput) {
@@ -304,8 +304,12 @@ function checkEmpty(htmlInput) {
   }
 }
 
-function afterLoanCreated() {
+function adminAfterLoanCreated() {
   document.location.href = route('view.inventory');
+}
+
+function afterLoanCreated() {
+  document.location.href = route('view.inventoryGuest');
 }
 
 function checkDomain(mailDomain){
