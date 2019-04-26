@@ -75,28 +75,7 @@ class LoansExport implements FromQuery, WithHeadings
 
     private function getFilterSolicitant(array $data)
     {
-
       if (includedAllSolicitants($data))? return 'TRUE': return singleSolicitant($data) ;
-
-      // All solicitant types are required
-      // if($data["professor"] && $data["student"])
-      // {
-      //   return 'TRUE';
-      // }
-      // else
-      // {
-      //   // Just filter the solicitants that are professors
-      //   if($data["professor"])
-      //   {
-      //     return 'applicants.applicant_id LIKE \'L%\'';
-      //   }
-      //
-      //   // Just filter the solicitants that are students
-      //   if($data["student"])
-      //   {
-      //     return 'applicants.applicant_id LIKE \'A%\'';
-      //   }
-      // }
     }
 
     private function getFilterStatus(array $data)
