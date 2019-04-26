@@ -17,7 +17,7 @@ class LoansExport implements FromQuery, WithHeadings
       // If provided, filter loans by date
       $this->filterDate = $this->getFilterDate($query['dates']);
       // If provided, filter loans by solicitant type
-      $this->filterSolicitant = $this->getLoanSolicitants($query['solicitants']);
+      $this->filterSolicitant = $this->getFilterSolicitant($query['solicitants']);
       // If provided, filter loans by status
       $this->filterStatus = $this->getFilterStatus($query['status']);
     }
@@ -73,27 +73,30 @@ class LoansExport implements FromQuery, WithHeadings
       }
     }
 
-    private function getLoanSolicitants(array $data)
+    private function getFilterSolicitant(array $data)
     {
-      // All solicitant types are required
-      if($data["professor"] && $data["student"])
-      {
-        return 'TRUE';
-      }
-      else
-      {
-        // Just filter the solicitants that are professors
-        if($data["professor"])
-        {
-          return 'applicants.applicant_id LIKE \'L%\'';
-        }
 
-        // Just filter the solicitants that are students
-        if($data["student"])
-        {
-          return 'applicants.applicant_id LIKE \'A%\'';
-        }
-      }
+      if (includedAllSolicitants($data))? return 'TRUE': return singleSolicitant($data) ;
+
+      // All solicitant types are required
+      // if($data["professor"] && $data["student"])
+      // {
+      //   return 'TRUE';
+      // }
+      // else
+      // {
+      //   // Just filter the solicitants that are professors
+      //   if($data["professor"])
+      //   {
+      //     return 'applicants.applicant_id LIKE \'L%\'';
+      //   }
+      //
+      //   // Just filter the solicitants that are students
+      //   if($data["student"])
+      //   {
+      //     return 'applicants.applicant_id LIKE \'A%\'';
+      //   }
+      // }
     }
 
     private function getFilterStatus(array $data)
@@ -112,6 +115,26 @@ class LoansExport implements FromQuery, WithHeadings
           $query = "{$query} loans.status = '{$status}'";
         }
         return preg_replace($pattern, $substitute, $query);;
+      }
+    }
+
+    private function includedAllSolicitants(array $data)
+    {
+      return if($data["professor"] && $data["student"]);
+    }
+
+    private function singleSolicitant(array $data)
+    {
+      // Just filter the solicitants that are professors
+      if($data["professor"])
+      {
+        return 'applicants.applicant_id LIKE \'L%\'';
+      }
+
+      // Just filter the solicitants that are students
+      if($data["student"])
+      {
+        return 'applicants.applicant_id LIKE \'A%\'';
       }
     }
 }
