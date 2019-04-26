@@ -120,6 +120,19 @@ class LoanController extends Controller
         case "Taken":
         // $loanStatus = "Received";
         Loan::where('id', $loanID)->update(['status' => "Received"]);
+          $device_ids = DB::select("
+            SELECT d.id
+            FROM loans l JOIN loan_device ld ON l.id = ld.loan_id
+            JOIN devices d ON d.id = ld.device_id
+            JOIN states s ON s.device_id = d.id
+            WHERE l.id = '$loanID';
+          ");
+
+          foreach ($device_ids as $device_id) {
+            $newStatus = "Available";
+            State::where('device_id', $device_id->id)
+              ->update(['state' => $newStatus]);
+          }
         break;
         case "Received":
         break;
@@ -255,7 +268,21 @@ class LoanController extends Controller
       $loanStatus = $request->input('loanStatus');
 
       Loan::where('id', $loanID)->update(['status' => "Cancelled"]);
+      
+      $device_ids = DB::select("
+        SELECT d.id
+        FROM loans l JOIN loan_device ld ON l.id = ld.loan_id
+        JOIN devices d ON d.id = ld.device_id
+        JOIN states s ON s.device_id = d.id
+        WHERE l.id = '$loanID';
+      ");
 
+      foreach ($device_ids as $device_id) {
+        $newStatus = "Available";
+        State::where('device_id', $device_id->id)
+          ->update(['state' => $newStatus]);
+      }
+      
       $response["status"] = 1;
       $response["message"] = "Loan successfully cancelled";
       return json_encode($response);
