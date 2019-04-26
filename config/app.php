@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => 'Laboratorios Tec',
 
     /*
     |--------------------------------------------------------------------------
@@ -181,6 +181,10 @@ return [
          * Laravel Excel
          */
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        /*
+         * Ziggy
+         */
+
         Tightenco\Ziggy\ZiggyServiceProvider::class,
     ],
 

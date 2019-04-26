@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Loan;
+use App\State;
+
 use DB;
 
 class AboutController extends Controller
@@ -27,4 +30,58 @@ class AboutController extends Controller
 
     return view('inventory-guest')->with('devices', $devices)->with('quantity', $quantity);
   }
+
+  public function acceptLoan($loanID){
+    
+    $defaultMessage = "La responsabilidad del préstamo ha sido aceptada.";
+
+    // $loanID = $request->input('loanID');
+
+    $loanToCheck = DB::select("
+      SELECT status
+      FROM loans
+      WHERE id = '$loanID'
+    ");
+
+    $statusToVerify = $loanToCheck[0]->status;
+
+    //Si el estado actual de el préstamo es cancelado no permirtir hacer la siguiente linea
+
+    if($statusToVerify == "Pending"){
+      
+      Loan::where('id', $loanID)->update(['status' => "New"]);
+      
+    }else{
+
+      // Hacer else para cuando se tenga que devolver el mensaje [Hacer variable de mensaje y no dejar el mensaje de abajo estático]
+      
+      $defaultMessage = "El préstamo seleccionado no es nuevo, la operación no es posible de realizar.";
+
+    }
+
+    return view('loan-accepted')->with('loanID', $loanID)->with('message', $defaultMessage);
+  }
+
+  public function declineLoan($loanID){
+    
+    Loan::where('id', $loanID)->update(['status' => "Cancelled"]);
+
+    $device_ids = DB::select("
+      SELECT d.id
+      FROM loans l JOIN loan_device ld ON l.id = ld.loan_id
+      JOIN devices d ON d.id = ld.device_id
+      JOIN states s ON s.device_id = d.id
+      WHERE l.id = '$loanID';
+    ");
+
+    foreach ($device_ids as $device_id) {
+      State::where('device_id', $device_id->id)->update(['state' => "Available"]);
+    }
+
+    $defaultMessage = "El préstamo ha sido cancelado y los dispositivos han regresado a estar disponibles.";
+
+    return view('loan-declined')->with('loanID', $loanID)->with('message', $defaultMessage);
+
+  }
+
 }

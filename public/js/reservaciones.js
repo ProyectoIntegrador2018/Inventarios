@@ -208,6 +208,12 @@ function validateFields() {
     var responsableEmail = $('#txb_emailResponsable').val();
     var isStudent        = $("#chb_esEstudiante").is(":checked");
 
+    var student = 0;
+
+    if(isStudent == true){
+      student = 1;
+    }
+
     // alert(quantity + " " + reason + " " + dates + applicant + " " + applicantID + " " + email + " " + bachelor + " " + responsableName + " " + responsableEmail);
 
     // Hacer validaciones después
@@ -224,7 +230,7 @@ function validateFields() {
       bachelor         : bachelor,
       responsableName  : responsableName,
       responsableEmail : responsableEmail,
-      isStudent        : isStudent
+      isStudent        : student
     };
 
     $.ajax({

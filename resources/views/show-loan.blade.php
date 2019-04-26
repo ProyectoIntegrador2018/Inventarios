@@ -4,7 +4,7 @@
   <!-- Vista principal -->
   <main role="main" class="container bg-white">
     <div class="col-md-12">
-      <h1 class="text-center">Busca tu solicitud de prestamo</h1>
+      <h1 class="text-center">Busca tu solicitud de préstamo</h1>
     </div>
     <!-- Barra de búsqueda -->
     <div class="col-md-12 mt-5 input-group align-items-center">
@@ -350,6 +350,10 @@
             htmlTarget.addClass("badge-danger");
             break;
 
+          case 'Pendiente':
+            htmlTarget.addClass("badge-dark");
+            break;
+
           default:
             htmlTarget.addClass("badge-dark");
             break;
@@ -390,6 +394,10 @@
             translated = "Expired";
             break;
 
+            case 'Pendiente':
+            translated = "Pending";
+            break;
+
             default:
             translated = "Sin estado";
             break;
@@ -425,6 +433,10 @@
 
             case 'Expired':
             translated = "Expirado";
+            break;
+
+            case 'Pending':
+            translated = "Pendiente";
             break;
 
             default:
