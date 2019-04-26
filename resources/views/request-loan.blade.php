@@ -183,7 +183,12 @@
               </div>
               <div class="modal-footer">
                 <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                @auth
+                <button onclick="adminAfterLoanCreated()" type="button" class="btn btn-primary">Continuar</button>
+                @endauth
+                @guest
                 <button onclick="afterLoanCreated()" type="button" class="btn btn-primary">Continuar</button>
+                @endguest
               </div>
             </div>
           </div>
