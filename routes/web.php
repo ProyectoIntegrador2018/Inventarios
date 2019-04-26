@@ -16,9 +16,11 @@ Auth::routes();
 // Navigation Routes
 Route::get('/', 'AboutController@viewAbout')->name('view.about');
 Route::get('/dispositivos', 'AboutController@getInventory')->name('view.inventoryGuest');
+Route::get('/dispositivos/buscar', 'DeviceController@searchDevice')->name('device.search');
 Route::get('/inicio', 'HomeController@viewHome')->name('home');
 Route::get('/alta', 'HomeController@viewCreateDevice')->name('view.createDevice');
 Route::get('/inventario', 'InventoryController@viewInventory')->name('view.inventory');
+Route::get('/inventario/buscar', 'DeviceController@searchDevice')->name('device.search');
 Route::get('/{deviceModel}/solicitarPrestamo', 'LoanController@viewLoanRequest')->name('view.requestLoan');
 Route::get('/{deviceModel}/detalles', 'HomeController@getDeviceDetails')->name('view.deviceDetails');
 Route::get('/prestamos', 'HomeController@viewLoansList')->name('view.loansList');

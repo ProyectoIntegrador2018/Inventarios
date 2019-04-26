@@ -112,7 +112,6 @@
     verifyInputs();
     if(formIsValid()) {
       inputs = getInputs();
-      console.log(inputs);
       var url = route('report.get.loans')+ "?" + $.param(inputs);
       window.location = url;
     }

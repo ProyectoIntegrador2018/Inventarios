@@ -18,7 +18,8 @@ use Carbon\Carbon;
 
 class DeviceController extends Controller
 {
-    public function createDevice(Request $request){
+    public function createDevice(Request $request)
+    {
 
         $finalMessage = "";
         $finalStatus = 0;
@@ -582,7 +583,8 @@ class DeviceController extends Controller
         // return json_encode($response);
     }
 
-    public function editDevice(Request $request){
+    public function editDevice(Request $request)
+    {
         $finalMessage = "vvv";
         $finalStatus = 0;
 
@@ -721,5 +723,92 @@ class DeviceController extends Controller
           GROUP BY d.model;
       ");
       return array($deviceModels);
+    }
+
+    public function searchDevice(Request $request)
+    {
+      $word = $request["word"];
+      $tags = $request["tags"];
+      $tagSize = (int)$request["tagsQuantity"];
+      if ($tagSize == 0)
+      {
+        $tags = array();
+      }
+      $searchTag = $this->getQueryForTags($tags);
+      $queryForDevices = $this->getQueryForDevices($tagSize);
+
+      $devices = DB::select("
+        WITH filtered_tags AS (
+          SELECT t.id
+          FROM tags t
+          WHERE ({$searchTag})
+        ),
+        match_tagged_devices AS (
+          SELECT DISTINCT dt.device_id
+          FROM device_tag dt
+          JOIN filtered_tags ft ON dt.tag_id = ft.id
+        )
+
+        SELECT COUNT(d.id) as quantity, d.name, d.brand, d.model
+        FROM devices d
+        JOIN match_tagged_devices mt ON d.id = mt.device_id
+        JOIN states s ON d.id = s.device_id
+        WHERE s.state = 'Available' AND
+              (d.name LIKE '%{$word}%' OR d.brand LIKE '%{$word}%' OR d.model LIKE '%{$word}%' )
+              {$queryForDevices}
+        GROUP BY d.name, d.brand, d.model
+      ");
+
+      return $this->viewInventory($devices);
+    }
+
+    private function getQueryForTags(array $tags)
+    {
+
+      $pattern = '/\'+(\s+)/i';
+      $substitute = '${0} OR ';
+      $query = "TRUE";
+
+      if (count($tags) > 0)
+      {
+        $query = "";
+        foreach($tags as $tag)
+        {
+          $query = "{$query} t.tag = '{$tag}'";
+        }
+        $query = preg_replace($pattern, $substitute, $query);
+      }
+
+      return $query;
+    }
+
+    private function getQueryForDevices($tagSize)
+    {
+      $query = "";
+
+      if ($tagSize > 0)
+      {
+        $query = " AND {$tagSize} = (SELECT COUNT(dt.device_id)
+                                    FROM device_tag dt
+                                    JOIN filtered_tags ft ON dt.tag_id = ft.id
+                                    WHERE dt.device_id = d.id)";
+      }
+
+      return $query;
+    }
+
+    private function viewInventory($devices)
+    {
+      $quantity = count($devices);
+      if (Auth::check())
+      {
+        $viewFile = 'inventory';
+      }
+      else
+      {
+        $viewFile = 'inventory-guest';
+      }
+      return view($viewFile)->with('devices', $devices)
+                                    ->with('quantity', $quantity);
     }
 }
