@@ -26,6 +26,20 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        // Here are going to be the functions to be executed every certain amount of time
+        // $schedule->call('App\Http\Controllers\AboutController@FunctionUsedInSchedule')->everyMinute();
+
+        $schedule->call(function () {
+            $controller = new \App\Http\Controllers\AboutController();
+            $controller->sendLoanReminders();
+        })->everyMinute();
+
+        // $schedule->call(function () {
+        //     $controller = new \App\Http\Controllers\AboutController();
+        //     $controller->FunctionUsedInSchedule();
+        // })->daily();
+        
     }
 
     /**
