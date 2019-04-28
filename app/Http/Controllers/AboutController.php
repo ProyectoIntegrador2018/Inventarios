@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Mail\LoanReminder;
+
 use App\Loan;
 use App\State;
+
+use Mail;
 
 use DB;
 
@@ -81,6 +85,40 @@ class AboutController extends Controller
     $defaultMessage = "El préstamo ha sido cancelado y los dispositivos han regresado a estar disponibles.";
 
     return view('loan-declined')->with('loanID', $loanID)->with('message', $defaultMessage);
+
+  }
+
+  public function sendLoanReminders(){
+    
+    /*
+    Mail::send([], [], function($message){
+
+      $message->from('prueba@laravel.com', 'Prueba de Laravel');
+
+      $message->to('luis_alfonso_96@hotmail.com');
+
+      $message->replyTo('luisandroid09@gmail.com', 'Luis Rojo');
+
+      $message->subject('Prueba para ver si llega el mensaje');
+
+      $message->setBody('Llegó', 'text/html');
+
+    });
+    */
+
+    $remaindersToSend = DB::select("
+      SELECT l.id, l.end_date, ap.name, ap.email
+      FROM loans l
+      JOIN applicants ap ON l.applicant_id = ap.id
+      WHERE end_date >= current_date
+      ;
+    ");
+
+    foreach ($remaindersToSend as $remainderToSend) {
+      
+      \Mail::to($remainderToSend->email)->send(new LoanReminder($remainderToSend->id, $remainderToSend->end_date, $remainderToSend->name, $remainderToSend->email));
+      
+    }
 
   }
 

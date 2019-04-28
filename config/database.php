@@ -73,19 +73,17 @@ return [
             'schema' => 'public',
             'sslmode' => 'prefer',
         ],
-        /*
-        'pgsql' => [
-           'driver'   => 'pgsql',
-           'host'     => 'ec2-23-23-184-76.compute-1.amazonaws.com',
-           'database' => 'd5b2gsuddb5o9o',
-           'username' => 'livkilqznncasp',
-           'password' => '1e4585eda607589866143d29d7a2422492904acc48d2a12d058c2c76b22ac529',
-           'charset'  => 'utf8',
-           'prefix'   => '',
-           'schema'   => 'public',
-       ],
-        */
 
+    //     'pgsql' => [
+    //        'driver'   => 'pgsql',
+    //        'host'     => 'ec2-23-23-184-76.compute-1.amazonaws.com',
+    //        'database' => 'd5b2gsuddb5o9o',
+    //        'username' => 'livkilqznncasp',
+    //        'password' => '1e4585eda607589866143d29d7a2422492904acc48d2a12d058c2c76b22ac529',
+    //        'charset'  => 'utf8',
+    //        'prefix'   => '',
+    //        'schema'   => 'public',
+    //    ],
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
