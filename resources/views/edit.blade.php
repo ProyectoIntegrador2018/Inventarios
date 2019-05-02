@@ -172,7 +172,7 @@
       }
     });
 
-    $(document).on('click', '#btn-edit', function () {
+    $('#btn-edit').on('click', function () {
 
       // Things to verify before allowing to send information to the back-end:
       /*

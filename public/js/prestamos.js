@@ -89,7 +89,7 @@ $(document).ready(function() {
         }
 
         $('#txt_dispositivo_nombre').html(dbQueryLoans[i].devicename);
-        $('#bdg_dispositivo_status').html(dbQueryLoans[i].devicestate);
+        $('#bdg_dispositivo_status').html(statesTraductor(dbQueryLoans[i].devicestate));
         $('#txt_dispositivo_serie').html(dbQueryLoans[i].deviceserialnumber);
         $('#txt_dispositivo_cantidad').html(dbQueryLoans[i].devicequantity);
 

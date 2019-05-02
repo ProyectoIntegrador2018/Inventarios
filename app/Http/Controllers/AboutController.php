@@ -9,6 +9,8 @@ use App\Mail\LoanReminder;
 use App\Loan;
 use App\State;
 
+use App\Mail\CanceledLoanByProfessor;
+
 use Mail;
 
 use DB;
@@ -47,19 +49,26 @@ class AboutController extends Controller
       WHERE id = '$loanID'
     ");
 
-    $statusToVerify = $loanToCheck[0]->status;
+    if(count($loanToCheck) != 0){
+      $statusToVerify = $loanToCheck[0]->status;
 
-    //Si el estado actual de el préstamo es cancelado no permirtir hacer la siguiente linea
+      //Si el estado actual de el préstamo es cancelado no permirtir hacer la siguiente linea
 
-    if($statusToVerify == "Pending"){
-      
-      Loan::where('id', $loanID)->update(['status' => "New"]);
-      
+      if($statusToVerify == "Pending"){
+        
+        Loan::where('id', $loanID)->update(['status' => "New"]);
+        
+      }else{
+
+        // Hacer else para cuando se tenga que devolver el mensaje [Hacer variable de mensaje y no dejar el mensaje de abajo estático]
+        
+        $defaultMessage = "El préstamo seleccionado no es nuevo, la operación no es posible de realizar.";
+
+      }
+
     }else{
 
-      // Hacer else para cuando se tenga que devolver el mensaje [Hacer variable de mensaje y no dejar el mensaje de abajo estático]
-      
-      $defaultMessage = "El préstamo seleccionado no es nuevo, la operación no es posible de realizar.";
+      $defaultMessage = "El préstamo seleccionado no ha podido ser cancelado, posiblemente ya fue cancelado. Verificar su estado en el buscador de préstamos.";
 
     }
 
@@ -68,21 +77,55 @@ class AboutController extends Controller
 
   public function declineLoan($loanID){
     
-    Loan::where('id', $loanID)->update(['status' => "Cancelled"]);
+    $defaultMessage = "El préstamo ha sido cancelado y los dispositivos han regresado a estar disponibles.";
 
-    $device_ids = DB::select("
-      SELECT d.id
-      FROM loans l JOIN loan_device ld ON l.id = ld.loan_id
-      JOIN devices d ON d.id = ld.device_id
-      JOIN states s ON s.device_id = d.id
-      WHERE l.id = '$loanID';
+    $loanToCheck = DB::select("
+      SELECT status
+      FROM loans
+      WHERE id = '$loanID'
     ");
 
-    foreach ($device_ids as $device_id) {
-      State::where('device_id', $device_id->id)->update(['state' => "Available"]);
-    }
+    if(count($loanToCheck) != 0){
 
-    $defaultMessage = "El préstamo ha sido cancelado y los dispositivos han regresado a estar disponibles.";
+      $statusToVerify = $loanToCheck[0]->status;
+
+      if($statusToVerify != "Cancelled"){
+
+        Loan::where('id', $loanID)->update(['status' => "Cancelled"]);
+
+        $device_ids = DB::select("
+          SELECT d.id
+          FROM loans l JOIN loan_device ld ON l.id = ld.loan_id
+          JOIN devices d ON d.id = ld.device_id
+          JOIN states s ON s.device_id = d.id
+          WHERE l.id = '$loanID';
+        ");
+
+        foreach ($device_ids as $device_id) {
+          State::where('device_id', $device_id->id)->update(['state' => "Available"]);
+        }
+        
+        $emailToSendMessage = DB::select("
+          SELECT a.name, a.email
+          FROM loans l
+          JOIN applicants a ON l.applicant_id = a.id
+          WHERE l.id = '$loanID';
+        ");
+
+        \Mail::to($emailToSendMessage[0]->email)->send(new CanceledLoanByProfessor($loanID, $emailToSendMessage[0]->name));
+
+      }else{
+
+        $defaultMessage = "El préstamo seleccionado no ha podido ser cancelado, posiblemente ya fue cancelado. Verificar su estado en el buscador de préstamos.";
+
+      }
+
+    }else{
+      
+      $defaultMessage = "Operación no permitida, el préstamo no se encuentra registrado.";
+
+    }
+    
 
     return view('loan-declined')->with('loanID', $loanID)->with('message', $defaultMessage);
 

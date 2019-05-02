@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\LoanDetailsWithResponsable;
 use App\Mail\LoanDetailsWithoutResponsable;
 use App\Mail\LoanSeparatedToUser;
+use App\Mail\CanceledLoan;
 
 use Mail;
 
@@ -47,11 +48,29 @@ class LoanController extends Controller
       GROUP BY d.name, d.brand, d.model;
       ");
 
-      $modelInformation = $modelInformation[0];
+      if(count($modelInformation) > 0 ){
+        
+        $modelInformation = $modelInformation[0];
+        $quantity = count($serialNumbers);
+        return view('request-loan')->with('serialNumbers', $serialNumbers)->with('modelInformation', $modelInformation)->with('quantity', $quantity);
 
-      $quantity = count($serialNumbers);
+      }else{
 
-      return view('request-loan')->with('serialNumbers', $serialNumbers)->with('modelInformation', $modelInformation)->with('quantity', $quantity);
+        $modelInformationUnavailable = DB::select("
+        SELECT d.name, d.brand, d.model
+        FROM devices d JOIN states s
+        ON d.id = s.device_id
+        WHERE d.model = '$requestedDevice'
+        ");
+
+        $quantity = count($serialNumbers);
+
+        $modelInformationUnavailable = $modelInformationUnavailable[0]; 
+
+        return view('request-loan')->with('serialNumbers', [])->with('modelInformation', $modelInformationUnavailable)->with('quantity', $quantity);
+
+      }
+
     }
 
     public function setLoanStatus(Request $request)
@@ -314,6 +333,15 @@ class LoanController extends Controller
         State::where('device_id', $device_id->id)
           ->update(['state' => $newStatus]);
       }
+
+      $emailToSendMessage = DB::select("
+        SELECT a.name, a.email
+        FROM loans l
+        JOIN applicants a ON l.applicant_id = a.id
+        WHERE l.id = '$loanID';
+      ");
+
+      \Mail::to($emailToSendMessage[0]->email)->send(new CanceledLoan($loanID, $emailToSendMessage[0]->name));
       
       $response["status"] = 1;
       $response["message"] = "Loan successfully cancelled";

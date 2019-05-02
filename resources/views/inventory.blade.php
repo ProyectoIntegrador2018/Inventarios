@@ -15,6 +15,7 @@
       <div class="col">
         <!-- <div class="card-deck"> -->
           <!-- <div class="card-deck"> -->
+          <!--
           @if($quantity == 0)
             <div class="card">
               <div class="card-header">
@@ -28,7 +29,7 @@
                 @endauth
               </div>
             </div>
-          @endif
+          @endif-->
           @for($i = 1; $i <= $quantity; $i++)
             @if(($i % 4) == 1)
               <div class="card-deck">
@@ -37,8 +38,9 @@
             <div class="card">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{$devices[$i-1]->name}}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{{$devices[$i-1]->brand}}</h6>
-                <p class="card-text"></p>
+                <div><h6 class="card-subtitle mb-2 text-muted">{{$devices[$i-1]->brand}}</h6></div>
+                <div><h6 class="card-subtitle mb-2 text-muted">{{$devices[$i-1]->model}}</h6></div>
+                <!-- <p class="card-text"></p> -->
                 <div class="row mt-auto">
                   @auth
                   <div class="col">
@@ -46,7 +48,9 @@
                   </div>
                   @endauth
                   <div class="col">
+                    @if($devices[$i-1]->quantity > 0)
                     <a href="{{ route('view.requestLoan', $devices[$i-1]->model) }}" class="card-link">Apartar</a>
+                    @endif
                   </div>
                 </div>
               </div>

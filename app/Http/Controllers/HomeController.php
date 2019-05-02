@@ -202,6 +202,8 @@ class HomeController extends Controller
 
     public function getAllLoans()
     {
+      $id = Auth::user()->id;
+      
       $loans = DB::select("
       SELECT loans.id,
         loans.status,

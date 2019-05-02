@@ -67,7 +67,7 @@
                 <div class="row" id="info_dispositivo">
                   <div class="col-md-12"><h5>Dispositivo</h5></div>
                   <div class="col-md-6"><p id="txt_dispositivo_nombre"></p></div>
-                  <div class="col-md-6"><span class="badge-lg badge-pill" id="bdg_dispositivo_status"></span></div>
+                  <div class="col-md-6"><div class="badge-lg badge-pill" id="bdg_dispositivo_status"></div></div>
                   <div class="col-md-6"><p id="txt_dispositivo_cantidad"></p></div>
                   <div class="col-md-6"><p id="txt_dispositivo_serie"></p></div>
 

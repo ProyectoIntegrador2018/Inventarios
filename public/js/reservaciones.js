@@ -149,7 +149,7 @@ function validateFields() {
 
   // Individual and specific rules for each input
   //--------------------------- Rules for QUANTITY ---------------------------//
-  if (quantity.val() <= 0 || quantity.hasClass('is-invalid')) {
+  if (quantity.val() <= 0 || quantity.hasClass('is-invalid') || parseInt(document.getElementById('h_cantidad_numero').innerText) < parseInt($('#txb_cantidad').val())) {
     quantity.addClass("is-invalid");
   } else {
     quantity.removeClass("is-invalid");
@@ -173,7 +173,7 @@ function validateFields() {
         solicitantEmail.addClass("is-invalid");
       }
     } else {
-      if (mail.substring(0,1) === "L" && mail.length === 9 && checkDomain(domain)) {
+      if (checkDomain(domain)) {
         solicitantEmail.removeClass("is-invalid");
       } else {
         solicitantEmail.addClass("is-invalid");
@@ -210,6 +210,17 @@ function validateFields() {
         formIsCorrect = false;
       }
     }
+  }
+
+  // Validation of quantity requested among the quantity of available devices
+  //var availableQuantity = $('#h_cantidad_numero').val();
+  var availableQuantity = parseInt(document.getElementById('h_cantidad_numero').innerText);
+
+  console.log(availableQuantity);
+  console.log($('#txb_cantidad').val());
+
+  if(availableQuantity < parseInt($('#txb_cantidad').val())){
+    formIsCorrect = false;
   }
 
   // If every input doesn't have the "is-invalid" class, then everything is ok

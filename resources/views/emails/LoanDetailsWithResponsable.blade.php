@@ -20,10 +20,12 @@
         <div>A continuación puede hacer uso de los siguientes enlaces para aceptar o rechazar la responsabilidad de este préstamo:</div>
         <br>
         <div>
-            <a href='http://127.0.0.1:8000/acceptLoanResponsability/{{$loanID}}'>Aceptar responsabilidad del préstamo</a>
+            <!-- <a href='http://127.0.0.1:8000/acceptLoanResponsability/{{$loanID}}'>Aceptar responsabilidad del préstamo</a> -->
+            <a href='http://inventariosdecomputacion.herokuapp.com/acceptLoanResponsability/{{$loanID}}'>Aceptar responsabilidad del préstamo</a>
             <br>
             <br>
-            <a href='http://127.0.0.1:8000/declineLoanResponsability/{{$loanID}}'>Declinar responsabilidad del préstamo</a>
+            <!-- <a href='http://127.0.0.1:8000/declineLoanResponsability/{{$loanID}}'>Declinar responsabilidad del préstamo</a> -->
+            <a href='http://inventariosdecomputacion.herokuapp.com/declineLoanResponsability/{{$loanID}}'>Declinar responsabilidad del préstamo</a>
         </div>
         <br>
         <div>Saludos,</div>

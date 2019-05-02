@@ -490,11 +490,13 @@ class DeviceController extends Controller
 
                         $lastDeviceAddedID = DB::table('devices')->where(
                             [
-                                ['serial_number', '=', $serialNumbersSeparated[$x]],
+                                // ['serial_number', '=', $serialNumbersSeparated[$x]],
                                 ['model', '=', $model]
                             ]
-                            )->get(['id']);
-                        $lastDeviceAddedID = $lastDeviceAddedID[0]->id;
+                        )->orderBy('id', 'DESC')->first();
+                        // ->get(['id'])
+
+                        $lastDeviceAddedID = $lastDeviceAddedID->id;
 
                         DB::table('states')->insert(
                             [

@@ -364,7 +364,7 @@
               $('#txb_modelo').val('');
               $('#txb_cantidad').val(0);
               $('#txb_noSeries').val('');
-              $('#dpm_edificio').text('Elija uno');
+              //$('#dpm_edificio').text('Elija uno');
               $('#txb_salon').val('');
               $('#txa_etiquetas').val('');
             }

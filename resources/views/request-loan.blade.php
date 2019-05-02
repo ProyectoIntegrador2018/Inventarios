@@ -28,6 +28,8 @@
               <h1 class="text-center">Solicitud de Préstamo</h1>
           </div>
           <!-- <div class="flex-center position-ref full-height"> -->
+          
+          <!-- Start of the section of requesting a loan -->
             <div class="container">
               <!-- Formulario -->
               <div class="row">
@@ -36,12 +38,17 @@
                     <div class="card-body" id="crd_detallesDispositivo">
                         <h2 class="card-title" id="h_nombreDispositivo">{{$modelInformation->name}}</h2>
                         <br>
-                        <h5 class="card-subtitle mb-2 text-muted" id="h_cantidad"><span style="color:black;">{{$quantity}}</span> dispositivos disponibles:</h5>
+                        <h5 class="card-subtitle mb-2 text-muted" id="h_cantidad"><span style="color:black;" id="h_cantidad_numero">{{$quantity}}</span> dispositivos disponibles:</h5>
                         <br>
-                        @foreach($serialNumbers as $serialNumber)
-                        <h6 class="card-subtitle mb-2 text-muted" id="h_noSerie"><b>Número de Serie:</b> <span style="color:black;">{{$serialNumber->serial_number}}</span></h6>
-                        @endforeach
-                        <br>
+                        
+                          @foreach($serialNumbers as $serialNumber)
+                            @if($serialNumber->serial_number != "")
+                              <h6 class="card-subtitle mb-2 text-muted" id="h_noSerie"><b>Número de Serie:</b> <span style="color:black;">{{$serialNumber->serial_number}}</span></h6>
+                            @else
+                              <h6 class="card-subtitle mb-2 text-muted" id="h_noSerie"><b>Número de Serie:</b> <span style="color:black;">No disponible</span></h6>
+                            @endif
+                          @endforeach
+                          <br>
                         <h6 class="card-subtitle mb-2 text-muted" id="h_marca"><b>Marca:</b> <span style="color:black;">{{$modelInformation->brand}}</span></h6>
                         <br>
                         <h6 class="card-subtitle mb-2 text-muted"><b>Modelo:</b> <span id="h_modelo" style="color:black;">{{$modelInformation->model}}</span></h6>
@@ -49,6 +56,17 @@
                 </div>
 
                 <!-- Reservación -->
+                @if($quantity == 0)
+                  <div class="col-md-8 card border-top-0 border-bottom-0 border-right-0 rounded-0">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <h5 style="color:red;">El dispositivo no se encuntra disponible para ser reservado</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                @else
                 <div class="col-md-8 card border-top-0 border-bottom-0 border-right-0 rounded-0">
                   <div class="card-body">
                     <!-- Reservación -->
@@ -61,7 +79,7 @@
                         <label for="firstName">Cantidad</label>
                         <input type="number" class="form-control" id="txb_cantidad" placeholder="" value="" required="">
                         <div class="invalid-feedback">
-                          Por favor ingrese una cantidad mayor a 1
+                          Verifique la cantidad de dispositivos solicitada
                         </div>
                       </div>
 
@@ -162,6 +180,10 @@
             </div>
           <!-- </div> -->
         <br>
+        @endif
+        
+        <!-- End of the section of requesting a loan -->
+
         </main>
 
         <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">

@@ -13,7 +13,8 @@
         <br>
         <div>Si tienes dudas sobre la información del préstamo puedes volver a consultar la información con el identificador proporcionado en la siguiente liga:</div>
         <br>
-        <a href="http://127.0.0.1:8000/buscar-prestamo">Mis préstamos<a>
+        <!-- <a href="http://127.0.0.1:8000/buscar-prestamo">Mis préstamos<a> -->
+        <a href="http://inventariosdecomputacion.herokuapp.com/buscar-prestamo">Mis préstamos<a>
         <br><br>
         <div>Saludos,</div>
         <br>
