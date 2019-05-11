@@ -7,13 +7,10 @@ $(document).ready(function() {
     type : 'GET',
     dataType: 'json',
     success: function (jsonReceived) {
-      console.log(jsonReceived);
-      // dbQueryLoans = jsonReceived;
-      console.log(jsonReceived.length);
       for(var i = 0; i < jsonReceived.length; i++){
         dbQueryLoans.push(jsonReceived[i]);
       }
-      console.log(dbQueryLoans);
+
       if(dbQueryLoans.length == 0){
         $("#noLoans").append(
         '<div class="card">' +
@@ -38,55 +35,18 @@ $(document).ready(function() {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
       });
   });
-
-  /*
-  $(".btn_detalles").on('click', loanDetails);
-  $(".btn_siguiente").on('click', loanChangeStatus);
-  $(".btn_cancelar").on('click', loanCancel);
-  */
-
 });
 
   function loadLoanDetailsInModal(loanID){
-    // alert("HOLA");
-    // alert(loanID);
-    /*
-    txt_solicitante_nombre
-    txt_solicitante_degree
-    txt_solicitante_email
-    txt_solicitante_id
-
-    txt_responsable_nombre
-    txt_responsable_email
-
-    txt_dispositivo_nombre
-    bdg_dispositivo_status
-    txt_dispositivo_cantidad
-    txt_dispositivo_serie
-
-    txt_dispositivo_inicio
-    txt_dispositivo_fin
-    txt_dispositivo_motivo
-    */
     for(var i = 0; i < dbQueryLoans.length; i++){
       if(loanID == dbQueryLoans[i].id){
-        console.log(dbQueryLoans[i]);
         $('#txt_solicitante_nombre').html(dbQueryLoans[i].solicitantname);
         $('#txt_solicitante_degree').html(dbQueryLoans[i].solicitantdegree);
         $('#txt_solicitante_email').html(dbQueryLoans[i].solicitantemail);
         $('#txt_solicitante_id').html(dbQueryLoans[i].solicitantid);
 
-        if(dbQueryLoans[i].responsablename == null){
-          $('#txt_responsable_nombre').html("Sin responsable");
-        }else{
-          $('#txt_responsable_nombre').html(dbQueryLoans[i].responsablename);
-        }
-
-        if(dbQueryLoans[i].responsableemail == null){
-          $('#txt_responsable_email').html("Sin correo de responsable");
-        }else{
-          $('#txt_responsable_email').html(dbQueryLoans[i].responsableemail);
-        }
+        $('#txt_responsable_nombre').html(setNotApplicableMessage(dbQueryLoans[i].responsablename));
+        $('#txt_responsable_email').html(setNotApplicableMessage(dbQueryLoans[i].responsableemail));
 
         $('#txt_dispositivo_nombre').html(dbQueryLoans[i].devicename);
         $('#bdg_dispositivo_status').html(statesTraductor(dbQueryLoans[i].devicestate));
@@ -100,65 +60,15 @@ $(document).ready(function() {
     }
   }
 
-function loanDetails() {
-  // Variable declaration
-  var solicitant = {  id: $("#txt_solicitante_id"),
-                      name: $("#txt_solicitante_nombre"),
-                      degree: $("#txt_solicitante_degree"),
-                      email: $("#txt_solicitante_email")};
-
-  var responsable = { exists: true,
-                      name: $("#txt_responsable_nombre"),
-                      email: $("#txt_responsable_email")};
-
-  var device = {      name: $("#txt_dispositivo_nombre"),
-                      status: $("#bdg_dispositivo_status"),
-                      quantity: $("#txt_dispositivo_cantidad"),
-                      serial: $("#txt_dispositivo_serie"),
-                      start: $("#txt_dispositivo_inicio"),
-                      end: $("#txt_dispositivo_fin"),
-                      purpose: $("#txt_dispositivo_motivo"),
-                      };
-
-  var loanID = $(this).parent().parent().parent().attr('id')
-
-  console.log(loanID);
-
-  // Search on DB for the full details of a device with the given id
-  // ...
-
-  // Fill in the modal with the rest of the details
-  solicitant.id.text("A01234567");
-  solicitant.name.text("JUAN PEREZ");
-  solicitant.degree.text("ABC");
-  solicitant.email.text("A01234567@itesm.mx");
-
-  responsable.name.text("PROFESOR X");
-  responsable.email.text("x.profesor@itesm.mx");
-
-  var dbQuerySerials = ["ABC12-DEF34-GHI56", "JKL12-MNO34-PQR56", "STU12-VWX34-YZZ56"];
-  var dbQueryStatus = "Nueva solicitud";
-  var dbQueryQuantity = 1;
-
-  device.name.text("DISPOSITIVO BLABLABLA");
-  setStatus(dbQueryStatus, device.status);
-  device.quantity.text("Cantidad pedidos: " + dbQueryQuantity);
-  setSerialNumbers(dbQuerySerials, device.serial);
-  device.start.text("01/15/2019");
-  device.end.text("01/18/2019");
-  device.purpose.text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque congue euismod maximus. Proin nec augue non lectus vehicula faucibus. Fusce iaculis congue dui vel commodo. In vitae leo arcu. Nullam neque turpis, consectetur quis tristique at, aliquet sed neque.");
-  // If fail, show error
+function setNotApplicableMessage(info) {
+  if(info == null) {
+    return "No Aplica";
+  }else{
+    return info;
+  }
 }
 
 function loanCancel (loanID, loanStatus) {
-
-  console.log("CANCELAR");
-  // Get the loan ID to make the query
-  // var loanID = $(this).parent().parent().parent().attr('id');
-
-  // Set the state to cancelled
-  // var currentStatus = 'Cancelado';
-
   // Make call to DB and update loan with 'nextStatus' and 'loanID'
   var data = {
     _token     : $('meta[name="csrf-token"]').attr('content'),
@@ -166,96 +76,16 @@ function loanCancel (loanID, loanStatus) {
     loanStatus : loanStatus
   };
 
-  console.log(loanStatus);
-
-  console.log(data);
-
-  $.ajax({
-    url : route('loan.cancel'),
-    type : 'POST',
-    data: data,
-    dataType: 'json',
-    success: function (jsonReceived) {
-
-      console.log(jsonReceived);
-      if(jsonReceived.status == 1){
-        console.log("Se canceló el préstamo");
-        location.reload();
-      }else{
-        console.log("No se canceló el préstamo");
-      }
-    }
-
-  });
+  callAjax(route('loan.cancel'), data);
 }
 
 function fillLoanTable(dbQueryLoans) {
-  console.log(dbQueryLoans);
   // Variable declaration
   var table = $("#tbl_prestamos");
 
   // Fetch from DB all the loans
 
-  /*
-  var dbQueryLoans = [{ id: "1",
-                        solicitantName: "Miguel Angel Banda",
-                        responsableName: "Yolanda Martinez",
-                        deviceName: "iPhone 8",
-                        deviceQuantity: "2",
-                        status: "Nueva solicitud"},
-                      { id: "2",
-                        solicitantName: "Miguel Angel Banda",
-                        responsableName: "Yolanda Martinez",
-                        deviceName: "iPhone 8",
-                        deviceQuantity: "2",
-                        status: "Cancelado"},
-                      { id: "3",
-                        solicitantName: "Miguel Angel Banda",
-                        responsableName: "Yolanda Martinez",
-                        deviceName: "iPhone 8",
-                        deviceQuantity: "2",
-                        status: "Apartado"},
-                      { id: "4",
-                        solicitantName: "Miguel Angel Banda",
-                        responsableName: "Yolanda Martinez",
-                        deviceName: "iPhone 8",
-                        deviceQuantity: "2",
-                        status: "Prestado"},
-                      { id: "5",
-                        solicitantName: "Miguel Angel Banda",
-                        responsableName: "Yolanda Martinez",
-                        deviceName: "iPhone 8",
-                        deviceQuantity: "2",
-                        status: "Recibido"},
-                      { id: "6",
-                        solicitantName: "Miguel Angel Banda",
-                        responsableName: "Yolanda Martinez",
-                        deviceName: "iPhone 8",
-                        deviceQuantity: "2",
-                        status: "Expirado"},
-                      { id: "7",
-                        solicitantName: "Miguel Angel Banda",
-                        responsableName: "Yolanda Martinez",
-                        deviceName: "iPhone 8",
-                        deviceQuantity: "2",
-                        status: "Recibido tarde"},
-                      { id: "8",
-                        solicitantName: "Guillermo Mendoza Soni",
-                        responsableName: "Armandina Leal",
-                        deviceName: "Raspberry pi3",
-                        deviceQuantity: "6",
-                        status: "Nueva solicitud"},
-                      { id: "9",
-                        solicitantName: "Luis Rojo Sánchez",
-                        responsableName: "Elda Quiroga",
-                        deviceName: "Kinect v2",
-                        deviceQuantity: "1",
-                        status: "Nueva solicitud"},
-                    ];
-  */
-
-
-  // Inser each loan into a row
+  // Insert each loan into a row
   for (i = 0; i < dbQueryLoans.length; i++) {
     table.append(insertLoan(dbQueryLoans[i]))
   }
@@ -269,43 +99,6 @@ function setSerialNumbers(serials, htmlTarget) {
     }
   } else {
     htmlTarget.append("Este dispositivo no tiene número de serie.");
-  }
-}
-
-function setStatus(status, htmlTarget) {
-  htmlTarget.text(status);
-  switch (status) {
-    case 'Nueva solicitud':
-      htmlTarget.addClass("badge-primary");
-      break;
-
-    case 'Cancelado':
-      htmlTarget.addClass("badge-warning");
-      break;
-
-    case 'Apartado':
-      htmlTarget.addClass("badge-secondary");
-      break;
-
-    case 'Prestado':
-      htmlTarget.addClass("badge-secondary");
-      break;
-
-    case 'Recibido':
-      htmlTarget.addClass("badge-success");
-      break;
-
-    case 'Recibido tarde':
-      htmlTarget.addClass("badge-info");
-      break;
-
-    case 'Expirado':
-      htmlTarget.addClass("badge-danger");
-      break;
-
-    default:
-      htmlTarget.addClass("badge-dark");
-      break;
   }
 }
 
@@ -328,88 +121,22 @@ function insertLoan(loan) {
   return row + data + "</tr>"
 }
 
-function statesTraductor(stateInEnglish){
-
-  var stateInSpanish = '';
-
-  switch (stateInEnglish) {
-
-    case 'New':
-      stateInSpanish = "Nueva solicitud";
-      break;
-
-    case 'Cancelled':
-      stateInSpanish = "Cancelado";
-      break;
-
-    case 'Separated':
-      stateInSpanish = "Apartado";
-      break;
-
-    case 'Taken':
-      stateInSpanish = "Prestado";
-      break;
-
-    case 'Received':
-      stateInSpanish = "Recibido";
-      break;
-
-    case 'Received late':
-      stateInSpanish = "Recibido tarde";
-      break;
-
-    case 'Expired':
-      stateInSpanish = "Expirado";
-      break;
-
-    default:
-      stateInSpanish = "Pendiente";
-      break;
+function statesTraductor(state){
+  var stateDictionary = {
+    "New":            "Nueva solicitud",
+    "Cancelled":      "Cancelado",
+    "Separated":      "Apartado",
+    "Taken":          "Prestado",
+    "Received":       "Recibido",
+    "Received late":  "Recibido tarde",
+    "Expired":        "Expirado"
   }
 
-  return stateInSpanish;
-}
-
-function statesTraductorToEnglish(stateInSpanish){
-
-  var stateInEnglish = '';
-
-  switch (stateInSpanish) {
-
-    case 'Nueva solicitud':
-      stateInEnglish = "New";
-      break;
-
-    case 'Cancelado':
-      stateInEnglish = "Cancelled";
-      break;
-
-    case 'Apartado':
-      stateInEnglish = "Separated";
-      break;
-
-    case 'Prestado':
-      stateInEnglish = "Taken";
-      break;
-
-    case 'Recibido':
-      stateInEnglish = "Received";
-      break;
-
-    case 'Recibido tarde':
-      stateInEnglish = "Received late";
-      break;
-
-    case 'Expirado':
-      stateInEnglish = "Expired";
-      break;
-
-    default:
-      stateInEnglish = "Pending";
-      break;
+  if (state in stateDictionary) {
+    return stateDictionary[state];
+  } else {
+    return "Pendiente";
   }
-
-  return stateInEnglish;
 }
 
 function getHTMLstatusBadge(status) {
@@ -417,66 +144,75 @@ function getHTMLstatusBadge(status) {
   var badgeClass = "";
 
   status = statesTraductor(status);
-
-  switch (status) {
-    case 'Nueva solicitud':
-      badgeClass = "badge-primary";
-      break;
-
-    case 'Cancelado':
-      badgeClass = "badge-warning";
-      break;
-
-    case 'Apartado':
-      badgeClass = "badge-secondary";
-      break;
-
-    case 'Prestado':
-      badgeClass = "badge-secondary";
-      break;
-
-    case 'Recibido':
-      badgeClass = "badge-success";
-      break;
-
-    case 'Recibido tarde':
-      badgeClass = "badge-info";
-      break;
-
-    case 'Expirado':
-      badgeClass = "badge-danger";
-      break;
-
-    default:
-      badgeClass = "badge-dark";
-      break;
-  }
+  badgeClass = getStatusDictionary(status).badge;
 
   html += badgeClass + "\">" + status + "</div></td>"
 
   return html
 }
 
+function getStatusDictionary(status) {
+  var statusDictionary = {
+    'Nueva solicitud':{
+        badge: "badge-primary", nextStatus: 'Apartado', english: "New" },
+    'Cancelado':      {
+        badge: "badge-warning", nextStatus: '', english: "Cancelled" },
+    'Apartado':       {
+        badge: "badge-secondary", nextStatus: 'Prestado', english: "Separated" },
+    'Prestado':       {
+        badge: "badge-secondary", nextStatus: 'Recibido', english: "Taken" },
+    'Recibido':       {
+        badge: "badge-success", nextStatus: '', english: "Received" },
+    'Recibido tarde': {
+        badge: "badge-info", nextStatus: '', english: "Received late" },
+    'Expirado':       {
+        badge: "badge-danger", nextStatus: 'Recibido tarde', english: "Expired" },
+    'Pendiente':      {
+      badge: "badge-dark", nextStatus: 'Nueva solicitud', english: "Expired" }
+  }
+
+  if (!(status in statusDictionary)) {
+    status = 'Pendiente'
+  }
+
+  return statusDictionary[status]
+}
+
 function getHTMLtoolButtons(status, loanID, loanStatus) {
 
   status = statesTraductor(status);
 
+  var commonHTML = "<button type=\"button\" class=\"btn btn-secondary w-100 border-white rounded-0 ";
+  var commonFunction = createHTMLfunction(loanID, loanStatus)
   var html = "";
-  var buttonNext = "";
-  var buttonCancel = "";
+  var buttonNext =   commonHTML + "btn_siguiente\" onclick=";
+  var buttonCancel = commonHTML + "btn_cancelar\" onclick=";
   var buttonDetails = "";
 
-  buttonNext  = "<button";
-  buttonNext += " type=\"button\""
-  buttonNext += " class=\"btn btn-secondary w-100 border-white rounded-0 btn_siguiente\""
-  buttonNext += " onclick=\"loanChangeStatus(" + loanID + "," + "\'" + loanStatus + "\'" + ")\""
+  buttonNext += "\"loanChangeStatus" + commonFunction
   buttonNext += " role=\"button\">";
 
-  buttonCancel  = "<button";
-  buttonCancel += " type=\"button\""
-  buttonCancel += " class=\"btn btn-secondary w-100 border-white rounded-0 btn_cancelar\""
-  buttonCancel += " onclick=\"loanCancel(" + loanID + "," + "\'" + loanStatus + "\'" +")\""
+  buttonCancel += "\"loanCancel" + commonFunction
   buttonCancel += " role=\"button\">";
+
+  buttonDetails = createButtonDetails(loanID);
+
+  html  = "<td>";
+    html += "<div class=\"btn-group-sm d-flex\" role=\"group\" aria-label=\"Basic example\">";
+      html += closeButtons(status, buttonNext, buttonCancel);
+      html += buttonDetails + "Detalles" + "</button>";
+    html += "</div>";
+  html += "</td>";
+
+  return html
+}
+
+function createHTMLfunction(loanID, loanStatus) {
+  return "(" + loanID + "," + "\'" + loanStatus + "\'" + ")\"";
+}
+
+function createButtonDetails(loanID) {
+  var buttonDetails;
 
   buttonDetails  = "<button";
   buttonDetails += " onclick=\"loadLoanDetailsInModal(" + loanID + ")\"";
@@ -486,131 +222,60 @@ function getHTMLtoolButtons(status, loanID, loanStatus) {
   buttonDetails += " data-toggle=\"modal\"";
   buttonDetails += " data-target=\"#mdl_detallesPrestamo\">";
 
-  html  = "<td>";
-    html += "<div class=\"btn-group-sm d-flex\" role=\"group\" aria-label=\"Basic example\">";
-    switch (status) {
-      case 'Nueva solicitud':
-        html += buttonNext + "Aprobar" + "</buton>";
-        html += buttonCancel + "Rechazar" + "</buton>";
-        break;
-
-      case 'Cancelado':
-        break;
-
-      case 'Apartado':
-        html += buttonNext + "Entregar" + "</buton>";
-        html += buttonCancel + "Rechazar" + "</buton>";
-        break;
-
-      case 'Prestado':
-        html += buttonNext + "Recibir" + "</buton>";
-        break;
-
-      case 'Recibido':
-        break;
-
-      case 'Recibido tarde':
-        break;
-
-      case 'Expirado':
-        html += buttonNext + "Recibir" + "</buton>";
-        break;
-
-      default:
-        break;
-    }
-      html += buttonDetails + "Detalles" + "</button>";
-    html += "</div>";
-  html += "</td>";
-
-
-  return html
+  return buttonDetails;
 }
 
-function getNextStatus(current) {
+function closeButtons(status, buttonNext, buttonCancel) {
+  var button = "";
 
-  switch (current) {
+  switch (status) {
     case 'Nueva solicitud':
-      return 'Apartado';
-      break;
-
-    case 'Cancelado':
+      button += buttonNext + "Aprobar" + "</buton>";
+      button += buttonCancel + "Rechazar" + "</buton>";
       break;
 
     case 'Apartado':
-      return 'Prestado';
+      button += buttonNext + "Entregar" + "</buton>";
+      button += buttonCancel + "Rechazar" + "</buton>";
       break;
 
     case 'Prestado':
-      return 'Recibido';
-      break;
-
-    case 'Recibido':
-      break;
-
-    case 'Recibido tarde':
+      button += buttonNext + "Recibir" + "</buton>";
       break;
 
     case 'Expirado':
-      return 'Recibido tarde';
+      button += buttonNext + "Recibir" + "</buton>";
       break;
 
     default:
-      return 'Unknown status';
       break;
   }
-
+  return button;
 }
 
 function loanChangeStatus(loanID, loanStatus) {
-
-  console.log("CAMBIAR STATUS")
-
-  // Get the loan ID to make the query
-  // var loanID = $(this).parent().parent().parent().attr('id');
-
-  console.log("-> " + loanID);
-
-  // Get the current status
-  // var currentStatus = $(this).parent().parent().parent().find(".badge-pill");
-  // currentStatus = currentStatus.html();
-  console.log("-> " + loanStatus);
-
   // Get the next status
-  var nextStatus = getNextStatus(statesTraductor(loanStatus));
-
-  nextStatus = statesTraductorToEnglish(nextStatus);
-
-  // Make call to DB and update loan with 'nextStatus' and 'loanID'
-  console.log(nextStatus);
+  var nextStatus = getStatusDictionary(statesTraductor(loanStatus)).next;
+  nextStatus = getStatusDictionary(nextStatus).english;
 
   var data = {
     _token     : $('meta[name="csrf-token"]').attr('content'),
     loanID     : loanID,
     loanStatus : loanStatus
   };
+  callAjax(route('loan.set.status'), data);
+}
 
-  console.log(data);
-
-
+function callAjax(route, data) {
   $.ajax({
-    url : route('loan.set.status'),
+    url : route,
     type : 'POST',
     data: data,
     dataType: 'json',
     success: function (jsonReceived) {
-
-      console.log(jsonReceived);
       if(jsonReceived.status == 1){
-        console.log("Se actualizó el estado del préstamo");
         location.reload();
-      }else{
-        console.log("No se actualizó el estado del préstamo");
       }
     }
-
   });
-
-  console.log("----------");
-
 }
