@@ -97,13 +97,10 @@ class HomeController extends Controller
   }
 
   public function getAllLoans(){
-
     $id = Auth::user()->id;
     $loans = DB::select("SELECT loans.id, loans.status, responsables.name AS responsableName, responsables.email AS responsableEmail, applicants.name AS solicitantName, devices.name AS deviceName, devices.serial_number AS deviceSerialNumber, COUNT(devices.id) AS deviceQuantity, applicants.degree AS solicitantDegree, applicants.email AS solicitantEmail, applicants.applicant_id AS solicitantID, states.state AS deviceState, loans.start_date AS loanStartDate, loans.end_date AS loanEndDate, loans.reason AS loanReason FROM loans JOIN applicants ON loans.applicant_id = applicants.id JOIN loan_device ON loans.id = loan_device.loan_id JOIN devices ON loan_device.device_id = devices.id JOIN states ON devices.id = states.device_id LEFT OUTER JOIN responsables ON applicants.id = responsables.applicant_id GROUP BY responsables.name, applicants.name, loans.id, loans.status, devices.name, applicants.degree, applicants.email, applicants.applicant_id, responsables.email, devices.serial_number, states.state, loans.start_date, loans.end_date, loans.reason ORDER BY loans.id ASC;");
-
     return json_encode($loans);
   }
-
 
   public function getSerialNumbers($model){
     

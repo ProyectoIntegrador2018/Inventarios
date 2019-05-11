@@ -33,14 +33,10 @@ class LoanController extends Controller{
     $serialNumbers = DB::select("SELECT d.serial_number FROM devices d JOIN states s ON d.id = s.device_id WHERE d.model = '$requestedDevice' AND s.state = 'Available';");
     $modelInformation = DB::select("SELECT d.name, d.brand, d.model FROM devices d JOIN states s ON d.id = s.device_id WHERE d.model = '$requestedDevice' AND s.state = 'Available' GROUP BY d.name, d.brand, d.model;");
     if(count($modelInformation) > 0){
-      $modelInformation = $modelInformation[0];
-      $quantity = count($serialNumbers);
-      return view('request-loan')->with('serialNumbers', $serialNumbers)->with('modelInformation', $modelInformation)->with('quantity', $quantity);
+      return view('request-loan')->with('serialNumbers', $serialNumbers)->with('modelInformation', $modelInformation[0])->with('quantity', count($serialNumbers));
     }else{
       $modelInformationUnavailable = DB::select("SELECT d.name, d.brand, d.model FROM devices d JOIN states s ON d.id = s.device_id WHERE d.model = '$requestedDevice'");
-      $quantity = count($serialNumbers);
-      $modelInformationUnavailable = $modelInformationUnavailable[0]; 
-      return view('request-loan')->with('serialNumbers', [])->with('modelInformation', $modelInformationUnavailable)->with('quantity', $quantity);
+      return view('request-loan')->with('serialNumbers', [])->with('modelInformation', $modelInformationUnavailable[0])->with('quantity', count($serialNumbers));
     }
   }
 
@@ -88,13 +84,10 @@ class LoanController extends Controller{
     $solicitants = array('professor' => $request["professor"],'student' => $request["student"]);
     $status = array('selectAll' => $request["allStatus"], 'statuses' => $request["statuses"]);
     $inputs = array('dates' => $dates, 'solicitants' => $solicitants, 'status' => $status);
-    $fileName = 'Reporte-prestamos';
     if($request["allDates"]){
-      $fileName = "{$fileName}_Historico";
+      $fileName = "Reporte-prestamos_Historico";
     }else{
-      $startDate = str_replace('/', "-", $request["startDate"]);
-      $endDate = str_replace('/', "-", $request["endDate"]);
-      $fileName = "{$fileName}_del_{$startDate}_al_{$endDate}";
+      $fileName = "Reporte-prestamos_del_" . str_replace('/', "-", $request["startDate"]) . "_al_" . str_replace('/', "-", $request["endDate"]);
     }
     return Excel::download(new LoansExport($inputs), "{$fileName}.xlsx");
   }
