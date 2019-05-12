@@ -40,11 +40,12 @@ plugins:
  eslint:
   enabled: true
 exclude_patterns:
-- "database/"
 - "bootstrap/"
+- "config/"
+- "database/"
 - "features/"
 - "**/node_modules/"
 - "public/daterangepicker/"
 - "**/spec/"
-- "tests/"
 - "storage/"
+- "tests/"
