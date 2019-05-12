@@ -17,79 +17,6 @@ $(document).ready(function () {
 
     });
   });
-
-  /*
-  $(document).on('click', '#btn_reservar', function(){
-    // alert("Botón presionado");
-    // Selection of elements por the post function
-
-    var model            = $("#h_modelo").text();
-    var quantity         = $('#txb_cantidad').val();
-    var reason           = $('#txa_motivo').val();
-    var dates            = $('#dat_fechas').val();
-    var applicant        = $('#txb_nombreSolicitante').val();
-    var applicantID      = $('#txb_idSolicitante').val();
-    var email            = $('#txb_emailSolicitante').val();
-    var bachelor         = $('#txb_carrera').val();
-    var responsableName  = $('#txb_nombreResponsable').val();
-    var responsableEmail = $('#txb_emailResponsable').val();
-
-    // alert(quantity + " " + reason + " " + dates + applicant + " " + applicantID + " " + email + " " + bachelor + " " + responsableName + " " + responsableEmail);
-
-    // Hacer validaciones después
-
-    var data = {
-      _token           : $('meta[name="csrf-token"]').attr('content'),
-      model            : model,
-      quantity         : quantity,
-      reason           : reason,
-      dates            : dates,
-      applicant        : applicant,
-      applicantID      : applicantID,
-      email            : email,
-      bachelor         : bachelor,
-      responsableName  : responsableName,
-      responsableEmail : responsableEmail
-    };
-
-    $.ajax({
-      url : route('loan.create'),
-      type : 'POST',
-      data: data,
-      dataType: 'json',
-      success: function (jsonReceived) {
-
-        // console.log(jsonReceived);
-        if(jsonReceived.status == 1){
-
-          // Para el sprint dos, que los mensajes de error que se devuelven del Back-End se pongan en el mensaje de alerta
-
-          $('.loans-success').show();
-          $('.loans-error').hide();
-
-          // $("#h_modelo").text('');
-          $('#txb_cantidad').val('');
-          $('#txa_motivo').val('');
-          // $('#dat_fechas').val(''); // Investigar que onda para resetear las fechas después [Tal vez al día actual y al día siguiente]
-          $('#txb_nombreSolicitante').val('');
-          $('#txb_idSolicitante').val('');
-          $('#txb_emailSolicitante').val('');
-          $('#txb_carrera').val('');
-          $('#txb_nombreResponsable').val('');
-          // Aquí falta la nómina la nómina del profesor responsable, si se decide por no poner, también removerse de la base de datos
-          $('#txb_emailResponsable').val('');
-
-        }else{
-          $('.loans-error').show();
-          $('.loans-success').hide();
-        }
-
-      }
-    });
-
-  });
-  */
-
 });
 
 function showStudentForm() {
@@ -148,18 +75,9 @@ function validateFields() {
   }
 
   // Individual and specific rules for each input
-  //--------------------------- Rules for QUANTITY ---------------------------//
-  if (quantity.val() <= 0 || quantity.hasClass('is-invalid') || parseInt(document.getElementById('h_cantidad_numero').innerText) < parseInt($('#txb_cantidad').val())) {
-    quantity.addClass("is-invalid");
-  } else {
-    quantity.removeClass("is-invalid");
-  }
-  //------------------------ Rules for SOLICITANT NAME -----------------------//
-  if (solicitantName.val().match(/\d/) || solicitantName.hasClass('is-invalid')) {
-    solicitantName.addClass("is-invalid");
-  } else {
-    solicitantName.removeClass("is-invalid");
-  }
+  validateQuantity(quantity)
+  validateName(solicitantName)
+  validateID(solicitantID, isStudent)
   //----------------------- Rules for SOLICITANT EMAIL -----------------------//
   var atPosition = solicitantEmail.val().indexOf("@");
   if (atPosition !== -1) {
@@ -182,51 +100,26 @@ function validateFields() {
   } else {
     solicitantEmail.addClass("is-invalid");
   }
-  //---------------------------- Rules for DEGREE ----------------------------//
-  if (solicitantDegree.val().match(/\d/) || solicitantDegree.hasClass('is-invalid')) {
-    solicitantDegree.addClass("is-invalid");
-  } else {
-    solicitantDegree.removeClass("is-invalid");
-  }
-  //----------------------- Rules for RESPONSABLE NAME -----------------------//
-  if (responsableName.val().match(/\d/) || responsableName.hasClass('is-invalid')) {
-    responsableName.addClass("is-invalid");
-  } else {
-    responsableName.removeClass("is-invalid");
-  }
-  //---------------------- Rules for RESPONSABLE EMAIL -----------------------//
+
+  validateDegree(solicitantDegree)
+  validateName(responsableName)
 
   // Check on all generic inputs if they are invalid
-  for (i = 0; i < inputsGeneric.length && formIsCorrect; i++) {
-    if (inputsGeneric[i].hasClass("is-invalid")) {
-      formIsCorrect = false;
-    }
-  }
+  formIsCorrect = allInputsValid(inputsGeneric);
 
   // Check on all student related inputs if they are invalid
   if (isStudent) {
-    for (i = 0; i < inputsStudent.length && formIsCorrect; i++) {
-      if (inputsStudent[i].hasClass("is-invalid")) {
-        formIsCorrect = false;
-      }
-    }
-  }
-
-  // Validation of quantity requested among the quantity of available devices
-  //var availableQuantity = $('#h_cantidad_numero').val();
-  var availableQuantity = parseInt(document.getElementById('h_cantidad_numero').innerText);
-
-  console.log(availableQuantity);
-  console.log($('#txb_cantidad').val());
-
-  if(availableQuantity < parseInt($('#txb_cantidad').val())){
-    formIsCorrect = false;
+    formIsCorrect = allInputsValid(inputsStudent);
   }
 
   // If every input doesn't have the "is-invalid" class, then everything is ok
   if (formIsCorrect) {
-    console.log("Form seems OK!");
+    createLoan();
+  }
+}
 
+function createLoan() {
+    console.log("Form seems OK!");
     var model = $("#h_modelo").text();
     var quantity = $('#txb_cantidad').val();
     var reason = $('#txa_motivo').val();
@@ -245,10 +138,6 @@ function validateFields() {
       student = 1;
     }
 
-    // alert(quantity + " " + reason + " " + dates + applicant + " " + applicantID + " " + email + " " + bachelor + " " + responsableName + " " + responsableEmail);
-
-    // Hacer validaciones después
-
     var data = {
       _token           : $('meta[name="csrf-token"]').attr('content'),
       model            : model,
@@ -263,45 +152,98 @@ function validateFields() {
       responsableEmail : responsableEmail,
       isStudent        : student
     };
+    ajaxCreateLoan(data);
+}
 
-    $.ajax({
-      url: route('loan.create'),
-      type: 'POST',
-      data: data,
-      dataType: 'json',
-      success: function (jsonReceived) {
-        // location.reload();
-        // console.log(jsonReceived);
+function validateQuantity(quantity) {
+  var availableQuantity = parseInt(document.getElementById('h_cantidad_numero').innerText);
 
-        $("#exampleModalCenter").modal('show');
-
-        if (jsonReceived.status == 1) {
-
-          // Para el sprint dos, que los mensajes de error que se devuelven del Back-End se pongan en el mensaje de alerta
-
-          $('.loans-success').show();
-          $('.loans-error').hide();
-
-          // $("#h_modelo").text('');
-          $('#txb_cantidad').val('');
-          $('#txa_motivo').val('');
-          // $('#dat_fechas').val(''); // Investigar que onda para resetear las fechas después [Tal vez al día actual y al día siguiente]
-          $('#txb_nombreSolicitante').val('');
-          $('#txb_idSolicitante').val('');
-          $('#txb_emailSolicitante').val('');
-          $('#txb_carrera').val('');
-          $('#txb_nombreResponsable').val('');
-          // Aquí falta la nómina la nómina del profesor responsable, si se decide por no poner, también removerse de la base de datos
-          $('#txb_emailResponsable').val('');
-
-        } else {
-          $('.loans-error').show();
-          $('.loans-success').hide();
-        }
-
-      }
-    });
+  if (availableQuantity < parseInt($('#txb_cantidad').val()) || quantity.val() <= 0 || quantity.hasClass('is-invalid') || parseInt(document.getElementById('h_cantidad_numero').innerText) < parseInt($('#txb_cantidad').val())) {
+    quantity.addClass("is-invalid");
+  } else {
+    quantity.removeClass("is-invalid");
   }
+}
+
+function validateName(name) {
+  //------------------------ Rules for SOLICITANT NAME -----------------------//
+  if (name.val().match(/\d/) || name.hasClass('is-invalid')) {
+    name.addClass("is-invalid");
+  } else {
+    name.removeClass("is-invalid");
+  }
+}
+
+function validateDegree(degree) {
+  //---------------------------- Rules for DEGREE ----------------------------//
+  if (degree.val().match(/\d/) || degree.hasClass('is-invalid')) {
+    degree.addClass("is-invalid");
+  } else {
+    degree.removeClass("is-invalid");
+  }
+}
+
+function validateID(id, isStudent) {
+  if (isValidID(id, isStudent)) {
+    id.removeClass("is-invalid");
+  } else {
+    id.addClass("is-invalid");
+  }
+}
+
+function isValidID(id, isStudent) {
+  console.log(isStudent);
+  if (isStudent) {
+    return (id.val().match(/(a|A)\d{8}/) || id.hasClass('is-invalid'));
+  } else {
+    return (id.val().match(/(l|L)\d{8}/) || id.hasClass('is-invalid'));
+  }
+}
+
+function allInputsValid(inputs) {
+  var formIsCorrect = true;
+
+  for (i = 0; i < inputs.length && formIsCorrect; i++) {
+    if (inputs[i].hasClass("is-invalid")) {
+      formIsCorrect = false;
+    }
+  }
+
+  return formIsCorrect;
+}
+
+function flushForm() {
+  $('#txb_cantidad').val('');
+  $('#txa_motivo').val('');
+  $('#txb_nombreSolicitante').val('');
+  $('#txb_idSolicitante').val('');
+  $('#txb_emailSolicitante').val('');
+  $('#txb_carrera').val('');
+  $('#txb_nombreResponsable').val('');
+  $('#txb_emailResponsable').val('');
+}
+
+function ajaxCreateLoan(data) {
+  $.ajax({
+    url: route('loan.create'),
+    type: 'POST',
+    data: data,
+    dataType: 'json',
+    success: function (jsonReceived) {
+      $("#exampleModalCenter").modal('show');
+
+      if (jsonReceived.status == 1) {
+        // Para el sprint dos, que los mensajes de error que se devuelven del Back-End se pongan en el mensaje de alerta
+        $('.loans-success').show();
+        $('.loans-error').hide();
+        flushForm()
+      } else {
+        $('.loans-error').show();
+        $('.loans-success').hide();
+      }
+
+    }
+  });
 }
 
 function cleanInputSpaces(htmlInput) {
