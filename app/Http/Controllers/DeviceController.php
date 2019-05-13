@@ -40,7 +40,7 @@ class DeviceController extends Controller
         // and if exists, get the id and put in the location_id of the device
         // the user_id of the location is the one gotten previously
         // Creation of the device
-        $locationExistence = DB::table('locations')->where([['building', '=', $building], ['room', '=', $room]])->get();
+        $locationExistence = $this->getSomething(1, null, $building, $room, null,   null);
 
         if ($requiredSerialNumbers == "yes") {
             //Do the process like always
@@ -58,7 +58,7 @@ class DeviceController extends Controller
                     for ($x = 0; $x < $quantity; $x++) {
                         $temporarySerialNumber = $serialNumbersSeparated[$x];
                         // Let's check if the serial number exists in the brand already
-                        $serialNumberExistance = $this->getSerialNumbers($temporarySerialNumber, $model);
+                        $serialNumberExistance = $this->getSomething(2, null, null, null, $temporarySerialNumber, $model);
                         if (count($serialNumberExistance) > 0) {
                             // The device already exists in the database, the aggregate will be skipped
                             // At the moment, where are not returning this situation
@@ -95,7 +95,7 @@ class DeviceController extends Controller
                     for ($x = 0; $x < $quantity; $x++) {
                         $temporarySerialNumber = $serialNumbersSeparated[$x];
                         // Let's check if the serial number exists in the brand already
-                        $serialNumberExistance = $this->getSerialNumbers($temporarySerialNumber, $model);
+                        $serialNumberExistance = $this->getSomething(2, null, null, null, $temporarySerialNumber, $model);
 
                         if (count($serialNumberExistance) > 0) {
                             // The device already exists in the database, the aggregate will be skipped
@@ -188,7 +188,7 @@ class DeviceController extends Controller
                 // Search if the tag actually exists
                 // If it exists, just get the id to after use it in the relation
                 // If not exists already, the tag and device_tag instances are going to be created
-                $tagExistance = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get();
+                $tagExistance = $this->getSomething(0, $separatedTags[$y], null, null, null, null);
 
                 if (count($tagExistance) > 0) {
                     // The tag already exists, let's get tag id and just create the relation
@@ -223,9 +223,22 @@ class DeviceController extends Controller
         return json_encode($response);
     }
 
-    private function getSerialNumbers($temporarySerialNumber, $model) {
-        $serialNumbers = DB::table('devices')->where([['serial_number', '=', $temporarySerialNumber],['model', '=', $model]])->get();
-        return $serialNumbers;
+    private function getSomething($selector, $tag, $building, $room, $serialNumber, $model) {
+        $value = "";
+        switch ($selector) {
+            case 0:
+                $value = DB::table('tags')->where('tag', '=', $tag)->get();
+                break;
+            case 1:
+                $value = DB::table('locations')->where([['building', '=', $building], ['room', '=', $room]])->get();
+                break;
+            case 2:
+                $value = DB::table('devices')->where([['serial_number', '=', $serialNumber],['model', '=', $model]])->get();
+                break;
+            default:
+                break;
+        }
+        return $value;
     }
 
     private function insertTagWithID($separatedTags, $y, $devices) {
@@ -270,8 +283,8 @@ class DeviceController extends Controller
             // Search if the tag actually exists
             // If it exists, just get the id to after use it in the relation
             // If not exists already, the tag and device_tag instances are going to be created
-            $tagExistance = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get();
-
+            $tagExistance = $this->getSomething(0, $separatedTags[$y], null, null, null, null);
+            
             if (count($tagExistance) > 0) {
                 // The tag already exists, let's get tag id and just create the relation
                 $this->insertTagWithID($separatedTags, $y, $lastDeviceAddedID);
