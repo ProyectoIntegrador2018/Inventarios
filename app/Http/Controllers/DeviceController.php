@@ -58,10 +58,7 @@ class DeviceController extends Controller
                     for ($x = 0; $x < $quantity; $x++) {
                         $temporarySerialNumber = $serialNumbersSeparated[$x];
                         // Let's check if the serial number exists in the brand already
-                        $serialNumberExistance = DB::table('devices')->where([
-                            ['serial_number', '=', $temporarySerialNumber],
-                            ['model', '=', $model]
-                        ])->get();
+                        $serialNumberExistance = $this->getSerialNumbers($temporarySerialNumber, $model);
                         if (count($serialNumberExistance) > 0) {
                             // The device already exists in the database, the aggregate will be skipped
                             // At the moment, where are not returning this situation
@@ -73,7 +70,6 @@ class DeviceController extends Controller
                             $this->createTags($tags, $lastDeviceAddedID);
                         }
                     }
-
                     if($finalStatus == 2){$response["status"] = 2;}else{$response["status"] = 1;}
                     if($finalMessage != ""){$response["messsage"] = $finalMessage;}else{
                         $response["messsage"] = "Location, Devices, States, Tags and Device-Tag instances created.";
@@ -99,10 +95,7 @@ class DeviceController extends Controller
                     for ($x = 0; $x < $quantity; $x++) {
                         $temporarySerialNumber = $serialNumbersSeparated[$x];
                         // Let's check if the serial number exists in the brand already
-                        $serialNumberExistance = DB::table('devices')->where([
-                            ['serial_number', '=', $temporarySerialNumber],
-                            ['model', '=', $model]
-                        ])->get();
+                        $serialNumberExistance = $this->getSerialNumbers($temporarySerialNumber, $model);
 
                         if (count($serialNumberExistance) > 0) {
                             // The device already exists in the database, the aggregate will be skipped
@@ -139,10 +132,8 @@ class DeviceController extends Controller
                 $locationID = DB::table('locations')->where([['building', '=', $building], ['room', '=', $room]])->get(['id']);
                 $locationID = $locationID[0]->id;
 
-                for ($x = 0; $x < $quantity; $x++) {
-                    $lastDeviceID = $this->insertNewDevices($name, $brand, $model, $locationID);
-                    $this->createTags($tags, $lastDeviceID);
-                }
+                $this->insertDevicesAndTags($name, $brand, $model, $locationID, $quantity, $tags);
+                
                 if ($finalStatus == 2) { $response["status"] = 2;} 
                 else { $response["status"] = 1; }
                 
@@ -158,10 +149,7 @@ class DeviceController extends Controller
                 $locationID = $locationID[0]->id;
 
                 // Let's check if the quantity variable and the serial numbers array size are the same
-                for ($x = 0; $x < $quantity; $x++) {
-                    $lastDeviceAddedID = $this->insertNewDevices($name, $brand, $model, $locationID);
-                    $this->createTags($tags, $lastDeviceAddedID);
-                }
+                $this->insertDevicesAndTags($name, $brand, $model, $locationID, $quantity, $tags);
 
                 if ($finalStatus == 2) { $response["status"] = 2; } 
                 else { $response["status"] = 1; }
@@ -204,9 +192,7 @@ class DeviceController extends Controller
 
                 if (count($tagExistance) > 0) {
                     // The tag already exists, let's get tag id and just create the relation
-                    $tagID = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get(['id']);
-                    $tagID = $tagID[0]->id;
-                    $this->insertTagRelations($devices, $tagID);
+                    $this->insertTagWithID($separatedTags, $y, $devices);
                 } else {
                     // The tag doesn't exists, let's create both
                     DB::table('tags')->insert(
@@ -235,6 +221,23 @@ class DeviceController extends Controller
         $response["status"] = 1;
         $response["message"] = $finalMessage;
         return json_encode($response);
+    }
+
+    private function getSerialNumbers($temporarySerialNumber, $model) {
+        $serialNumbers = DB::table('devices')->where([['serial_number', '=', $temporarySerialNumber],['model', '=', $model]])->get();
+        return $serialNumbers;
+    }
+
+    private function insertTagWithID($separatedTags, $y, $devices) {
+        $tagID = $this->getTagID($separatedTags, $y);
+        $this->insertTagRelations($devices, $tagID);
+    }
+
+    private function insertDevicesAndTags($name, $brand, $model, $locationID, $quantity, $tags) {
+        for ($x = 0; $x < $quantity; $x++) {
+            $lastDeviceID = $this->insertNewDevices($name, $brand, $model, $locationID);
+            $this->createTags($tags, $lastDeviceID);
+        }
     }
 
     public function insertNewDevices($name, $brand, $model, $locationID)
@@ -271,9 +274,7 @@ class DeviceController extends Controller
 
             if (count($tagExistance) > 0) {
                 // The tag already exists, let's get tag id and just create the relation
-                $tagID = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get(['id']);
-                $tagID = $tagID[0]->id;
-                $this->insertTagRelations($lastDeviceAddedID, $tagID);
+                $this->insertTagWithID($separatedTags, $y, $lastDeviceAddedID);
             } else {
                 // The tag doesn't exists, let's create both
                 DB::table('tags')->insert(
@@ -311,6 +312,12 @@ class DeviceController extends Controller
         
     }
 
+    private function getTagID($separatedTags, $y){
+        $tagID = DB::table('tags')->where('tag', '=', $separatedTags[$y])->get(['id']);
+        $tagID = $tagID[0]->id;
+        return $tagID;
+    }
+
     private function deleteTagRelations($devices)
     {
         foreach ($devices as $device) {
@@ -333,7 +340,7 @@ class DeviceController extends Controller
 
     public function getDeviceModels()
     {
-        $deviceModels = DB::select("FROM devices dGROUP BY d.model;");
+        $deviceModels = DB::select("FROM devices d GROUP BY d.model;");
         return array($deviceModels);
     }
 
