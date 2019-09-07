@@ -22,9 +22,9 @@ Aplicación web para llevar el control del inventario de dispositivos del depart
 
 ### Detalles del cliente
 
-| Nombre                      | Email             | Role                                      |
-| --------------------------- | ----------------- | ----------------------------------------- |
-| Armandina Juana Leal Flores | aleal@tec.mx      | Directora del Departamento de Computación |
+| Nombre                      | Email                                    | Role                                      |
+| --------------------------- | ---------------------------------------- | ----------------------------------------- |
+| Jose Antonio Martinez       | jantonio.martinez@invitados.itesm.mx     | Laboratorios MOSTLA                       |
 
 
 ### URLS del ambiente
@@ -34,12 +34,12 @@ Aplicación web para llevar el control del inventario de dispositivos del depart
 
 ### Equipo
 
-| Nombre            | Email                          | Role        |
-| ----------------- | ------------------------------ | ----------- |
-| Miguel Banda      | miguelangelbandardz@gmail.com  | Development |
-| Abelardo Gonzalez | abelardo_gonzalezg@hotmail.com | Development |
-| Luis Rojo         | luis_alfonso_96@hotmail.com    | Development |
-| Guillermo Mendoza | ams.guillermo@gmail.com        | Development |
+| Nombre            | Email                             | Role        |
+| ----------------- | ----------------------------------| ----------- |
+| Cristina Jimenez  | cristinajimenezcanales@gmail.com  | Development |
+| Federico Huget    | Fede.huguet14@gmail.com           | Development |
+| Clarisa Miranda   | clarissamirandap@gmail.com        | Development |
+| Juan Ferreira     | Juanpferri@gmail.com              | Development |
 
 ### Stack Tecnológico
 
